@@ -6,7 +6,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        val splash = installSplashScreen()
+        val splash = installSplashScreen() // !required for splash screen
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
