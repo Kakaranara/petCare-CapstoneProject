@@ -60,6 +60,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
 
+    //background task
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
     /**
@@ -89,5 +90,29 @@ dependencies {
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.bumptech.glide:glide:4.13.2'
 
+    /**
+     * * our feature
+     */
 
+    //?gmaps
+    implementation "com.google.android.gms:play-services-maps:18.1.0"
+
+
+    //?camera
+    def camerax_version = "1.1.0"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-lifecycle:${camerax_version}"
+    implementation "androidx.camera:camera-view:${camerax_version}"
+
+    /**
+     * * Testing Purpose
+     */
+
+    //testing purpose
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4" //runTest | disp rule
+    testImplementation "androidx.arch.core:core-testing:2.1.0" //executor rule
+    testImplementation 'org.mockito:mockito-core:4.4.0'
+    testImplementation 'org.mockito:mockito-inline:4.4.0'
+    androidTestImplementation "androidx.arch.core:core-testing:2.1.0" //executor rule
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4" //runTest
 }
