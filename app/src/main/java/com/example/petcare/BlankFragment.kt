@@ -10,6 +10,7 @@ import com.example.petcare.databinding.FragmentBlankBinding
 
 //? just for testing setup
 //! remove later
+//test lagi
 class BlankFragment : Fragment() {
     private var _binding: FragmentBlankBinding? = null
     private val binding get() = _binding!!
