@@ -4,24 +4,30 @@
     <item
         android:id="@+id/action_home"
         android:icon="@drawable/ic_baseline_home_24"
-        android:title="Home"
+        android:title="@string/home"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_story"
         android:icon="@drawable/ic_baseline_pets_24"
-        android:title="Story"
+        android:title="@string/story"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_news"
         android:icon="@drawable/ic_baseline_newspaper_24"
-        android:title="News"
+        android:title="@string/news"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_schedule"
+        android:icon="@drawable/ic_baseline_schedule_24"
+        android:title="@string/schedule"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_profile"
         android:icon="@drawable/ic_baseline_person_24"
-        android:title="Profile"
+        android:title="@string/profile"
         app:showAsAction="ifRoom" />
 </menu>

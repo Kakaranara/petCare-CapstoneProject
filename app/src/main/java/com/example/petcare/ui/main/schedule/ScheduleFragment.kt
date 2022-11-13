@@ -1,15 +1,15 @@
-package com.example.petcare.ui.main.story
+package com.example.petcare.ui.main.schedule
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.petcare.databinding.FragmentStoryBinding
+import com.example.petcare.databinding.FragmentScheduleBinding
 
 
-class StoryFragment : Fragment() {
-    private var _binding: FragmentStoryBinding? = null
+class ScheduleFragment : Fragment() {
+    private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -24,7 +24,7 @@ class StoryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentStoryBinding.inflate(inflater, container, false)
+        _binding = FragmentScheduleBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -34,6 +34,6 @@ class StoryFragment : Fragment() {
     }
 
     companion object {
-        const val TAG = "Story Fragment"
+        const val TAG = "Schedule Fragment"
     }
 }

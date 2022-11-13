@@ -40,4 +40,9 @@
         android:name="com.example.petcare.ui.main.story.StoryFragment"
         android:label="fragment_story"
         tools:layout="@layout/fragment_story" />
+    <fragment
+        android:id="@+id/action_schedule"
+        android:name="com.example.petcare.ui.main.schedule.ScheduleFragment"
+        android:label="fragment_schedule"
+        tools:layout="@layout/fragment_schedule" />
 </navigation>
