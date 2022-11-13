@@ -5,17 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.petcare.databinding.FragmentHomeBinding
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        /**
-         * Code Here
-         */
+
+        binding.goLogin.setOnClickListener(this)
+    }
+
+    override fun onClick(view: View) {
+        when (view) {
+            binding.goLogin -> {
+                val go = HomeFragmentDirections.actionActionHomeToLoginFragment()
+                findNavController().navigate(go)
+            }
+        }
     }
 
     override fun onCreateView(

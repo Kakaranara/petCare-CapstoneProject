@@ -1,6 +1,7 @@
 package com.example.petcare
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavDestination
@@ -29,6 +30,36 @@ class MainActivity : AppCompatActivity() {
              * * Here's where we hide bottom navbar if needed
              * ? Documentation : https://developer.android.com/guide/navigation/navigation-ui
              */
+            when (destination.id) {
+                //? id action_xx is only fragment id for bottom navigation bar.
+                //? check menu and main_nav.
+                R.id.action_home -> {
+                    visible()
+                }
+                R.id.action_news -> {
+                    visible()
+                }
+                R.id.action_profile -> {
+                    visible()
+                }
+                R.id.action_story -> {
+                    visible()
+                }
+                R.id.action_schedule -> {
+                    visible()
+                }
+                else -> {
+                    invisible()
+                }
+            }
         }
+    }
+
+    private fun visible() {
+        binding.bottomNavbar.visibility = View.VISIBLE
+    }
+
+    private fun invisible() {
+        binding.bottomNavbar.visibility = View.GONE
     }
 }

@@ -5,12 +5,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.petcare.R
-import com.example.petcare.databinding.FragmentLoginBinding
+import androidx.navigation.fragment.findNavController
 import com.example.petcare.databinding.FragmentRegisterBinding
 
-class RegisterFragment : Fragment() {
-    private var _binding : FragmentRegisterBinding? = null
+class RegisterFragment : Fragment(), View.OnClickListener {
+    private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -18,6 +17,20 @@ class RegisterFragment : Fragment() {
         /**
          * Code Here
          */
+        binding.btnToLogin.setOnClickListener(this)
+        binding.btnRegister.setOnClickListener(this)
+    }
+
+    override fun onClick(view: View) {
+        when (view) {
+            binding.btnToLogin -> {
+                val go = RegisterFragmentDirections.actionRegisterFragmentToLoginFragment()
+                findNavController().navigate(go)
+            }
+            binding.btnRegister -> {
+
+            }
+        }
     }
 
     override fun onCreateView(
@@ -34,7 +47,7 @@ class RegisterFragment : Fragment() {
         _binding = null
     }
 
-    companion object{
+    companion object {
         const val TAG = "Register Fragment"
     }
 }
