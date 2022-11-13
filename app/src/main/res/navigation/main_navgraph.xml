@@ -6,11 +6,6 @@
     app:startDestination="@id/action_home">
 
     <fragment
-        android:id="@+id/blankFragment"
-        android:name="com.example.petcare.BlankFragment"
-        android:label="fragment_blank"
-        tools:layout="@layout/fragment_blank" />
-    <fragment
         android:id="@+id/action_home"
         android:name="com.example.petcare.ui.main.home.HomeFragment"
         android:label="fragment_home"
