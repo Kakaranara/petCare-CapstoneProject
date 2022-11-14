@@ -9,11 +9,7 @@
         android:id="@+id/action_home"
         android:name="com.example.petcare.ui.main.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" >
-        <action
-            android:id="@+id/action_action_home_to_loginFragment"
-            app:destination="@id/loginFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_home" />
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.petcare.ui.user.auth.login.LoginFragment"
@@ -22,6 +18,9 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_action_home"
+            app:destination="@id/action_home" />
     </fragment>
     <fragment
         android:id="@+id/action_news"
@@ -37,13 +36,7 @@
         android:id="@+id/registerFragment"
         android:name="com.example.petcare.ui.user.auth.register.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" >
-        <action
-            android:id="@+id/action_registerFragment_to_loginFragment"
-            app:destination="@id/loginFragment"
-            app:popUpTo="@id/loginFragment"
-            app:popUpToInclusive="true" />
-    </fragment>
+        tools:layout="@layout/fragment_register" />
     <fragment
         android:id="@+id/action_story"
         android:name="com.example.petcare.ui.main.story.StoryFragment"
@@ -54,4 +47,9 @@
         android:name="com.example.petcare.ui.main.schedule.ScheduleFragment"
         android:label="fragment_schedule"
         tools:layout="@layout/fragment_schedule" />
+    <action
+        android:id="@+id/action_global_loginFragment"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/main_nav"
+        app:popUpToInclusive="true" />
 </navigation>
