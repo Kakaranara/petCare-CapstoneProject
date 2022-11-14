@@ -30,6 +30,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
     private lateinit var auth: FirebaseAuth
     private lateinit var oneTapClient: GoogleSignInClient
 
+    //? used for google one tap sign-in
     private var resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -56,14 +57,55 @@ class LoginFragment : Fragment(), View.OnClickListener {
         binding.btnLogin.setOnClickListener(this)
         binding.btnLoginWithGoogle.setOnClickListener(this)
 
+        //? also for google oneTap sign-in
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .build()
-
         oneTapClient = GoogleSignIn.getClient(requireActivity(), gso)
 
         auth = Firebase.auth
+    }
+
+    override fun onClick(view: View?) {
+        when (view) {
+            binding.btnToRegister -> {
+                val go = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
+                findNavController().navigate(go)
+            }
+            binding.btnLoginWithGoogle -> {
+                oneTapSignIn()
+            }
+            binding.btnLogin -> {
+                loginWithEmailAndPassword()
+            }
+        }
+    }
+
+    private fun loginWithEmailAndPassword() {
+        binding.btnLogin.isEnabled = false
+        binding.loginProgress.visibility = View.VISIBLE
+        val email = binding.etLoginEmail.text.toString()
+        val password = binding.etLoginPassword.text.toString()
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isComplete) {
+                binding.btnLogin.isEnabled = true
+                binding.loginProgress.visibility = View.INVISIBLE
+            }
+            if (task.isSuccessful) {
+                Log.d(TAG, "onClick: login success")
+                Toast.makeText(requireActivity(), "success", Toast.LENGTH_SHORT).show()
+                val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
+                findNavController().navigate(go)
+            } else {
+                Log.d(TAG, "onClick: login failed. exception : ${task.exception}")
+                Toast.makeText(
+                    requireActivity(),
+                    "failed. ${task.exception?.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
@@ -81,46 +123,9 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
     }
 
-    private fun signIn() {
+    private fun oneTapSignIn() {
         val signinIntent = oneTapClient.signInIntent
         resultLauncher.launch(signinIntent)
-    }
-
-    override fun onClick(view: View?) {
-        when (view) {
-            binding.btnToRegister -> {
-                val go = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
-                findNavController().navigate(go)
-            }
-            binding.btnLoginWithGoogle -> {
-                signIn()
-            }
-            binding.btnLogin -> {
-                binding.btnLogin.isEnabled = false
-                binding.loginProgress.visibility = View.VISIBLE
-                val email = binding.etLoginEmail.text.toString()
-                val password = binding.etLoginPassword.text.toString()
-                auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-                    if (task.isComplete) {
-                        binding.btnLogin.isEnabled = true
-                        binding.loginProgress.visibility = View.INVISIBLE
-                    }
-                    if (task.isSuccessful) {
-                        Log.d(TAG, "onClick: login success")
-                        Toast.makeText(requireActivity(), "success", Toast.LENGTH_SHORT).show()
-                        val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
-                        findNavController().navigate(go)
-                    } else {
-                        Log.d(TAG, "onClick: login failed. exception : ${task.exception}")
-                        Toast.makeText(
-                            requireActivity(),
-                            "failed. ${task.exception?.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
-        }
     }
 
     override fun onCreateView(
