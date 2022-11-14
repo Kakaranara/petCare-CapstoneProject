@@ -113,9 +113,15 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
             }
             binding.btnLogin -> {
+                binding.btnLogin.isEnabled = false
+                binding.loginProgress.visibility = View.VISIBLE
                 val email = binding.etLoginEmail.text.toString()
                 val password = binding.etLoginPassword.text.toString()
                 auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                    if(task.isComplete){
+                        binding.btnLogin.isEnabled = true
+                        binding.loginProgress.visibility = View.INVISIBLE
+                    }
                     if (task.isSuccessful) {
                         Log.d(TAG, "onClick: login success")
                         Toast.makeText(requireActivity(), "success", Toast.LENGTH_SHORT).show()
