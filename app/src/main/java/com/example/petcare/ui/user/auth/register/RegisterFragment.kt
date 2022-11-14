@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.petcare.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -35,10 +34,16 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 findNavController().navigate(go)
             }
             binding.btnRegister -> {
+                binding.btnRegister.isEnabled = false
+                binding.registerProgress.visibility = View.VISIBLE
                 val email = binding.etRegisterEmail.text.toString()
                 val password = binding.etRegisterPassword.text.toString()
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(requireActivity()) { task ->
+                        if (task.isComplete) {
+                            binding.btnRegister.isEnabled = true
+                            binding.registerProgress.visibility = View.INVISIBLE
+                        }
                         if (task.isSuccessful) {
                             Toast.makeText(
                                 requireActivity(),

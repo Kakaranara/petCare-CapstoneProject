@@ -13,4 +13,7 @@
     <string name="new_user">New User?</string>
     <string name="sign_up">Sign up</string>
     <string name="or_login_with">Or Login With</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="have_an_account">Have an account?</string>
+    <string name="name">Name</string>
 </resources>
