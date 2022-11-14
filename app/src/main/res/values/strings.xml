@@ -16,4 +16,5 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="have_an_account">Have an account?</string>
     <string name="name">Name</string>
+    <string name="other">Other</string>
 </resources>
