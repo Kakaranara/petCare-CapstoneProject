@@ -20,7 +20,9 @@
             app:destination="@id/registerFragment" />
         <action
             android:id="@+id/action_loginFragment_to_action_home"
-            app:destination="@id/action_home" />
+            app:destination="@id/action_home"
+            app:popUpTo="@id/main_nav"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/action_news"
