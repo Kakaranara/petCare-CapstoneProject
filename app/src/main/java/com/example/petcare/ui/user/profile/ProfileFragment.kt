@@ -7,18 +7,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.petcare.databinding.FragmentProfileBinding
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class ProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
+    private lateinit var auth: FirebaseAuth
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnLogout.setOnClickListener(this)
+        auth = Firebase.auth
+        auth.currentUser?.let {
+            Glide.with(requireActivity())
+                .load(it.photoUrl)
+                .into(binding.circleImageView)
+            binding.tvProfileName.text = it.displayName
+            binding.tvProfileEmail.text = it.email
+        }
     }
 
     override fun onClick(view: View) {
