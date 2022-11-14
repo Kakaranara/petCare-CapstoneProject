@@ -1,22 +1,35 @@
 package com.example.petcare.ui.user.profile
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.petcare.databinding.FragmentProfileBinding
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        /**
-         * Code Here
-         */
-        binding.tv.text = TAG
+
+        binding.btnLogout.setOnClickListener(this)
+    }
+
+    override fun onClick(view: View) {
+        when (view) {
+            binding.btnLogout -> {
+                Firebase.auth.signOut()
+                val go = ProfileFragmentDirections.actionGlobalLoginFragment()
+                findNavController().navigate(go)
+                Log.d(TAG, "onClick: LOGOUT SUCCESS")
+            }
+        }
     }
 
     override fun onCreateView(
