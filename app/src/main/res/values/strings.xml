@@ -17,4 +17,6 @@
     <string name="have_an_account">Have an account?</string>
     <string name="name">Name</string>
     <string name="other">Other</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="logout">Logout</string>
 </resources>
