@@ -19,4 +19,5 @@
     <string name="other">Other</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="logout">Logout</string>
+    <string name="add_story">Add Story</string>
 </resources>
