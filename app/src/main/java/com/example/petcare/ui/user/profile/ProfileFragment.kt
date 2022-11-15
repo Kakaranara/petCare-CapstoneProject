@@ -12,6 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.petcare.constant.OtherMenu
 import com.example.petcare.databinding.FragmentProfileBinding
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -24,14 +25,25 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Firebase.auth.currentUser?.let {
-            Glide.with(requireActivity())
-                .load(it.photoUrl)
-                .into(binding.circleImageView)
-            binding.tvProfileName.text = it.displayName
-            binding.tvProfileEmail.text = it.email
-        }
+        setUserInformation()
+        setOtherList()
+    }
 
+    override fun onClick(view: View) {
+
+    }
+
+    private fun setUserInformation() {
+        Firebase.auth.currentUser?.let { user: FirebaseUser ->
+            binding.apply {
+                tvProfileEmail.text = user.email
+                tvProfileName.text = user.displayName
+                Glide.with(requireActivity()).load(user.photoUrl).into(circleImageView)
+            }
+        }
+    }
+
+    private fun setOtherList() {
         val adapter = ArrayAdapter(
             requireActivity(),
             android.R.layout.simple_list_item_1,
@@ -52,14 +64,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                         .show()
                 }
             }
-        }
-    }
-
-    override fun onClick(view: View) {
-        when (view) {
-            /**
-             * ? in case you need it
-             */
         }
     }
 
