@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.petcare.R
 import com.example.petcare.databinding.FragmentLoginBinding
+import com.example.petcare.utils.AuthUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -77,16 +78,22 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 oneTapSignIn()
             }
             binding.btnLogin -> {
-                loginWithEmailAndPassword()
+                val email = binding.etLoginEmail.text.toString()
+                val password = binding.etLoginPassword.text.toString()
+                try {
+                    AuthUtil.isLoginValid(email, password)
+                    loginWithEmailAndPassword(email, password)
+                } catch (e: Exception) {
+                    Toast.makeText(requireActivity(), e.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
 
-    private fun loginWithEmailAndPassword() {
+    private fun loginWithEmailAndPassword(email: String, password: String) {
         binding.btnLogin.isEnabled = false
         binding.loginProgress.visibility = View.VISIBLE
-        val email = binding.etLoginEmail.text.toString()
-        val password = binding.etLoginPassword.text.toString()
+
         auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isComplete) {
                 binding.btnLogin.isEnabled = true
