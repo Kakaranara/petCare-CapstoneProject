@@ -24,13 +24,19 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.btnEditProfile.setOnClickListener(this)
 
         setUserInformation()
         setOtherList()
     }
 
     override fun onClick(view: View) {
-
+        when (view) {
+            binding.btnEditProfile -> {
+                val go = ProfileFragmentDirections.actionActionProfileToEditProfileFragment()
+                findNavController().navigate(go)
+            }
+        }
     }
 
     private fun setUserInformation() {
