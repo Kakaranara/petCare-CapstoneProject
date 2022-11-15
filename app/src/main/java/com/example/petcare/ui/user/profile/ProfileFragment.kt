@@ -6,12 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.petcare.constant.OtherMenu
 import com.example.petcare.databinding.FragmentProfileBinding
+import com.example.petcare.helper.showToast
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -55,13 +55,11 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             //? Other Menu -> List that appear below profile image
             when (listMenuArray[position]) {
                 OtherMenu.OtherFeature.string -> {
-                    Toast.makeText(requireActivity(), "other feature", Toast.LENGTH_SHORT)
-                        .show()
+                    showToast("Other Feature")
                 }
                 OtherMenu.Logout.string -> {
                     logout()
-                    Toast.makeText(requireActivity(), "LOGOUT", Toast.LENGTH_SHORT)
-                        .show()
+                    showToast("LOGOUT")
                 }
             }
         }

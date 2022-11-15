@@ -5,10 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.petcare.databinding.FragmentRegisterBinding
+import com.example.petcare.helper.showToast
 import com.example.petcare.utils.AuthUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -41,10 +41,10 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                 val password = binding.etRegisterPassword.text.toString()
                 val confirmPassword = binding.etRegisterConfirmPassword.text.toString()
                 try {
-                    AuthUtil.isRegisterValid(email, password,confirmPassword, name)
+                    AuthUtil.isRegisterValid(email, password, confirmPassword, name)
                     registerUser(email, password, name)
                 } catch (e: Exception) {
-                    Toast.makeText(requireActivity(), e.message, Toast.LENGTH_SHORT).show()
+                    showToast(e.message)
                 }
             }
         }
@@ -61,26 +61,18 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                     binding.registerProgress.visibility = View.INVISIBLE
                 }
                 if (task.isSuccessful) {
+                    Log.d(TAG, "onClick: Login success.")
+                    showToast("Account successfully created.")
                     val user = auth.currentUser
                     val profileUpdate = userProfileChangeRequest {
                         displayName = name
                     }
                     user?.updateProfile(profileUpdate)
-                    Toast.makeText(
-                        requireActivity(),
-                        "Account successfully created.",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Log.d(TAG, "onClick: Login success.")
                     val go =
                         RegisterFragmentDirections.actionGlobalLoginFragment()
                     findNavController().navigate(go)
                 } else {
-                    Toast.makeText(
-                        requireActivity(),
-                        "${task.exception?.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    showToast(task.exception?.message)
                     Log.d(TAG, "onClick: Fail login. Exception : ${task.exception}")
                 }
             }
