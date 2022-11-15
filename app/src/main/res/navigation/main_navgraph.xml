@@ -33,7 +33,11 @@
         android:id="@+id/action_profile"
         android:name="com.example.petcare.ui.user.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_action_profile_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.petcare.ui.user.auth.register.RegisterFragment"
@@ -54,4 +58,9 @@
         app:destination="@id/loginFragment"
         app:popUpTo="@id/main_nav"
         app:popUpToInclusive="true" />
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.example.petcare.ui.user.profile.EditProfileFragment"
+        android:label="@string/edit_profile"
+        tools:layout="@layout/fragment_edit_profile" />
 </navigation>
