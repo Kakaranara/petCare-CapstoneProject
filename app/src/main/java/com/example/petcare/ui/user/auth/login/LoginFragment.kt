@@ -7,13 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.petcare.R
 import com.example.petcare.databinding.FragmentLoginBinding
+import com.example.petcare.helper.showToast
 import com.example.petcare.utils.AuthUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -84,7 +84,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     AuthUtil.isLoginValid(email, password)
                     loginWithEmailAndPassword(email, password)
                 } catch (e: Exception) {
-                    Toast.makeText(requireActivity(), e.message, Toast.LENGTH_SHORT).show()
+                    showToast(e.message)
                 }
             }
         }
@@ -101,16 +101,12 @@ class LoginFragment : Fragment(), View.OnClickListener {
             }
             if (task.isSuccessful) {
                 Log.d(TAG, "onClick: login success")
-                Toast.makeText(requireActivity(), "success", Toast.LENGTH_SHORT).show()
+                showToast("Success")
                 val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
                 findNavController().navigate(go)
             } else {
                 Log.d(TAG, "onClick: login failed. exception : ${task.exception}")
-                Toast.makeText(
-                    requireActivity(),
-                    "failed. ${task.exception?.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                showToast(task.exception?.message)
             }
         }
     }
@@ -124,8 +120,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
                     findNavController().navigate(go)
                 } else {
-                    Log.d(TAG, "firebaseAuthWithGoogle: FAILED")
-                    Toast.makeText(requireActivity(), "Failed to login", Toast.LENGTH_SHORT).show()
+                    Log.d(TAG, "firebaseAuthWithGoogle: FAILED ${task.exception}")
+                    showToast(task.exception?.message)
                 }
             }
     }

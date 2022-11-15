@@ -6,60 +6,66 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.petcare.constant.OtherMenu
 import com.example.petcare.databinding.FragmentProfileBinding
-import com.google.firebase.auth.FirebaseAuth
+import com.example.petcare.helper.showToast
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 class ProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-    private lateinit var auth: FirebaseAuth
-    private val menuArray = arrayOf("Another Feature", "Logout")
+
+    private val listMenuArray: Array<String> = OtherMenu.values().map { it.string }.toTypedArray()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        auth = Firebase.auth
-        auth.currentUser?.let {
-            Glide.with(requireActivity())
-                .load(it.photoUrl)
-                .into(binding.circleImageView)
-            binding.tvProfileName.text = it.displayName
-            binding.tvProfileEmail.text = it.email
+        setUserInformation()
+        setOtherList()
+    }
+
+    override fun onClick(view: View) {
+
+    }
+
+    private fun setUserInformation() {
+        Firebase.auth.currentUser?.let { user: FirebaseUser ->
+            binding.apply {
+                tvProfileEmail.text = user.email
+                tvProfileName.text = user.displayName
+                Glide.with(requireActivity()).load(user.photoUrl).into(circleImageView)
+            }
         }
-        val adapter =
-            ArrayAdapter<String>(requireActivity(), android.R.layout.simple_list_item_1, menuArray)
+    }
+
+    private fun setOtherList() {
+        val adapter = ArrayAdapter(
+            requireActivity(),
+            android.R.layout.simple_list_item_1,
+            listMenuArray
+        )
 
         binding.listView.adapter = adapter
-        binding.listView.setOnItemClickListener { parent, v, position, id ->
-            when (position) {
-                0 -> {
-                    Toast.makeText(requireActivity(), menuArray[position], Toast.LENGTH_SHORT)
-                        .show()
+        binding.listView.setOnItemClickListener { _, _, position, _ ->
+            //? Other Menu -> List that appear below profile image
+            when (listMenuArray[position]) {
+                OtherMenu.OtherFeature.string -> {
+                    showToast("Other Feature")
                 }
-                1 -> {
+                OtherMenu.Logout.string -> {
                     logout()
-                    Toast.makeText(requireActivity(), menuArray[position], Toast.LENGTH_SHORT)
-                        .show()
+                    showToast("LOGOUT")
                 }
             }
         }
     }
 
-    override fun onClick(view: View) {
-        when (view) {
-            /**
-             * ? in case you need it
-             */
-        }
-    }
-
-    private fun logout(){
+    private fun logout() {
         Firebase.auth.signOut()
         val go = ProfileFragmentDirections.actionGlobalLoginFragment()
         findNavController().navigate(go)
