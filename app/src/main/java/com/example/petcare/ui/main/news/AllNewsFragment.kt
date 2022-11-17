@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petcare.data.remote.response.News
 import com.example.petcare.databinding.FragmentAllNewsBinding
@@ -49,9 +50,9 @@ class AllNewsFragment : Fragment() {
 
         newsAdapter.setOnItemClickCallback(object :NewsAdapter.OnItemClickCallback {
             override fun onItemClicked(data: String) {
-//                val intentToDetail = Intent(this@MainActivity, DetailActivity::class.java)
-//                intentToDetail.putExtra("DATA", data)
-//                startActivity(intentToDetail)
+                val toDetailNewsFragment = NewsFragmentDirections.actionActionNewsToNewsDetailFragment()
+                toDetailNewsFragment.link = data
+                findNavController().navigate(toDetailNewsFragment)
             }
         })
 
