@@ -1,10 +1,8 @@
-package com.example.petcare.ui.adapter
+package com.example.petcare.ui.main.news
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.petcare.ui.main.news.AllNewsFragment
-import com.example.petcare.ui.main.news.NewsFragment
 
 class SectionsPagerAdapter(newsFragment: NewsFragment) : FragmentStateAdapter(newsFragment) {
     override fun getItemCount(): Int {
