@@ -93,6 +93,12 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:4.9.0"
 
     /**
+     * * Firebase Firestore Database
+     */
+
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.4.0'
+
+    /**
      * * UI Support
      */
 
