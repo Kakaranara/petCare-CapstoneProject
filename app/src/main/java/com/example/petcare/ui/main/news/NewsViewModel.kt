@@ -8,4 +8,11 @@ class NewsViewModel(
 ): ViewModel()  {
 
     fun getNewsResponseLiveData() = repository.getNewsResponseLiveData()
+
+    fun getFunNewsResponseLiveData() = repository.getFunFactsNewsLiveData()
+
+    fun getHealthNewsResponseLiveData() = repository.getHealthNewsLiveData()
+
+    fun getTipsTrickResponseLiveData() = repository.getTipsTrickNewsLiveData()
+
 }

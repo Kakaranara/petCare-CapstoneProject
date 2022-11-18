@@ -33,14 +33,49 @@ class AllNewsFragment : Fragment() {
 
         val index = arguments?.getInt(ARG_SECTION_NUMBER, 0)
 
-        viewModel.getNewsResponseLiveData().observe(requireActivity()){
-            it.news?.let { newsList ->
-                setNewsData(newsList)
-            }
-            it.exception?.let { exceptions ->
-                showToast(exceptions.toString())
-            }
+        when(index){
+            1 ->
+                viewModel.getNewsResponseLiveData().observe(requireActivity()){
+                    it.news?.let { newsList ->
+                        setNewsData(newsList)
+                    }
+                    it.exception?.let { exceptions ->
+                        showToast(exceptions.toString())
+                    }
+                }
+
+            2 ->
+                viewModel.getHealthNewsResponseLiveData().observe(requireActivity()){
+                    it.news?.let { newsList ->
+                        setNewsData(newsList)
+                    }
+                    it.exception?.let { exceptions ->
+                        showToast(exceptions.toString())
+                    }
+                }
+
+            3 ->
+                viewModel.getFunNewsResponseLiveData().observe(requireActivity()){
+                    it.news?.let { newsList ->
+                        setNewsData(newsList)
+                    }
+                    it.exception?.let { exceptions ->
+                        showToast(exceptions.toString())
+                    }
+                }
+
+            4 ->
+                viewModel.getTipsTrickResponseLiveData().observe(requireActivity()){
+                    it.news?.let { newsList ->
+                        setNewsData(newsList)
+                    }
+                    it.exception?.let { exceptions ->
+                        showToast(exceptions.toString())
+                    }
+                }
         }
+
+
     }
 
     private fun setNewsData(newsList: List<News>) {
