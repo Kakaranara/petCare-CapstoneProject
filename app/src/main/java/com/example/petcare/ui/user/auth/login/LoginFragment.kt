@@ -119,17 +119,21 @@ class LoginFragment : Fragment(), View.OnClickListener {
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d(TAG, "firebaseAuthWithGoogle: Success")
+        viewModel.oneTapGoogleLogin(credential).observe(viewLifecycleOwner) {
+            when (it) {
+                is Async.Loading -> {
+                    binding.loginProgress.visibility = View.VISIBLE
+                }
+                is Async.Success -> {
+                    showToast("Hello, ${it.data}", true)
                     val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
                     findNavController().navigate(go)
-                } else {
-                    Log.d(TAG, "firebaseAuthWithGoogle: FAILED ${task.exception}")
-                    showToast(task.exception?.message)
+                }
+                is Async.Error -> {
+                    showToast(it.error)
                 }
             }
+        }
     }
 
     private fun oneTapSignIn() {

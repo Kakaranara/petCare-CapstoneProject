@@ -7,6 +7,7 @@ import com.example.petcare.data.repository.model.IAuthRepository
 import com.example.petcare.helper.Async
 import com.example.petcare.ui.user.auth.login.LoginFragment
 import com.example.petcare.ui.user.auth.register.RegisterFragment
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
@@ -55,6 +56,21 @@ class AuthRepository(private val auth: FirebaseAuth = Firebase.auth) : IAuthRepo
                 }
             }
 
+        return liveData
+    }
+
+    override fun googleOneTapLogin(credential: AuthCredential): LiveData<Async<String>> {
+        val liveData = MutableLiveData<Async<String>>(Async.Loading)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    liveData.postValue(Async.Success(auth.currentUser?.displayName ?: "No name"))
+                    Log.d(LoginFragment.TAG, "firebaseAuthWithGoogle: Success")
+                } else {
+                    liveData.postValue(Async.Error(task.exception?.message.toString()))
+                    Log.d(LoginFragment.TAG, "firebaseAuthWithGoogle: FAILED ${task.exception}")
+                }
+            }
         return liveData
     }
 }
