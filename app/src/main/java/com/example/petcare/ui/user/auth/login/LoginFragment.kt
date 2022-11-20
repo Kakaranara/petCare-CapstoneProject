@@ -10,9 +10,11 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.petcare.R
 import com.example.petcare.databinding.FragmentLoginBinding
+import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
 import com.example.petcare.utils.AuthUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -30,6 +32,8 @@ class LoginFragment : Fragment(), View.OnClickListener {
     private val binding get() = _binding!!
     private lateinit var auth: FirebaseAuth
     private lateinit var oneTapClient: GoogleSignInClient
+
+    private val viewModel by viewModels<LoginViewModel>()
 
     //? used for google one tap sign-in
     private var resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
@@ -91,39 +95,45 @@ class LoginFragment : Fragment(), View.OnClickListener {
     }
 
     private fun loginWithEmailAndPassword(email: String, password: String) {
-        binding.btnLogin.isEnabled = false
-        binding.loginProgress.visibility = View.VISIBLE
-
-        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isComplete) {
-                binding.btnLogin.isEnabled = true
-                binding.loginProgress.visibility = View.INVISIBLE
-            }
-            if (task.isSuccessful) {
-                Log.d(TAG, "onClick: login success")
-                showToast("Success")
-                val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
-                findNavController().navigate(go)
-            } else {
-                Log.d(TAG, "onClick: login failed. exception : ${task.exception}")
-                showToast(task.exception?.message)
+        viewModel.loginWithEmail(email, password).observe(viewLifecycleOwner) {
+            when (it) {
+                is Async.Error -> {
+                    binding.btnLogin.isEnabled = true
+                    binding.loginProgress.visibility = View.INVISIBLE
+                    showToast(it.error)
+                }
+                is Async.Loading -> {
+                    binding.btnLogin.isEnabled = false
+                    binding.loginProgress.visibility = View.VISIBLE
+                }
+                is Async.Success -> {
+                    binding.btnLogin.isEnabled = true
+                    binding.loginProgress.visibility = View.INVISIBLE
+                    showToast("Success")
+                    val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
+                    findNavController().navigate(go)
+                }
             }
         }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Log.d(TAG, "firebaseAuthWithGoogle: Success")
+        viewModel.oneTapGoogleLogin(credential).observe(viewLifecycleOwner) {
+            when (it) {
+                is Async.Loading -> {
+                    binding.loginProgress.visibility = View.VISIBLE
+                }
+                is Async.Success -> {
+                    showToast("Hello, ${it.data}", true)
                     val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
                     findNavController().navigate(go)
-                } else {
-                    Log.d(TAG, "firebaseAuthWithGoogle: FAILED ${task.exception}")
-                    showToast(task.exception?.message)
+                }
+                is Async.Error -> {
+                    showToast(it.error)
                 }
             }
+        }
     }
 
     private fun oneTapSignIn() {

@@ -20,4 +20,10 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="logout">Logout</string>
     <string name="add_story">Add Story</string>
+    <string name="confirm_changes">Confirm Changes</string>
+    <string name="tab_text_1">All News</string>
+    <string name="tab_text_2">Health</string>
+    <string name="tab_text_3">Fun Facts</string>
+    <string name="tab_text_4">Tips n Trick</string>
+    <string name="content_tab_text">This is Tab %1$d</string>
 </resources>
