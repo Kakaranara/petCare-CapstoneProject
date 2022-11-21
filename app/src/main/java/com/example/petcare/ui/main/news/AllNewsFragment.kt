@@ -35,7 +35,7 @@ class AllNewsFragment : Fragment() {
 
         when(index){
             1 ->
-                viewModel.getNewsResponseLiveData().observe(requireActivity()){
+                viewModel.getNewsResponseLiveData().observe(viewLifecycleOwner){
                     it.news?.let { newsList ->
                         setNewsData(newsList)
                     }
@@ -45,7 +45,7 @@ class AllNewsFragment : Fragment() {
                 }
 
             2 ->
-                viewModel.getHealthNewsResponseLiveData().observe(requireActivity()){
+                viewModel.getHealthNewsResponseLiveData().observe(viewLifecycleOwner){
                     it.news?.let { newsList ->
                         setNewsData(newsList)
                     }
@@ -55,7 +55,7 @@ class AllNewsFragment : Fragment() {
                 }
 
             3 ->
-                viewModel.getFunNewsResponseLiveData().observe(requireActivity()){
+                viewModel.getFunNewsResponseLiveData().observe(viewLifecycleOwner){
                     it.news?.let { newsList ->
                         setNewsData(newsList)
                     }
@@ -65,7 +65,7 @@ class AllNewsFragment : Fragment() {
                 }
 
             4 ->
-                viewModel.getTipsTrickResponseLiveData().observe(requireActivity()){
+                viewModel.getTipsTrickResponseLiveData().observe(viewLifecycleOwner){
                     it.news?.let { newsList ->
                         setNewsData(newsList)
                     }

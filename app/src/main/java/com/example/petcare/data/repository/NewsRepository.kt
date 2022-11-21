@@ -1,4 +1,4 @@
-package com.example.petcare.data
+package com.example.petcare.data.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

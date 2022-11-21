@@ -1,7 +1,7 @@
 package com.example.petcare.ui.main.news
 
 import androidx.lifecycle.ViewModel
-import com.example.petcare.data.NewsRepository
+import com.example.petcare.data.repository.NewsRepository
 
 class NewsViewModel(
     private val repository: NewsRepository = NewsRepository()
