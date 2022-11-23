@@ -1,12 +1,14 @@
 package com.example.petcare.data.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.petcare.data.remote.response.News
 import com.example.petcare.data.remote.response.NewsResponse
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import kotlinx.coroutines.flow.Flow
+import com.example.petcare.data.remote.Result
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 
 class NewsRepository(
     private val rootRef: FirebaseFirestore = FirebaseFirestore.getInstance(),
@@ -15,87 +17,59 @@ class NewsRepository(
     private val healthNewsRef: Query = rootRef.collection("petNews").whereEqualTo("category_id","C0002"),
     private val tipsTrickNewsRef: Query = rootRef.collection("petNews").whereEqualTo("category_id","C0003")
 ){
-    fun getNewsResponseLiveData(): LiveData<NewsResponse> {
-
-        val newsResponseLiveData = MutableLiveData<NewsResponse>()
-
-        newsRef.get().addOnCompleteListener { task ->
-            val newsResponse = NewsResponse()
-            if (task.isSuccessful) {
-                val result = task.result
-                result?.let {
-                    newsResponse.news = result.documents.mapNotNull { snapShot ->
-                        snapShot.toObject(News::class.java)
-                    }
-                }
-            } else {
-                newsResponse.exception = task.exception
+    suspend fun getAllNewsResponse(): Flow<Result<NewsResponse>> = flow {
+        val newsResponse = NewsResponse()
+        emit(Result.Loading)
+        try{
+            newsResponse.news = newsRef.get().await().documents.mapNotNull { snapShot ->
+                snapShot.toObject(News::class.java)
             }
-            newsResponseLiveData.value = newsResponse
+            emit(Result.Success(newsResponse))
+        }catch (e: Exception) {
+            e.printStackTrace()
+            emit(Result.Error(e.message.toString()))
         }
-        return newsResponseLiveData
     }
 
-    fun getFunFactsNewsLiveData(): LiveData<NewsResponse> {
-
-        val funFactsNewsResponseLiveData = MutableLiveData<NewsResponse>()
-
-        funFactsNewsRef.get().addOnCompleteListener { task ->
-            val newsResponse = NewsResponse()
-            if (task.isSuccessful) {
-                val result = task.result
-                result?.let {
-                    newsResponse.news = result.documents.mapNotNull { snapShot ->
-                        snapShot.toObject(News::class.java)
-                    }
-                }
-            } else {
-                newsResponse.exception = task.exception
+    suspend fun getFunFactsNews(): Flow<Result<NewsResponse>> = flow {
+        val newsResponse = NewsResponse()
+        emit(Result.Loading)
+        try{
+            newsResponse.news = funFactsNewsRef.get().await().documents.mapNotNull { snapShot ->
+                snapShot.toObject(News::class.java)
             }
-            funFactsNewsResponseLiveData.value = newsResponse
+            emit(Result.Success(newsResponse))
+        }catch (e: Exception) {
+            e.printStackTrace()
+            emit(Result.Error(e.message.toString()))
         }
-        return funFactsNewsResponseLiveData
     }
 
-    fun getHealthNewsLiveData(): LiveData<NewsResponse> {
-
-        val healthNewsResponseLiveData = MutableLiveData<NewsResponse>()
-
-        healthNewsRef.get().addOnCompleteListener { task ->
-            val newsResponse = NewsResponse()
-            if (task.isSuccessful) {
-                val result = task.result
-                result?.let {
-                    newsResponse.news = result.documents.mapNotNull { snapShot ->
-                        snapShot.toObject(News::class.java)
-                    }
-                }
-            } else {
-                newsResponse.exception = task.exception
+    suspend fun getHealthNews(): Flow<Result<NewsResponse>> = flow {
+        val newsResponse = NewsResponse()
+        emit(Result.Loading)
+        try{
+            newsResponse.news = healthNewsRef.get().await().documents.mapNotNull { snapShot ->
+                snapShot.toObject(News::class.java)
             }
-            healthNewsResponseLiveData.value = newsResponse
+            emit(Result.Success(newsResponse))
+        }catch (e: Exception) {
+            e.printStackTrace()
+            emit(Result.Error(e.message.toString()))
         }
-        return healthNewsResponseLiveData
     }
 
-    fun getTipsTrickNewsLiveData(): LiveData<NewsResponse> {
-
-        val tipsTrickNewsResponseLiveData = MutableLiveData<NewsResponse>()
-
-        tipsTrickNewsRef.get().addOnCompleteListener { task ->
-            val newsResponse = NewsResponse()
-            if (task.isSuccessful) {
-                val result = task.result
-                result?.let {
-                    newsResponse.news = result.documents.mapNotNull { snapShot ->
-                        snapShot.toObject(News::class.java)
-                    }
-                }
-            } else {
-                newsResponse.exception = task.exception
+    suspend fun getTipsTrickNews(): Flow<Result<NewsResponse>> = flow {
+        val newsResponse = NewsResponse()
+        emit(Result.Loading)
+        try{
+            newsResponse.news = tipsTrickNewsRef.get().await().documents.mapNotNull { snapShot ->
+                snapShot.toObject(News::class.java)
             }
-            tipsTrickNewsResponseLiveData.value = newsResponse
+            emit(Result.Success(newsResponse))
+        }catch (e: Exception) {
+            e.printStackTrace()
+            emit(Result.Error(e.message.toString()))
         }
-        return tipsTrickNewsResponseLiveData
     }
 }

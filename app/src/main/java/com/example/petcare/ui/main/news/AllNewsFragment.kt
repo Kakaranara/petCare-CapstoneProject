@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petcare.data.remote.response.News
 import com.example.petcare.databinding.FragmentAllNewsBinding
-import com.example.petcare.helper.showToast
+import com.example.petcare.data.remote.Result
+import com.example.petcare.data.remote.response.NewsResponse
 
 class AllNewsFragment : Fragment() {
     private var _binding: FragmentAllNewsBinding? = null
@@ -28,54 +30,66 @@ class AllNewsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this)
-            .get(NewsViewModel::class.java)
+        viewModel = ViewModelProvider(this)[NewsViewModel::class.java]
 
-        val index = arguments?.getInt(ARG_SECTION_NUMBER, 0)
+        /*
+        * Commented for possibility using it in the future, do not erase it just yet.
+        * */
+//        viewModel.getNewsHandler(arguments?.getInt(ARG_SECTION_NUMBER, 0)!!)
 
-        when(index){
+        when(arguments?.getInt(ARG_SECTION_NUMBER, 0)){
             1 ->
                 viewModel.getNewsResponseLiveData().observe(viewLifecycleOwner){
-                    it.news?.let { newsList ->
-                        setNewsData(newsList)
-                    }
-                    it.exception?.let { exceptions ->
-                        showToast(exceptions.toString())
-                    }
+                    prepareData(it)
                 }
 
             2 ->
                 viewModel.getHealthNewsResponseLiveData().observe(viewLifecycleOwner){
-                    it.news?.let { newsList ->
-                        setNewsData(newsList)
-                    }
-                    it.exception?.let { exceptions ->
-                        showToast(exceptions.toString())
-                    }
+                    prepareData(it)
                 }
 
             3 ->
                 viewModel.getFunNewsResponseLiveData().observe(viewLifecycleOwner){
-                    it.news?.let { newsList ->
-                        setNewsData(newsList)
-                    }
-                    it.exception?.let { exceptions ->
-                        showToast(exceptions.toString())
-                    }
+                    prepareData(it)
                 }
 
             4 ->
                 viewModel.getTipsTrickResponseLiveData().observe(viewLifecycleOwner){
-                    it.news?.let { newsList ->
-                        setNewsData(newsList)
-                    }
-                    it.exception?.let { exceptions ->
-                        showToast(exceptions.toString())
-                    }
+                    prepareData(it)
                 }
         }
 
+        /*
+        * Commented for possibility using it in the future, do not erase it just yet.
+        * */
+//        viewModel.listNews.observe(viewLifecycleOwner){
+//            it?.let{
+//                prepareData(it)
+//            }
+//        }
 
+    }
+
+    private fun prepareData(result: Result<NewsResponse>){
+        when (result) {
+            is Result.Loading -> {
+                showLoading(true)
+            }
+            is Result.Success -> {
+                showLoading(false)
+                result.data.news?.let{
+                    setNewsData(it)
+                }
+            }
+            is Result.Error -> {
+                showLoading(false)
+                Toast.makeText(requireActivity(),result.error, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     private fun setNewsData(newsList: List<News>) {
