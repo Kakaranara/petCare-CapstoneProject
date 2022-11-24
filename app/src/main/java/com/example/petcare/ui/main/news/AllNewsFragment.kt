@@ -32,41 +32,41 @@ class AllNewsFragment : Fragment() {
 
         viewModel = ViewModelProvider(this)[NewsViewModel::class.java]
 
-        /*
-        * Commented for possibility using it in the future, do not erase it just yet.
-        * */
-//        viewModel.getNewsHandler(arguments?.getInt(ARG_SECTION_NUMBER, 0)!!)
+        val index = arguments?.getInt(ARG_SECTION_NUMBER, 1)
 
-        when(arguments?.getInt(ARG_SECTION_NUMBER, 0)){
-            1 ->
-                viewModel.getNewsResponseLiveData().observe(viewLifecycleOwner){
-                    prepareData(it)
-                }
-
-            2 ->
-                viewModel.getHealthNewsResponseLiveData().observe(viewLifecycleOwner){
-                    prepareData(it)
-                }
-
-            3 ->
-                viewModel.getFunNewsResponseLiveData().observe(viewLifecycleOwner){
-                    prepareData(it)
-                }
-
-            4 ->
-                viewModel.getTipsTrickResponseLiveData().observe(viewLifecycleOwner){
-                    prepareData(it)
-                }
-        }
+        viewModel.getNewsHandler(index!!)
 
         /*
         * Commented for possibility using it in the future, do not erase it just yet.
         * */
-//        viewModel.listNews.observe(viewLifecycleOwner){
-//            it?.let{
-//                prepareData(it)
-//            }
+//        when(index){
+//            1 -> viewModel.getNewsResponseLiveData()
+////                viewModel.getNewsResponseLiveData().observe(viewLifecycleOwner){
+////                    prepareData(it)
+////                }
+//
+//            2 ->
+//                viewModel.getHealthNewsResponseLiveData().observe(viewLifecycleOwner){
+//                    prepareData(it)
+//                }
+//
+//            3 ->
+//                viewModel.getFunNewsResponseLiveData().observe(viewLifecycleOwner){
+//                    prepareData(it)
+//                }
+//
+//            4 ->
+//                viewModel.getTipsTrickResponseLiveData().observe(viewLifecycleOwner){
+//                    prepareData(it)
+//                }
 //        }
+
+
+        viewModel.listNews.observe(viewLifecycleOwner){
+            it?.let{
+                prepareData(it)
+            }
+        }
 
     }
 
