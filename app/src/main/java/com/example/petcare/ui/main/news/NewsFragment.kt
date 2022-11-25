@@ -6,11 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.example.petcare.R
-import com.example.petcare.databinding.FragmentNewsBinding
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.example.petcare.databinding.FragmentNewsBinding
 
 
 class NewsFragment : Fragment() {
@@ -36,6 +37,11 @@ class NewsFragment : Fragment() {
         TabLayoutMediator(tabs, viewPager) { tab, position ->
             tab.text = resources.getString(TAB_TITLES[position])
         }.attach()
+
+        binding.searchNews.setOnClickListener {
+            val toSearchFragment = NewsFragmentDirections.actionActionNewsToSearchNewsFragment()
+            findNavController().navigate(toSearchFragment)
+        }
 
     }
 
