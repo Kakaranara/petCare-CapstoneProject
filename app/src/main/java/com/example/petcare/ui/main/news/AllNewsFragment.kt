@@ -93,9 +93,26 @@ class AllNewsFragment : Fragment() {
     }
 
     private fun setNewsData(newsList: List<News>) {
-        binding.recyclerNews.layoutManager = LinearLayoutManager(requireActivity())
         val newsAdapter = NewsAdapter(newsList)
-        binding.recyclerNews.adapter = newsAdapter
+        val numberOfElements = 5
+        val randomNews = newsList.asSequence().shuffled().take(numberOfElements).toList()
+        val carouselNewsAdapter = CarouselNewsAdapter(randomNews)
+        binding.apply {
+            recyclerNews.layoutManager = LinearLayoutManager(requireActivity())
+            recyclerNews.adapter = newsAdapter
+            carouselNews.adapter = carouselNewsAdapter
+            carouselNews.setAlpha(true)
+            carouselNews.setInfinite(true)
+            carouselNews.setIsScrollingEnabled(true)
+        }
+
+        carouselNewsAdapter.setOnItemClickCallback(object :NewsAdapter.OnItemClickCallback {
+            override fun onItemClicked(data: String) {
+                val toDetailNewsFragment = NewsFragmentDirections.actionActionNewsToNewsDetailFragment()
+                toDetailNewsFragment.link = data
+                findNavController().navigate(toDetailNewsFragment)
+            }
+        })
 
         newsAdapter.setOnItemClickCallback(object :NewsAdapter.OnItemClickCallback {
             override fun onItemClicked(data: String) {
