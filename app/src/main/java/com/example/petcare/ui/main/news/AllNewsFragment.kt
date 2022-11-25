@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +12,7 @@ import com.example.petcare.data.remote.response.News
 import com.example.petcare.databinding.FragmentAllNewsBinding
 import com.example.petcare.data.remote.Result
 import com.example.petcare.data.remote.response.NewsResponse
+import com.example.petcare.helper.showToast
 
 class AllNewsFragment : Fragment() {
     private var _binding: FragmentAllNewsBinding? = null
@@ -83,7 +83,7 @@ class AllNewsFragment : Fragment() {
             }
             is Result.Error -> {
                 showLoading(false)
-                Toast.makeText(requireActivity(),result.error, Toast.LENGTH_SHORT).show()
+                showToast(result.error)
             }
         }
     }

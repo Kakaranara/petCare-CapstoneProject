@@ -25,6 +25,7 @@
         />
 
     <ImageView
+        android:id="@+id/search_news"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_marginEnd="8dp"
@@ -39,8 +40,9 @@
         android:id="@+id/tabs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        app:tabTextColor="@android:color/white"
+        app:tabIndicatorColor="?attr/colorPrimary"
+        app:tabIndicatorHeight="4dp"
+        app:tabTextColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/news_header"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

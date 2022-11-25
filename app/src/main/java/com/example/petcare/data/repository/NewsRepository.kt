@@ -72,4 +72,24 @@ class NewsRepository(
             emit(Result.Error(e.message.toString()))
         }
     }
+
+    suspend fun getSearchNews(name : String): Flow<Result<NewsResponse>> = flow {
+//        val searchRef: Query = rootRef.collection("petNews").whereGreaterThanOrEqualTo("title", name)
+//            .whereLessThanOrEqualTo("title", name + "\uf8ff")
+        val newsResponse = NewsResponse()
+        emit(Result.Loading)
+        try{
+            var allNews = newsRef.get().await().documents.mapNotNull { snapShot ->
+                snapShot.toObject(News::class.java)
+            }
+            allNews = allNews.filter { news ->
+                news.title!!.contains(name,true)
+            }
+            newsResponse.news = allNews
+            emit(Result.Success(newsResponse))
+        }catch (e: Exception) {
+            e.printStackTrace()
+            emit(Result.Error(e.message.toString()))
+        }
+    }
 }

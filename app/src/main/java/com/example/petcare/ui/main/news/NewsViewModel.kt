@@ -6,6 +6,7 @@ import com.example.petcare.data.repository.NewsRepository
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import com.example.petcare.data.remote.Result
+import kotlinx.coroutines.flow.collect
 
 class NewsViewModel(
     private val repository: NewsRepository = NewsRepository(),
@@ -13,6 +14,9 @@ class NewsViewModel(
 
     private val _listNews = MutableLiveData<Result<NewsResponse>>()
     val listNews: LiveData<Result<NewsResponse>> = _listNews
+
+    private val _searchListNews = MutableLiveData<Result<NewsResponse>>()
+    val searchListNews: LiveData<Result<NewsResponse>> = _searchListNews
 
     fun getNewsHandler(index: Int){
         viewModelScope.launch {
@@ -29,6 +33,14 @@ class NewsViewModel(
                 4 -> repository.getTipsTrickNews().collect{
                     _listNews.value = it
                 }
+            }
+        }
+    }
+
+    fun getSearchNewsLiveData(name: String) {
+        viewModelScope.launch {
+            repository.getSearchNews(name).collect(){
+                _searchListNews.value = it
             }
         }
     }
