@@ -113,6 +113,9 @@
             android:id="@+id/action_commentFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
 
+    </fragment>
+
+        <fragment
         android:id="@+id/newsDetailFragment"
         android:name="com.example.petcare.ui.main.news.NewsDetailFragment"
         android:label="fragment_news_detail"
