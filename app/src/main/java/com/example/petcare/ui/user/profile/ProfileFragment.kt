@@ -20,6 +20,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
+    //? other list menu item (check enum OtherMenu in constant package)
     private val listMenuArray: Array<String> = OtherMenu.values().map { it.string }.toTypedArray()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
