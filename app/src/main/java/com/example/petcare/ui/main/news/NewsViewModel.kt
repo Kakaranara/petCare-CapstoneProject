@@ -1,18 +1,60 @@
 package com.example.petcare.ui.main.news
 
-import androidx.lifecycle.ViewModel
-import com.example.petcare.data.NewsRepository
+import androidx.lifecycle.*
+import com.example.petcare.data.remote.response.NewsResponse
+import com.example.petcare.data.repository.NewsRepository
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import com.example.petcare.data.remote.Result
 
 class NewsViewModel(
-    private val repository: NewsRepository = NewsRepository()
+    private val repository: NewsRepository = NewsRepository(),
 ): ViewModel()  {
 
-    fun getNewsResponseLiveData() = repository.getNewsResponseLiveData()
+    private val _listNews = MutableLiveData<Result<NewsResponse>>()
+    val listNews: LiveData<Result<NewsResponse>> = _listNews
 
-    fun getFunNewsResponseLiveData() = repository.getFunFactsNewsLiveData()
+    fun getNewsHandler(index: Int){
+        viewModelScope.launch {
+            when(index){
+                1 -> repository.getAllNewsResponse().collect{
+                    _listNews.value = it
+                }
+                2 -> repository.getHealthNews().collect{
+                    _listNews.value = it
+                }
+                3 -> repository.getFunFactsNews().collect{
+                    _listNews.value = it
+                }
+                4 -> repository.getTipsTrickNews().collect{
+                    _listNews.value = it
+                }
+            }
+        }
+    }
 
-    fun getHealthNewsResponseLiveData() = repository.getHealthNewsLiveData()
-
-    fun getTipsTrickResponseLiveData() = repository.getTipsTrickNewsLiveData()
+    /*
+        * Commented for possibility using it in the future, do not erase it just yet.
+        * */
+//    fun getNewsResponseLiveData() {
+//        viewModelScope.launch {
+//            repository.getAllNewsResponse().collect(){
+//                _listNews.value = it
+//            }
+//        }
+//
+//    }
+//
+//    fun getFunNewsResponseLiveData() = runBlocking {
+//        repository.getFunFactsNews().asLiveData()
+//    }
+//
+//    fun getHealthNewsResponseLiveData() = runBlocking {
+//        repository.getHealthNews().asLiveData()
+//    }
+//
+//    fun getTipsTrickResponseLiveData() = runBlocking {
+//        repository.getTipsTrickNews().asLiveData()
+//    }
 
 }
