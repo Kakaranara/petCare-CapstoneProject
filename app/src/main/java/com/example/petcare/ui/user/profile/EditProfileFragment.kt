@@ -4,23 +4,23 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.example.petcare.databinding.FragmentEditProfileBinding
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.auth.ktx.userProfileChangeRequest
-import com.google.firebase.ktx.Firebase
+import com.example.petcare.helper.Async
+import com.example.petcare.helper.showToast
 
 class EditProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentEditProfileBinding? = null
     private val binding get() = _binding!!
+    private val viewModel by viewModels<EditProfileViewModel>()
     private var uri: Uri? = null
 
     private val intentGallery =
@@ -43,10 +43,10 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         binding.btnEditImage.setOnClickListener(this)
         binding.btnConfirmEdit.setOnClickListener(this)
 
-        Firebase.auth.currentUser?.let { user ->
+        viewModel.getUser()?.let { user ->
             uri = user.photoUrl
             Glide.with(requireActivity())
-                .load(user.photoUrl)
+                .load(uri)
                 .into(binding.circleImageEdit)
             binding.etEditName.setText(user.displayName)
         }
@@ -60,16 +60,20 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 }.also { intentGallery.launch(Intent.createChooser(it, "im here bro")) }
             }
             binding.btnConfirmEdit -> {
-                val update = userProfileChangeRequest {
-                    displayName = binding.etEditName.text.toString()
-                    photoUri = uri
-                }
-                Firebase.auth.currentUser?.let {
-                    it.updateProfile(update).addOnSuccessListener {
-                        Log.d("edit profile", "onClick: update success")
-                        findNavController().popBackStack()
-                    }.addOnFailureListener { e ->
-                        Log.d("edit profile", "onClick: failed $e ")
+                val name = binding.etEditName.text.toString()
+                viewModel.updateProfileData(name, uri).observe(viewLifecycleOwner){
+                    when(it){
+                        is Async.Error -> {
+                            binding.btnConfirmEdit.isEnabled = true
+                            showToast("Failed. ${it.error}")
+                        }
+                        Async.Loading -> {
+                            binding.btnConfirmEdit.isEnabled = false
+                        }
+                        is Async.Success -> {
+                            showToast("Success")
+                            findNavController().popBackStack()
+                        }
                     }
                 }
             }
