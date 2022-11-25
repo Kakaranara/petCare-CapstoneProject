@@ -1,0 +1,23 @@
+package com.example.petcare
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.petcare.data.StoryRepository
+import com.example.petcare.ui.main.story.add.AddStoryViewModel
+import com.example.petcare.ui.main.story.main.StoryViewModel
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.ktx.storageMetadata
+
+@Suppress("UNCHECKED_CAST")
+class ViewModelFactory(private val repository: StoryRepository):ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(StoryViewModel::class.java)){
+            return StoryViewModel(repository) as T
+        }
+        if (modelClass.isAssignableFrom(AddStoryViewModel::class.java)){
+            return AddStoryViewModel(repository) as T
+        }
+        return super.create(modelClass)
+    }
+}

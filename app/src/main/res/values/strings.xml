@@ -20,4 +20,5 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="logout">Logout</string>
     <string name="add_story">Add Story</string>
+    <string name="add_post">Add Post</string>
 </resources>

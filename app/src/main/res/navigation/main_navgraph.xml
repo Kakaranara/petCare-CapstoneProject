@@ -45,9 +45,19 @@
         tools:layout="@layout/fragment_register" />
     <fragment
         android:id="@+id/action_story"
-        android:name="com.example.petcare.ui.main.story.StoryFragment"
+        android:name="com.example.petcare.ui.main.story.main.StoryFragment"
         android:label="fragment_story"
-        tools:layout="@layout/fragment_story" />
+        tools:layout="@layout/fragment_story" >
+        <action
+            android:id="@+id/action_action_story_to_addStoryFragmnet"
+            app:destination="@id/addStoryFragmnet" />
+        <action
+            android:id="@+id/action_action_story_to_detailFragment"
+            app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_action_story_to_commentFragment"
+            app:destination="@id/commentFragment" />
+    </fragment>
     <fragment
         android:id="@+id/action_schedule"
         android:name="com.example.petcare.ui.main.schedule.ScheduleFragment"
@@ -63,4 +73,37 @@
         android:name="com.example.petcare.ui.user.profile.EditProfileFragment"
         android:label="@string/edit_profile"
         tools:layout="@layout/fragment_edit_profile" />
+    <fragment
+        android:id="@+id/addStoryFragmnet"
+        android:name="com.example.petcare.ui.main.story.add.AddStoryFragmnet"
+        android:label="fragment_add_story_fragmnet"
+        tools:layout="@layout/fragment_add_story" >
+        <action
+            android:id="@+id/action_addStoryFragmnet_to_action_story"
+            app:destination="@id/action_story" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.petcare.ui.main.story.detail.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <action
+            android:id="@+id/action_detailFragment_to_action_story"
+            app:destination="@id/action_story" />
+        <action
+            android:id="@+id/action_detailFragment_to_commentFragment"
+            app:destination="@id/commentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentFragment"
+        android:name="com.example.petcare.ui.main.story.comment.CommentFragment"
+        android:label="fragment_comment"
+        tools:layout="@layout/fragment_comment" >
+        <action
+            android:id="@+id/action_commentFragment_to_action_story"
+            app:destination="@id/action_story" />
+        <action
+            android:id="@+id/action_commentFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
 </navigation>
