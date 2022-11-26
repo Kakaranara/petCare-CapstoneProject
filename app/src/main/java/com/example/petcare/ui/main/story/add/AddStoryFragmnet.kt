@@ -2,6 +2,7 @@ package com.example.petcare.ui.main.story.add
 
 import android.Manifest
 import android.app.Activity.RESULT_OK
+import android.content.ContentResolver
 import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
@@ -42,8 +43,10 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.File
+import java.io.InputStream
 import java.util.UUID
 import kotlin.random.Random
+import kotlin.random.nextInt
 
 
 class AddStoryFragmnet : Fragment() {
@@ -112,13 +115,14 @@ class AddStoryFragmnet : Fragment() {
     }
 
     private fun handleSuccess(data: Uri) {
+        val postId = Random.nextInt().toString()
         val urlAvatar = if (mAuth.currentUser?.photoUrl != null) mAuth.currentUser?.photoUrl.toString() else null
         val desc = _binding?.etDescription?.text.toString()
         val uid = mAuth.currentUser?.uid.toString()
         val name = mAuth.currentUser?.displayName
         val timeStamp = System.currentTimeMillis()
         val story = Story(
-            uid, name, urlAvatar, data.toString(), desc, timeStamp,
+            postId, uid, name, urlAvatar, data.toString(), desc, timeStamp,
         )
         viewModel.postStory(story).observe(viewLifecycleOwner){result->
             when(result){
