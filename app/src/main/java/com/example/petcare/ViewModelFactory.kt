@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.petcare.data.StoryRepository
 import com.example.petcare.ui.main.story.add.AddStoryViewModel
+import com.example.petcare.ui.main.story.comment.CommentViewModel
 import com.example.petcare.ui.main.story.main.StoryViewModel
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -17,6 +18,9 @@ class ViewModelFactory(private val repository: StoryRepository):ViewModelProvide
         }
         if (modelClass.isAssignableFrom(AddStoryViewModel::class.java)){
             return AddStoryViewModel(repository) as T
+        }
+        if (modelClass.isAssignableFrom(CommentViewModel::class.java)){
+            return CommentViewModel(repository) as T
         }
         return super.create(modelClass)
     }

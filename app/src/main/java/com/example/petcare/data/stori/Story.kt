@@ -3,17 +3,19 @@ package com.example.petcare.data.stori
 import android.net.Uri
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import kotlinx.parcelize.RawValue
 
 @Parcelize
 data class Story(
+    var postId: String,
     var uid: String? = null,
     var name: String? = null,
     var avatarUrl: String? = null,
     var urlImg: String? = null,
     var description: String? = null,
     var createdAt: Long? = null,
-    var like: Int = 0,
-    var isLiked: Boolean = false
+    var comment: Int = 0,
+    var like: Int = 0
 ):Parcelable{
-
+    constructor(): this("", "")
 }

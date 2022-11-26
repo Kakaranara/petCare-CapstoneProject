@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.OpenableColumns
 import androidx.annotation.RequiresApi
 import java.io.File
 import java.io.FileOutputStream
@@ -48,6 +49,8 @@ object StoryUtil{
         val storageDir: File? = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(timestamp, ".jpg", storageDir)
     }
+
+
 }
 
 object DateFormatter{
