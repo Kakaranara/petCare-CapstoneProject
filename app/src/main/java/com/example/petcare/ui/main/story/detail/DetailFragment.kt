@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.petcare.R
 import com.example.petcare.data.stori.Story
 import com.example.petcare.databinding.FragmentDetailBinding
+import com.example.petcare.ui.main.story.comment.CommentFragment
 import com.example.petcare.utils.DateFormatter
 
 
@@ -28,6 +29,7 @@ class DetailFragment : Fragment() {
         _binding?.username?.text = data?.name
         _binding?.description?.text = data?.description
         _binding?.date?.text = DateFormatter.formatterDate(data?.createdAt!!)
+        _binding?.countComment?.text = data.comment.toString()
         if (data.avatarUrl != null) {
             Glide.with(requireContext())
                 .load(data.avatarUrl)
@@ -41,7 +43,9 @@ class DetailFragment : Fragment() {
             .centerCrop()
             .into(_binding?.photoStory!!)
         _binding?.comment?.setOnClickListener {
-            it.findNavController().navigate(R.id.action_detailFragment_to_commentFragment)
+            val bundle = Bundle()
+            bundle.putParcelable(CommentFragment.DATA_POST, data)
+            it.findNavController().navigate(R.id.action_detailFragment_to_commentFragment, bundle)
         }
     }
 

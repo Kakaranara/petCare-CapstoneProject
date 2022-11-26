@@ -25,6 +25,17 @@
         tools:layout_editor_absoluteY="-16dp"
         tools:listitem="@layout/story_item_layout" />
 
+    <ImageView
+        android:id="@+id/no_data"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:src="@drawable/ic_nodata_50"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_add"
         android:layout_width="wrap_content"

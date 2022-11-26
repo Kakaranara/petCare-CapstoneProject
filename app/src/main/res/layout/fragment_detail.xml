@@ -49,6 +49,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/photo_story" />
 
+    <TextView
+        android:id="@+id/countLike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="@+id/favorite"
+        app:layout_constraintStart_toStartOf="@+id/favorite"
+        app:layout_constraintTop_toBottomOf="@+id/favorite" />
+
     <ImageView
         android:id="@+id/comment"
         android:layout_width="wrap_content"
@@ -58,6 +67,16 @@
         app:layout_constraintBottom_toBottomOf="@+id/favorite"
         app:layout_constraintStart_toEndOf="@id/favorite"
         app:layout_constraintTop_toTopOf="@+id/favorite" />
+
+
+    <TextView
+        android:id="@+id/countComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="@+id/comment"
+        app:layout_constraintStart_toStartOf="@+id/comment"
+        app:layout_constraintTop_toBottomOf="@+id/comment" />
 
     <ImageView
         android:id="@+id/share"
@@ -97,12 +116,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        tools:text="fdagja gaogpjadogpd g ajdopgjpgjagpjagagpoag gdfj pdjogd"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/favorite" />
+        app:layout_constraintTop_toBottomOf="@+id/countLike"
+        tools:text="fdagja gaogpjadogpd g ajdopgjpgjagpjagagpoag gdfj pdjogd" />
 
     <TextView
         android:id="@+id/date"

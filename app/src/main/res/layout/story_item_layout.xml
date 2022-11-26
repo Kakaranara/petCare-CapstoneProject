@@ -65,7 +65,7 @@
             app:layout_constraintTop_toBottomOf="@+id/preview_photo" />
 
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/likeCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0"
@@ -82,6 +82,15 @@
             app:layout_constraintBottom_toBottomOf="@+id/favorite"
             app:layout_constraintStart_toEndOf="@id/favorite"
             app:layout_constraintTop_toTopOf="@+id/favorite" />
+
+        <TextView
+            android:id="@+id/commentCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            app:layout_constraintEnd_toEndOf="@+id/comment"
+            app:layout_constraintStart_toStartOf="@+id/comment"
+            app:layout_constraintTop_toBottomOf="@+id/favorite" />
 
         <ImageView
             android:id="@+id/share"
@@ -103,7 +112,7 @@
             android:maxLines="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:layout_constraintTop_toBottomOf="@+id/likeCount"
             tools:text=" Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book." />
 
         <TextView
