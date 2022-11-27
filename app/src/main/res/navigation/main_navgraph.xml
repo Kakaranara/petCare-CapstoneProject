@@ -69,7 +69,11 @@
         android:id="@+id/action_schedule"
         android:name="com.example.petcare.ui.main.schedule.ScheduleFragment"
         android:label="fragment_schedule"
-        tools:layout="@layout/fragment_schedule" />
+        tools:layout="@layout/fragment_schedule" >
+        <action
+            android:id="@+id/action_action_schedule_to_addScheduleFragment"
+            app:destination="@id/addScheduleFragment" />
+    </fragment>
     <action
         android:id="@+id/action_global_loginFragment"
         app:destination="@id/loginFragment"
@@ -143,4 +147,9 @@
             android:id="@+id/action_searchNewsFragment_to_newsDetailFragment"
             app:destination="@id/newsDetailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/addScheduleFragment"
+        android:name="com.example.petcare.ui.main.schedule.add.AddScheduleFragment"
+        android:label="fragment_add_schedule"
+        tools:layout="@layout/fragment_add_schedule" />
 </navigation>

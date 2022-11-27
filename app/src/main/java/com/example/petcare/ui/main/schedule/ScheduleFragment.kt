@@ -5,18 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.petcare.databinding.FragmentScheduleBinding
 
 
-class ScheduleFragment : Fragment() {
+class ScheduleFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        /**
-         * Code Here
-         */
+        binding.fbAddSchedule.setOnClickListener(this)
+    }
+
+    override fun onClick(view: View) {
+        when(view){
+            binding.fbAddSchedule -> {
+                val go = ScheduleFragmentDirections.actionActionScheduleToAddScheduleFragment()
+                findNavController().navigate(go)
+            }
+        }
     }
 
     override fun onCreateView(
