@@ -21,6 +21,25 @@ object DateHelper {
         return format.format(date)
     }
 
+    fun combineDateTime(date: String, time: String): String {
+        return "$date $time"
+    }
+
+    fun fullParse(string: String): Date? {
+        val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+        return format.parse(string)
+    }
+
+    fun parseDate(string: String): Date? {
+        val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        return format.parse(string)
+    }
+
+    fun parseTime(string: String): Date? {
+        val format = SimpleDateFormat("HH:mm", Locale.getDefault())
+        return format.parse(string)
+    }
+
     fun setDateCalendarInstance(year: Int, month: Int, day: Int): Calendar {
         val calendar = Calendar.getInstance()
         calendar.set(year, month, day)
