@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.petcare.databinding.FragmentAddScheduleBinding
-import com.example.petcare.dialog.DatePickerFragment
-import com.example.petcare.dialog.TimePickerFragment
+import com.example.petcare.ui.dialog.DatePickerFragment
+import com.example.petcare.ui.dialog.TimePickerFragment
 import com.example.petcare.helper.DateHelper
 import java.util.*
 

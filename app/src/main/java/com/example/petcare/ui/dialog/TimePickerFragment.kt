@@ -1,4 +1,4 @@
-package com.example.petcare.dialog
+package com.example.petcare.ui.dialog
 
 import android.app.Dialog
 import android.app.TimePickerDialog
