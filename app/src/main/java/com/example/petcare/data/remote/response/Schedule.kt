@@ -7,6 +7,7 @@ data class Schedule(
     var description: String? = null,
     var reminderBefore: String? = null,
     var postScript: String? = null,
+    var id: Int? = null,
     var time: Long? = null,
     var timeStamp: Long? = null
 )
