@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
@@ -21,6 +22,8 @@ class ScheduleRepository(
     }
 
     override fun addSchedule(schedule: Schedule) {
+        schedule.userId = auth.currentUser?.uid
+
         scheduleRefs.add(schedule).addOnCompleteListener {
             Log.d(TAG, "addSchedule: COMPLETED")
         }.addOnFailureListener {
@@ -29,6 +32,7 @@ class ScheduleRepository(
             Log.d(TAG, "addSchedule: SUCCESS")
         }
     }
+
 
     companion object {
         private const val TAG = "ScheduleRepository"
