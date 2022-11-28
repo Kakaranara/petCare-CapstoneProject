@@ -17,16 +17,16 @@ class AlarmReceiver : BroadcastReceiver() {
         val message = intent.getStringExtra(EXTRA_MESSAGE)
         val id = intent.getIntExtra(EXTRA_ID, 0)
 
-        val notif = NotificationService(context)
-        notif.showNotification(id, message ?: "No message")
+        val notification = NotificationService(context)
+        notification.showNotification(id, message ?: "No message")
     }
 
     fun setSchedule(context: Context, schedule: Schedule) {
         val additionTime = ReminderParser.getAdditionalTime(schedule.reminderBefore ?: "15 Menit")
         val wakeUpTime = (schedule.time ?: System.currentTimeMillis()) - additionTime
         Log.e(TAG, "setSchedule: wake me up in ${DateHelper.formatTime(Date(wakeUpTime))}")
-        val intent = Intent(context, AlarmReceiver::class.java)
-        intent.apply {
+
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra(EXTRA_MESSAGE, schedule.name)
             putExtra(EXTRA_ID, schedule.id)
         }

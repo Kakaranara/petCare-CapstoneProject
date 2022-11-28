@@ -77,8 +77,9 @@ class AddScheduleFragment : Fragment(), View.OnClickListener, TimePickerFragment
                     time = dateTime?.time,
                     timeStamp = timeStamp
                 )
+
                 viewModel.addData(schedule, requireActivity())
-                showToast("Success")
+                showToast("Set")
                 findNavController().popBackStack()
             }
         }
