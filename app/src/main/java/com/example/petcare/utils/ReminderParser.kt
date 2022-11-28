@@ -24,7 +24,7 @@ object ReminderParser {
                 8 * 1_000 * 60 * 60
             }
 
-            "1 Day" -> {
+            "1 Days" -> {
                 24 * 1_000 * 60 * 60
             }
 
