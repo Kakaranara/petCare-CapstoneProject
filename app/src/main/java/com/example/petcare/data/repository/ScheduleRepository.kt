@@ -1,8 +1,10 @@
 package com.example.petcare.data.repository
 
+import android.content.Context
 import android.util.Log
 import com.example.petcare.data.remote.response.Schedule
 import com.example.petcare.data.repository.model.IScheduleRepository
+import com.example.petcare.receiver.AlarmReceiver
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
@@ -23,7 +25,7 @@ class ScheduleRepository(
             }
     }
 
-    override fun addSchedule(schedule: Schedule) {
+    override fun addSchedule(schedule: Schedule, context: Context) {
         schedule.userId = auth.currentUser?.uid
 
         scheduleRefs
@@ -44,6 +46,9 @@ class ScheduleRepository(
                 }
                 schedule.id = id + 1
 
+                val alarm = AlarmReceiver()
+                alarm.setSchedule(context, schedule)
+
                 scheduleRefs.add(schedule).addOnCompleteListener {
                     Log.d(TAG, "addSchedule: COMPLETED")
                 }.addOnFailureListener {
@@ -51,7 +56,6 @@ class ScheduleRepository(
                 }.addOnSuccessListener {
                     Log.d(TAG, "addSchedule: SUCCESS")
                 }
-
             }
     }
 
