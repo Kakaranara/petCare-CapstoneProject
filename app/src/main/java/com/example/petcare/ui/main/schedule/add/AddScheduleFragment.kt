@@ -67,6 +67,7 @@ class AddScheduleFragment : Fragment(), View.OnClickListener, TimePickerFragment
                 val rawTime = binding.btnAddTime.text.toString()
                 val rawDatetime = DateHelper.combineDateTime(rawDate, rawTime)
                 val dateTime = DateHelper.fullParse(rawDatetime)
+                val date = DateHelper.parseDate(rawDate)
 
                 val schedule = Schedule(
                     name = name,
@@ -75,6 +76,7 @@ class AddScheduleFragment : Fragment(), View.OnClickListener, TimePickerFragment
                     reminderBefore = remindBefore,
                     postScript = ps,
                     time = dateTime?.time,
+                    date = date?.time,
                     timeStamp = timeStamp
                 )
 

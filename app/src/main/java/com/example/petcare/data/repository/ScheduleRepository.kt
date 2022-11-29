@@ -2,9 +2,15 @@ package com.example.petcare.data.repository
 
 import android.content.Context
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.petcare.data.remote.response.Schedule
 import com.example.petcare.data.repository.model.IScheduleRepository
+import com.example.petcare.helper.Async
+import com.example.petcare.helper.DateHelper
 import com.example.petcare.receiver.AlarmReceiver
+import com.example.petcare.ui.main.schedule.ScheduleFragment
+import com.example.petcare.utils.ReminderParser
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.*
@@ -17,12 +23,51 @@ class ScheduleRepository(
     private val scheduleRefs: CollectionReference = fireStore.collection("schedule")
 ) : IScheduleRepository {
 
-    override fun listenData() {
-        scheduleRefs
-            .whereEqualTo("userId", auth.currentUser?.uid)
-            .addSnapshotListener { querySnapshot: QuerySnapshot?, firebaseFirestoreException: FirebaseFirestoreException? ->
+    var listener : ListenerRegistration? = null
 
+    override fun listenData(): LiveData<Async<QuerySnapshot?>> {
+        val liveData = MutableLiveData<Async<QuerySnapshot?>>(Async.Loading)
+        listener = scheduleRefs
+            .whereEqualTo("userId", auth.currentUser?.uid)
+            .whereGreaterThanOrEqualTo("date", DateHelper.getTodayMillis())
+            .whereLessThan("date", DateHelper.getTodayMillis() + ReminderParser.day * 7)
+            .addSnapshotListener { snapshot: QuerySnapshot?, exception: FirebaseFirestoreException? ->
+                if (exception != null) {
+                    Log.e(ScheduleFragment.TAG, "onViewCreated: EXception in ${exception.message}")
+                }
+
+                for (a in snapshot!!) {
+                    Log.i(ScheduleFragment.TAG, "data in snapshot: ${a.data}")
+                }
+
+                for (dc in snapshot!!.documentChanges) {
+                    when (dc.type) {
+                        DocumentChange.Type.ADDED -> Log.w(
+                            ScheduleFragment.TAG,
+                            "New city: ${dc.document.data}"
+                        )
+                        DocumentChange.Type.MODIFIED -> Log.d(
+                            ScheduleFragment.TAG,
+                            "Modified city: ${dc.document.data}"
+                        )
+                        DocumentChange.Type.REMOVED -> Log.e(
+                            ScheduleFragment.TAG,
+                            "Removed city: ${dc.document.data}"
+                        )
+                    }
+                }
             }
+        return liveData
+    }
+
+    fun unRegister(){
+        listener?.remove()
+    }
+
+    override fun getScheduleInformation(): LiveData<Async<Unit>> {
+        val liveData = MutableLiveData<Async<Unit>>(Async.Loading)
+
+        return liveData
     }
 
     override fun addSchedule(schedule: Schedule, context: Context) {
@@ -49,6 +94,7 @@ class ScheduleRepository(
                 val alarm = AlarmReceiver()
                 alarm.setSchedule(context, schedule)
 
+//                scheduleRefs.add(schedule)
                 scheduleRefs.add(schedule).addOnCompleteListener {
                     Log.d(TAG, "addSchedule: COMPLETED")
                 }.addOnFailureListener {

@@ -8,6 +8,7 @@ data class Schedule(
     var reminderBefore: String? = null,
     var postScript: String? = null,
     var id: Int? = null,
+    val date : Long? = null,
     var time: Long? = null,
     var timeStamp: Long? = null
 )
