@@ -11,6 +11,19 @@ object DateHelper {
      * MM = month
      * mm = minute
      */
+
+    //? Note : Without TIME!
+    fun getTodayMillis(): Long {
+        val calendar = Calendar.getInstance()
+        calendar.apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+        return calendar.time.time
+    }
+
     fun formatDate(date: Date): String {
         val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         return format.format(date)
