@@ -10,4 +10,5 @@ interface IScheduleRepository {
     fun listenData() : LiveData<Async<QuerySnapshot?>>
     fun getScheduleInformation(): LiveData<Async<Unit>>
     fun addSchedule(schedule: Schedule, context: Context)
+    fun deleteData(documentId : String)
 }

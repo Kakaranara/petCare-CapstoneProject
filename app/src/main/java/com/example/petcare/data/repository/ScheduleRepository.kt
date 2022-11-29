@@ -43,7 +43,7 @@ class ScheduleRepository(
                     Log.i(ScheduleFragment.TAG, "data in snapshot: ${a.data}")
                 }
 
-                for (dc in snapshot!!.documentChanges) {
+                for (dc in snapshot.documentChanges) {
                     when (dc.type) {
                         DocumentChange.Type.ADDED -> Log.w(
                             ScheduleFragment.TAG,
@@ -108,6 +108,15 @@ class ScheduleRepository(
             }
     }
 
+    override fun deleteData(documentId: String) {
+        scheduleRefs.document(documentId)
+            .delete()
+            .addOnSuccessListener {
+                Log.d(TAG, "deleteData: Success")
+            }.addOnFailureListener {
+                Log.e(TAG, "deleteData: Fail. ${it.message}")
+            }
+    }
 
     companion object {
         private const val TAG = "ScheduleRepository"
