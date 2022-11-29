@@ -23,7 +23,7 @@ class ScheduleRepository(
     private val scheduleRefs: CollectionReference = fireStore.collection("schedule")
 ) : IScheduleRepository {
 
-    var listener : ListenerRegistration? = null
+    var listener: ListenerRegistration? = null
 
     override fun listenData(): LiveData<Async<QuerySnapshot?>> {
         val liveData = MutableLiveData<Async<QuerySnapshot?>>(Async.Loading)
@@ -34,7 +34,10 @@ class ScheduleRepository(
             .addSnapshotListener { snapshot: QuerySnapshot?, exception: FirebaseFirestoreException? ->
                 if (exception != null) {
                     Log.e(ScheduleFragment.TAG, "onViewCreated: EXception in ${exception.message}")
+                    liveData.postValue(Async.Error(exception.message.toString()))
                 }
+
+                liveData.postValue(Async.Success(snapshot))
 
                 for (a in snapshot!!) {
                     Log.i(ScheduleFragment.TAG, "data in snapshot: ${a.data}")
@@ -60,7 +63,7 @@ class ScheduleRepository(
         return liveData
     }
 
-    fun unRegister(){
+    fun unRegister() {
         listener?.remove()
     }
 
