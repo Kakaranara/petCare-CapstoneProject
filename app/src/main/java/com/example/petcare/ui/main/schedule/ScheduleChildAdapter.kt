@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
-import com.example.petcare.data.remote.response.GroupedSchedule
 import com.example.petcare.data.remote.response.Schedule
 import com.example.petcare.databinding.ItemScheduleChildBinding
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ScheduleChildAdapter : RecyclerView.Adapter<ScheduleChildAdapter.ViewHolder>() {
 
@@ -21,8 +21,13 @@ class ScheduleChildAdapter : RecyclerView.Adapter<ScheduleChildAdapter.ViewHolde
     inner class ViewHolder(private val binding: ItemScheduleChildBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Schedule) {
-            binding.tvActivityName.text = data.name
-            binding.tvDateTime.text = data.time.toString()
+            val formatDate = SimpleDateFormat("dd MMMM yyyy | HH:mm", Locale.getDefault())
+            val displayDate = formatDate.format(Date(data.time!!))
+            val displayName = if (data.name!!.isEmpty()) {
+                "No Title"
+            } else data.name
+            binding.tvActivityName.text = displayName
+            binding.tvDateTime.text = displayDate
         }
     }
 
