@@ -64,6 +64,10 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                 OtherMenu.OtherFeature.string -> {
                     showToast("Other Feature")
                 }
+                OtherMenu.PetShop.string -> {
+                    val go = ProfileFragmentDirections.actionActionProfileToPetShopFragment()
+                    findNavController().navigate(go)
+                }
                 OtherMenu.Logout.string -> {
                     logout()
                     showToast("LOGOUT")
