@@ -20,7 +20,6 @@ import com.example.petcare.helper.showToast
 class ScheduleFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: ScheduleAdapter
 
     private val viewModel by viewModels<ScheduleViewModel>()
 
@@ -30,9 +29,16 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
         binding.fbAddSchedule.setOnClickListener(this)
 
         val manager = LinearLayoutManager(requireActivity())
-        adapter = ScheduleAdapter()
-        binding.rvSchedule.adapter = adapter
-        binding.rvSchedule.layoutManager = manager
+        val manager2 = LinearLayoutManager(requireActivity())
+        val todayAdapter = ScheduleChildAdapter()
+        val laterAdapter = ScheduleChildAdapter()
+
+        binding.apply {
+            rvToday.adapter = todayAdapter
+            rvToday.layoutManager = manager
+            rvUpcoming.adapter = laterAdapter
+            rvUpcoming.layoutManager = manager2
+        }
 
         viewModel.listenForDataChanges().observe(viewLifecycleOwner) {
             when (it) {
@@ -42,8 +48,10 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                 is Async.Loading -> {}
                 is Async.Success -> {
                     val snapshot = it.data
-                    val snapshotObject = snapshot!!.map {
-                        it.toObject(Schedule::class.java)
+                    val snapshotObject: List<Schedule> = snapshot!!.map { querySnapshot ->
+                        querySnapshot.toObject(Schedule::class.java).also { schedule ->
+                            schedule.uniqueId = querySnapshot.id
+                        }
                     }
                     val todayList = mutableListOf<Schedule>()
                     val laterList = mutableListOf<Schedule>()
@@ -55,11 +63,8 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                         }
                     }
 
-                    val groupedToday = GroupedSchedule("Today Schedule", todayList)
-                    val groupedLater = GroupedSchedule("Later", laterList)
-                    val grouped = listOf(groupedToday, groupedLater)
-
-                    adapter.submitList(grouped)
+                    todayAdapter.submitList(todayList)
+                    laterAdapter.submitList(laterList)
 
                     Log.e(TAG, "today : $todayList")
                     Log.e(TAG, "later : $laterList")
