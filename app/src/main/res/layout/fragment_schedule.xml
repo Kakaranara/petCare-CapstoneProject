@@ -9,12 +9,33 @@
         android:id="@+id/fbAddSchedule"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/add_schedule"
-        android:src="@drawable/ic_baseline_add_24"
-        android:layout_gravity="end|bottom"
-        />
+        android:src="@drawable/ic_baseline_add_24" />
+
+    <LinearLayout
+        android:id="@+id/scheduleEmptyImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/undraw_dreamer" />
+
+        <TextView
+            style="@style/TextAppearance.Material3.TitleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Cheers! \n You have no activity in 1 week"
+            android:textAlignment="center" />
+
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -53,10 +74,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                tools:listitem="@layout/item_schedule_child"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvTodaySchedule" />
+                app:layout_constraintTop_toBottomOf="@+id/tvTodaySchedule"
+                tools:listitem="@layout/item_schedule_child" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvUpcoming"
@@ -64,11 +85,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                tools:listitem="@layout/item_schedule_child"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvUpcoming" />
+                app:layout_constraintTop_toBottomOf="@+id/tvUpcoming"
+                tools:listitem="@layout/item_schedule_child" />
 
             <Button
                 android:id="@+id/button"

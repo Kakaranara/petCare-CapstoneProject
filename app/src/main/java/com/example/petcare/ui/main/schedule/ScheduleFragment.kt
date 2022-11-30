@@ -83,21 +83,25 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                         binding.apply {
                             tvTodaySchedule.gone()
                             tvUpcoming.gone()
+                            scheduleEmptyImage.visible()
                         }
                     } else if (todayList.isEmpty()) {
                         binding.apply {
                             tvTodaySchedule.gone()
                             tvUpcoming.visible()
+                            scheduleEmptyImage.gone()
                         }
                     } else if (laterList.isEmpty()) {
                         binding.apply {
                             tvTodaySchedule.visible()
                             tvUpcoming.gone()
+                            scheduleEmptyImage.gone()
                         }
                     } else {
                         binding.apply {
                             tvTodaySchedule.visible()
                             tvUpcoming.visible()
+                            scheduleEmptyImage.gone()
                         }
                     }
 
