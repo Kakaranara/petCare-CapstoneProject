@@ -8,18 +8,15 @@ import androidx.lifecycle.liveData
 import com.example.petcare.data.stori.*
 import com.example.petcare.helper.Async
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
-import com.google.firebase.database.ktx.getValue
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.Query
+
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
-import java.util.UUID
-import kotlin.concurrent.timerTask
-import kotlin.system.measureTimeMillis
 
 class StoryRepository(
     private val mAuth: FirebaseAuth,
@@ -79,7 +76,7 @@ class StoryRepository(
             val storyResponse = StoryResponse()
             rootRef.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
             rootRef.collection("stories")
-                .whereLessThan("createdAt", System.currentTimeMillis())
+                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener { task->
                     if (task.isSuccessful){
@@ -98,6 +95,82 @@ class StoryRepository(
         }catch (e: Exception){
             liveData.value = Async.Error(e.message.toString())
             Log.e(TAG, "onFailure: ${e.message}")
+        }
+
+        return liveData
+    }
+
+    fun getDetailStory(postId: String): LiveData<Async<Story>>{
+        val liveData = MutableLiveData<Async<Story>>(Async.Loading)
+        try {
+            rootRef.collection("stories")
+                .whereEqualTo("postId", postId)
+                .get()
+            var story: Story? = null
+            rootRef.collection("stories")
+                .whereEqualTo("postId", postId)
+                .get()
+                .addOnSuccessListener { snapshot->
+                    if (snapshot != null){
+                        val data = snapshot.toObjects(Story::class.java)[0]
+                        story = Story(
+                            data.postId, data.uid, data.name, data.avatarUrl, data.urlImg, data.description, data.createdAt, data.comment, data.like
+                        )
+                        liveData.value = Async.Success(story!!)
+                    }else{
+                        liveData.value = Async.Error("no data exists")
+                    }
+                }
+        }catch (e: Exception){
+            liveData.value = Async.Error(e.message.toString())
+        }
+
+        return liveData
+    }
+
+    fun addPostLike(postId: String, uid: String):LiveData<Async<Boolean>>{
+        val liveData = MutableLiveData<Async<Boolean>>(Async.Loading)
+        try {
+            rootRef.collection("stories")
+                .whereEqualTo("postId", postId)
+                .get()
+                .addOnCompleteListener { task->
+                    if (task.isSuccessful){
+                        for (document in task.result){
+                            rootRef.collection("stories").document(document.id).update("like", FieldValue.arrayUnion(uid))
+                            liveData.value = Async.Success(true)
+                        }
+
+                    }else{
+                        liveData.value = Async.Error(task.exception!!.message.toString())
+                    }
+                }
+        }catch (e:Exception){
+            liveData.value = Async.Error(e.message.toString())
+
+        }
+        return liveData
+
+    }
+
+    fun deletePostLike(postId: String, uid: String): LiveData<Async<Boolean>>{
+        val liveData = MutableLiveData<Async<Boolean>>(Async.Loading)
+        try {
+            rootRef.collection("stories")
+                .whereEqualTo("postId", postId)
+                .get()
+                .addOnCompleteListener { task->
+                    if (task.isSuccessful){
+                        for (document in task.result){
+                            rootRef.collection("stories").document(document.id).update("like", FieldValue.arrayRemove(uid))
+                            liveData.value = Async.Success(true)
+                        }
+                    }else{
+                        liveData.value = Async.Error(task.exception?.message.toString())
+                    }
+                }
+        }catch (e: Exception){
+            liveData.value = Async.Error(e.message.toString())
         }
 
         return liveData
@@ -140,21 +213,6 @@ class StoryRepository(
 
         return liveData
     }
-
-    fun addLike(like: Like): LiveData<Async<Like>> = liveData{
-        emit(Async.Loading)
-        try {
-            rootRef.collection("like").document().set(like)
-            emit(Async.Success(like))
-        }catch (e: Exception){
-            emit(Async.Error(e.message.toString()))
-        }
-    }
-
-//    fun setFavorite(story: Story, isLiked: Boolean){
-//        story.isLiked = isLiked
-//        mDatabase.document(story.uid.toString()).update("liked", story.isLiked)
-//    }
 
     companion object{
         const val TAG = "StoryRepository"

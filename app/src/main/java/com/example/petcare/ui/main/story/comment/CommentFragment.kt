@@ -33,8 +33,8 @@ class CommentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val data = arguments?.getParcelable<Story>(DATA_POST)
         setUpRv()
-        addCommentAction(data)
         getComment(data)
+        addCommentAction(data)
 
 
     }
@@ -85,23 +85,28 @@ class CommentFragment : Fragment() {
         val timeStamp = System.currentTimeMillis().toString()
         _binding?.ivSend?.setOnClickListener {
             val commentText = _binding?.etComment?.text.toString()
-            val comment = Comment(
-                data?.postId, id, avatarUrl, name, commentText, timeStamp
-            )
-            viewModel.addComment(comment).observe(viewLifecycleOwner){result->
-                when(result){
-                    is BaseResult.Error -> {
-                        handleLoading(false)
-                        context?.showToast(result.message)
-                    }
-                    is BaseResult.Loading -> handleLoading(true)
-                    is BaseResult.Success -> {
-                        handleLoading(false)
-                        _binding?.etComment?.clearFocus()
-                        _binding?.etComment?.text = null
-                        getComment(data)
+            if (commentText.isNotEmpty()){
+                val comment = Comment(
+                    data?.postId, id, avatarUrl, name, commentText, timeStamp
+                )
+                viewModel.addComment(comment).observe(viewLifecycleOwner){result->
+                    when(result){
+                        is BaseResult.Error -> {
+                            handleLoading(false)
+                            context?.showToast(result.message)
+                        }
+                        is BaseResult.Loading -> handleLoading(true)
+                        is BaseResult.Success -> {
+                            handleLoading(false)
+                            _binding?.etComment?.clearFocus()
+                            _binding?.etComment?.text = null
+                            getComment(data)
+                        }
                     }
                 }
+
+            }else{
+                showToast("write any word")
             }
         }
     }
@@ -116,7 +121,6 @@ class CommentFragment : Fragment() {
                 is Async.Loading -> handleLoading(true)
                 is Async.Success -> {
                     handleLoading(false)
-                    context?.showToast("post updated")
                 }
             }
         }

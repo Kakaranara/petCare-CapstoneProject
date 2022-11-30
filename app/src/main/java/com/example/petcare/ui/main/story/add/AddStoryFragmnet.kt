@@ -45,6 +45,7 @@ import com.google.firebase.storage.StorageReference
 import java.io.File
 import java.io.InputStream
 import java.util.UUID
+import kotlin.math.abs
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -57,11 +58,6 @@ class AddStoryFragmnet : Fragment() {
     private val viewModel by viewModels<AddStoryViewModel> {
         ViewModelFactory(Injection.provideStoryRepository())
     }
-
-    private var lat: Float? = null
-    private var lon: Float? = null
-
-    private lateinit var mDatabaseReference: DatabaseReference
     private lateinit var mStorageReference: StorageReference
     private lateinit var mAuth: FirebaseAuth
 
@@ -76,7 +72,6 @@ class AddStoryFragmnet : Fragment() {
         }
 
         mStorageReference = FirebaseStorage.getInstance().reference
-        mDatabaseReference = FirebaseDatabase.getInstance("https://petcare-2e93d-default-rtdb.firebaseio.com/").reference
         mAuth = FirebaseAuth.getInstance()
 
         controlDescription()
@@ -115,7 +110,7 @@ class AddStoryFragmnet : Fragment() {
     }
 
     private fun handleSuccess(data: Uri) {
-        val postId = Random.nextInt().toString()
+        val postId = abs(Random.nextInt()).toString()
         val urlAvatar = if (mAuth.currentUser?.photoUrl != null) mAuth.currentUser?.photoUrl.toString() else null
         val desc = _binding?.etDescription?.text.toString()
         val uid = mAuth.currentUser?.uid.toString()
@@ -169,7 +164,9 @@ class AddStoryFragmnet : Fragment() {
     private fun controlDescription() {
         _binding?.etDescription?.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                _binding!!.counterWord.text = "0/100"
+                _binding!!.counterWord.text = buildString {
+                    append("0/100")
+                }
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s?.length!! > 100){
@@ -179,7 +176,10 @@ class AddStoryFragmnet : Fragment() {
             override fun afterTextChanged(s: Editable?) {
                 val currentText = s.toString()
                 val currentLength = currentText.length
-                _binding!!.counterWord.text = "$currentLength/100"
+                _binding!!.counterWord.text = buildString {
+                    append(currentLength)
+                    append("/100")
+                }
             }
         })
     }
@@ -219,7 +219,7 @@ class AddStoryFragmnet : Fragment() {
         }
     }
 
-    private fun allPermissionGranted() = Companion.REQUIRED_PERMISSION.all {
+    private fun allPermissionGranted() = REQUIRED_PERMISSION.all {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
 
@@ -233,8 +233,8 @@ class AddStoryFragmnet : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 

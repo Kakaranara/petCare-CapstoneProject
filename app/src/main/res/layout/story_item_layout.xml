@@ -34,7 +34,7 @@
             tools:text="Username" />
 
         <TextView
-            android:id="@+id/location"
+            android:id="@+id/status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -42,7 +42,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/photo_profile"
             app:layout_constraintStart_toEndOf="@+id/photo_profile"
             app:layout_constraintTop_toBottomOf="@+id/username"
-            tools:text="Medan" />
+            tools:text="happy" />
 
         <ImageView
             android:id="@+id/preview_photo"
@@ -56,8 +56,8 @@
 
         <ImageView
             android:id="@+id/favorite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:src="@drawable/ic_baseline_favorite_border_24"
@@ -68,16 +68,17 @@
             android:id="@+id/likeCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            tools:text="0 like"
+            android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="@+id/favorite"
             app:layout_constraintStart_toStartOf="@+id/favorite"
             app:layout_constraintTop_toBottomOf="@+id/favorite" />
 
         <ImageView
             android:id="@+id/comment"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="20dp"
             android:src="@drawable/ic_baseline_mode_comment_24"
             app:layout_constraintBottom_toBottomOf="@+id/favorite"
             app:layout_constraintStart_toEndOf="@id/favorite"
@@ -87,20 +88,31 @@
             android:id="@+id/commentCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
+            tools:text="0 comment"
+            android:textSize="11sp"
             app:layout_constraintEnd_toEndOf="@+id/comment"
             app:layout_constraintStart_toStartOf="@+id/comment"
             app:layout_constraintTop_toBottomOf="@+id/favorite" />
 
         <ImageView
             android:id="@+id/share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="20dp"
             android:src="@drawable/ic_baseline_share_24"
             app:layout_constraintBottom_toBottomOf="@+id/comment"
             app:layout_constraintStart_toEndOf="@id/comment"
             app:layout_constraintTop_toTopOf="@+id/comment" />
+
+        <TextView
+            android:id="@+id/shareCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="@+id/share"
+            app:layout_constraintStart_toStartOf="@+id/share"
+            app:layout_constraintTop_toBottomOf="@+id/share"
+            tools:text="0 share" />
 
         <TextView
             android:id="@+id/description"
@@ -109,6 +121,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:textSize="14sp"
             android:maxLines="2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -122,6 +135,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:textSize="11sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/description"
