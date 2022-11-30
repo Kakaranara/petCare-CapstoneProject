@@ -67,11 +67,7 @@ class ScheduleRepository(
         listener?.remove()
     }
 
-    override fun getScheduleInformation(): LiveData<Async<Unit>> {
-        val liveData = MutableLiveData<Async<Unit>>(Async.Loading)
 
-        return liveData
-    }
 
     override fun addSchedule(schedule: Schedule, context: Context) {
         schedule.userId = auth.currentUser?.uid
