@@ -8,4 +8,5 @@ class ScheduleViewModel(private val repository: ScheduleRepository = ScheduleRep
 
     fun listenForDataChanges() = repository.listenData()
     fun unRegister() = repository.unRegister()
+    fun deleteData(documentId : String) = repository.deleteData(documentId)
 }

@@ -13,9 +13,14 @@ import java.util.*
 class ScheduleChildAdapter : RecyclerView.Adapter<ScheduleChildAdapter.ViewHolder>() {
 
     private val mDiffer = AsyncListDiffer(this, DIFF_CALLBACK)
+    private var listener: ScheduleButtonListener? = null
 
     fun submitList(list: List<Schedule>) {
         mDiffer.submitList(list)
+    }
+
+    fun setClickListener(listener: ScheduleButtonListener){
+        this.listener = listener
     }
 
     inner class ViewHolder(private val binding: ItemScheduleChildBinding) :
@@ -28,7 +33,19 @@ class ScheduleChildAdapter : RecyclerView.Adapter<ScheduleChildAdapter.ViewHolde
             } else data.name
             binding.tvActivityName.text = displayName
             binding.tvDateTime.text = displayDate
+
+            binding.btnScheduleDelete.setOnClickListener {
+                listener?.onDeleteClicked(data.uniqueId!!)
+            }
+            binding.btnScheduleEdit.setOnClickListener {
+                listener?.onEditClicked()
+            }
         }
+    }
+
+    interface ScheduleButtonListener {
+        fun onDeleteClicked(documentId: String)
+        fun onEditClicked()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.petcare.data.remote.response.GroupedSchedule
 import com.example.petcare.data.remote.response.Schedule
 import com.example.petcare.databinding.FragmentScheduleBinding
 import com.example.petcare.helper.Async
@@ -32,6 +31,16 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
         val manager2 = LinearLayoutManager(requireActivity())
         val todayAdapter = ScheduleChildAdapter()
         val laterAdapter = ScheduleChildAdapter()
+
+        todayAdapter.setClickListener(object : ScheduleChildAdapter.ScheduleButtonListener {
+            override fun onDeleteClicked(documentId: String) {
+                viewModel.deleteData(documentId)
+            }
+
+            override fun onEditClicked() {
+
+            }
+        })
 
         binding.apply {
             rvToday.adapter = todayAdapter
