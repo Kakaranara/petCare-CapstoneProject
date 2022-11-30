@@ -5,10 +5,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petcare.data.remote.response.Schedule
 import com.example.petcare.databinding.FragmentScheduleBinding
@@ -34,6 +34,8 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
         val manager2 = LinearLayoutManager(requireActivity())
         val todayAdapter = ScheduleChildAdapter()
         val upcomingAdapter = ScheduleChildAdapter()
+        val divider1 = DividerItemDecoration(requireActivity(), manager.orientation)
+        val divider2 = DividerItemDecoration(requireActivity(), manager2.orientation)
 
         val adapterClickListener = object : ScheduleChildAdapter.ScheduleButtonListener {
             override fun onDeleteClicked(documentId: String) {
@@ -52,8 +54,10 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
         binding.apply {
             rvToday.adapter = todayAdapter
             rvToday.layoutManager = manager
+            rvToday.addItemDecoration(divider1)
             rvUpcoming.adapter = upcomingAdapter
             rvUpcoming.layoutManager = manager2
+            rvUpcoming.addItemDecoration(divider2)
         }
 
         viewModel.listenForDataChanges().observe(viewLifecycleOwner) {

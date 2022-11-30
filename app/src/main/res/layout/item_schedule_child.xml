@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Activity Name"
+        tools:text="Activity Name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="18 November 2022, 10:30"
+        tools:text="18 November 2022, 10:30"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvActivityName" />
 
@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:contentDescription="@string/delete_schedule"
         app:layout_constraintEnd_toStartOf="@+id/btnScheduleEdit"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_delete_24" />
@@ -43,8 +44,16 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
+        android:contentDescription="@string/edit_schedule"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_baseline_edit_24" />
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvDateTime" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

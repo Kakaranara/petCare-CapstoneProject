@@ -37,5 +37,7 @@
     <string name="upcoming">Upcoming</string>
     <string name="check_all_shedule">Check All Shedule..</string>
     <string name="no_schedule">No Schedule</string>
+    <string name="edit_schedule">Edit Schedule</string>
+    <string name="delete_schedule">Delete Schedule</string>
 
 </resources>
