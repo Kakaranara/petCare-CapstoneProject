@@ -23,10 +23,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        tools:text="18 November 2022, 10:30"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvActivityName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityName"
+        tools:text="18 November 2022, 10:30" />
 
     <ImageButton
         android:id="@+id/btnScheduleDelete"
