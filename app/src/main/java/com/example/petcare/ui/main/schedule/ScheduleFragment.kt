@@ -30,9 +30,9 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
         val manager = LinearLayoutManager(requireActivity())
         val manager2 = LinearLayoutManager(requireActivity())
         val todayAdapter = ScheduleChildAdapter()
-        val laterAdapter = ScheduleChildAdapter()
+        val upcomingAdapter = ScheduleChildAdapter()
 
-        todayAdapter.setClickListener(object : ScheduleChildAdapter.ScheduleButtonListener {
+        val adapterClickListener = object : ScheduleChildAdapter.ScheduleButtonListener {
             override fun onDeleteClicked(documentId: String) {
                 viewModel.deleteData(documentId)
             }
@@ -40,12 +40,16 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
             override fun onEditClicked() {
 
             }
-        })
+        }
+
+        todayAdapter.setClickListener(adapterClickListener)
+        upcomingAdapter.setClickListener(adapterClickListener)
+
 
         binding.apply {
             rvToday.adapter = todayAdapter
             rvToday.layoutManager = manager
-            rvUpcoming.adapter = laterAdapter
+            rvUpcoming.adapter = upcomingAdapter
             rvUpcoming.layoutManager = manager2
         }
 
@@ -73,7 +77,7 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                     }
 
                     todayAdapter.submitList(todayList)
-                    laterAdapter.submitList(laterList)
+                    upcomingAdapter.submitList(laterList)
 
                     Log.e(TAG, "today : $todayList")
                     Log.e(TAG, "later : $laterList")
