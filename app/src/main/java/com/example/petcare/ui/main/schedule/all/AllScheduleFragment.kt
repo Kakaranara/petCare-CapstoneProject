@@ -15,6 +15,8 @@ import com.example.petcare.databinding.FragmentAllScheduleBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
 import com.example.petcare.ui.main.schedule.ScheduleChildAdapter
+import com.example.petcare.utils.gone
+import com.example.petcare.utils.visible
 
 class AllScheduleFragment : Fragment() {
     private var _binding: FragmentAllScheduleBinding? = null
@@ -41,6 +43,12 @@ class AllScheduleFragment : Fragment() {
                         queryDocumentSnapshot.toObject(Schedule::class.java).also { schedule ->
                             schedule.uniqueId = queryDocumentSnapshot.id
                         }
+                    }
+
+                    if (snapshotObject.isEmpty()) {
+                        binding.emptyAllSchedule.visible()
+                    } else {
+                        binding.emptyAllSchedule.gone()
                     }
 
                     adapter.submitList(snapshotObject)

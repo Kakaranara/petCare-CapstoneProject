@@ -153,11 +153,11 @@
     <fragment
         android:id="@+id/addScheduleFragment"
         android:name="com.example.petcare.ui.main.schedule.add.AddScheduleFragment"
-        android:label="fragment_add_schedule"
+        android:label="Add Schedule"
         tools:layout="@layout/fragment_add_schedule" />
     <fragment
         android:id="@+id/allScheduleFragment"
         android:name="com.example.petcare.ui.main.schedule.all.AllScheduleFragment"
-        android:label="fragment_all_schedule"
+        android:label="All Schedule"
         tools:layout="@layout/fragment_all_schedule" />
 </navigation>

@@ -22,6 +22,31 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/allScheduleToolbar" />
+        app:layout_constraintTop_toBottomOf="@id/allScheduleToolbar"
+        tools:listitem="@layout/item_schedule_child" />
+
+    <LinearLayout
+        android:id="@+id/emptyAllSchedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="270dp"
+            android:layout_height="270dp"
+            android:contentDescription="@string/empty_data_image"
+            android:src="@drawable/empty_background" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/looks_like_you_don_t_have_any_schedule_yet" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
