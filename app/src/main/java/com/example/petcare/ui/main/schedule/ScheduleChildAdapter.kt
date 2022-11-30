@@ -40,11 +40,15 @@ class ScheduleChildAdapter : RecyclerView.Adapter<ScheduleChildAdapter.ViewHolde
             binding.btnScheduleEdit.setOnClickListener {
                 listener?.onEditClicked()
             }
+            binding.root.setOnClickListener {
+                listener?.onItemClicked()
+            }
         }
     }
 
     interface ScheduleButtonListener {
         fun onDeleteClicked(documentId: String)
+        fun onItemClicked()
         fun onEditClicked()
     }
 

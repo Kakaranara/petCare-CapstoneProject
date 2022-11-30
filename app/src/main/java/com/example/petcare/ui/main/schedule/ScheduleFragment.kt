@@ -45,6 +45,10 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
             override fun onEditClicked() {
 
             }
+
+            override fun onItemClicked() {
+                showToast("item clicked!")
+            }
         }
 
         todayAdapter.setClickListener(adapterClickListener)
