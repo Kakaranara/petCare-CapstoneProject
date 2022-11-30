@@ -16,20 +16,19 @@
         android:src="@drawable/ic_baseline_add_24" />
 
 
+    <TextView
+        android:id="@+id/scheduleEmptyImage"
+        style="@style/TextAppearance.Material3.TitleLarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawablePadding="16dp"
+        android:text="@string/no_activity"
+        android:textAlignment="center"
 
-        <TextView
-            android:id="@+id/scheduleEmptyImage"
-            style="@style/TextAppearance.Material3.TitleLarge"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawablePadding="16dp"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            tools:visibility="visible"
-
-            android:text="@string/no_activity"
-            android:textAlignment="center"
-            app:drawableTopCompat="@drawable/undraw_dreamer" />
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/undraw_dreamer"
+        tools:visibility="visible" />
 
 
     <androidx.core.widget.NestedScrollView
