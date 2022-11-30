@@ -15,27 +15,22 @@
         android:contentDescription="@string/add_schedule"
         android:src="@drawable/ic_baseline_add_24" />
 
-    <LinearLayout
-        android:id="@+id/scheduleEmptyImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/undraw_dreamer" />
 
         <TextView
+            android:id="@+id/scheduleEmptyImage"
             style="@style/TextAppearance.Material3.TitleLarge"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Cheers! \n You have no activity in 1 week"
-            android:textAlignment="center" />
+            android:drawablePadding="16dp"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:visibility="visible"
 
-    </LinearLayout>
+            android:text="@string/no_activity"
+            android:textAlignment="center"
+            app:drawableTopCompat="@drawable/undraw_dreamer" />
+
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -53,9 +48,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
-                android:text="Today Schedule"
+                android:text="@string/today_schedule"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tvUpcoming"
@@ -64,9 +61,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
-                android:text="Upcoming"
+                android:text="@string/upcoming"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/rvToday" />
+                app:layout_constraintTop_toBottomOf="@+id/rvToday"
+                tools:visibility="visible" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvToday"
@@ -97,7 +96,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Check All Shedule.."
+                android:text="@string/check_all_shedule"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/rvUpcoming" />
 
