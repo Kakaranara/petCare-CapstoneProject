@@ -24,6 +24,7 @@ class ScheduleRepository(
 ) : IScheduleRepository {
 
     var listener: ListenerRegistration? = null
+    var listenerAll: ListenerRegistration? = null
 
     override fun listenData(): LiveData<Async<QuerySnapshot?>> {
         val liveData = MutableLiveData<Async<QuerySnapshot?>>(Async.Loading)
@@ -67,7 +68,43 @@ class ScheduleRepository(
         listener?.remove()
     }
 
+    override fun listenAllData(): LiveData<Async<QuerySnapshot?>> {
+        val liveData = MutableLiveData<Async<QuerySnapshot?>>()
 
+        listenerAll = scheduleRefs
+            .whereEqualTo("userId", auth.currentUser?.uid)
+            .whereGreaterThanOrEqualTo("time", DateHelper.getTodayMillis())
+            .orderBy("time", Query.Direction.ASCENDING)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    liveData.postValue(Async.Error(e.message.toString()))
+                    Log.d(TAG, "listenAllData: Error listening all schedule. ${e.message}")
+                }
+                liveData.postValue(Async.Success(snapshot))
+                for (dc in snapshot!!.documentChanges) {
+                    when (dc.type) {
+                        DocumentChange.Type.ADDED -> Log.w(
+                            ScheduleFragment.TAG,
+                            "New city: ${dc.document.data}"
+                        )
+                        DocumentChange.Type.MODIFIED -> Log.d(
+                            ScheduleFragment.TAG,
+                            "Modified city: ${dc.document.data}"
+                        )
+                        DocumentChange.Type.REMOVED -> Log.e(
+                            ScheduleFragment.TAG,
+                            "Removed city: ${dc.document.data}"
+                        )
+                    }
+                }
+            }
+
+        return liveData
+    }
+
+    fun unRegisterAll() {
+        listenerAll?.remove()
+    }
 
     override fun addSchedule(schedule: Schedule, context: Context) {
         schedule.userId = auth.currentUser?.uid

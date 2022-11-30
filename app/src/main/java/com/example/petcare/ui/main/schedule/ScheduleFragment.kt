@@ -29,6 +29,7 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.fbAddSchedule.setOnClickListener(this)
+        binding.button.setOnClickListener(this)
 
         val manager = LinearLayoutManager(requireActivity())
         val manager2 = LinearLayoutManager(requireActivity())
@@ -129,6 +130,10 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
         when (view) {
             binding.fbAddSchedule -> {
                 val go = ScheduleFragmentDirections.actionActionScheduleToAddScheduleFragment()
+                findNavController().navigate(go)
+            }
+            binding.button -> {
+                val go = ScheduleFragmentDirections.actionActionScheduleToAllScheduleFragment()
                 findNavController().navigate(go)
             }
         }
