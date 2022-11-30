@@ -82,7 +82,7 @@
         tools:layout="@layout/fragment_edit_profile" />
     <fragment
         android:id="@+id/addStoryFragmnet"
-        android:name="com.example.petcare.ui.main.story.add.AddStoryFragmnet"
+        android:name="com.example.petcare.ui.main.story.add.AddStoryFragment"
         android:label="fragment_add_story_fragmnet"
         tools:layout="@layout/fragment_add_story" >
         <action

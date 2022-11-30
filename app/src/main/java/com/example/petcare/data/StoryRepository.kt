@@ -19,21 +19,19 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
 
 class StoryRepository(
-    private val mAuth: FirebaseAuth,
     private val rootRef: FirebaseFirestore = FirebaseFirestore.getInstance(),
-    private var mDatabase: CollectionReference,
     private val mStorage: StorageReference
 ){
 
-    fun postImage(imageUri: Uri):LiveData<BaseResult<Uri>> = liveData{
+    fun postImage(imageUri: Uri):LiveData<Async<Uri>> = liveData{
 
-        emit(BaseResult.Loading)
+        emit(Async.Loading)
         try {
             val downloadUrl = mStorage.child("Photo").putFile(imageUri).await()
                 .storage.downloadUrl.await()
-            emit(BaseResult.Success(downloadUrl))
+            emit(Async.Success(downloadUrl))
         }catch (e:Exception){
-            emit(BaseResult.Error(e.message.toString()))
+            emit(Async.Error(e.message.toString()))
         }
 
     }
@@ -41,8 +39,7 @@ class StoryRepository(
     fun addPost(story: Story):LiveData<BaseResult<Boolean>> = liveData {
         emit(BaseResult.Loading)
         try {
-            val uid = mAuth.currentUser?.uid.toString()
-            mDatabase.document().set(story).await()
+            rootRef.collection("stories").document().set(story).await()
             emit(BaseResult.Success(true))
         }catch (e: Exception){
             emit(BaseResult.Error(e.message.toString()))
@@ -74,7 +71,6 @@ class StoryRepository(
         val liveData = MutableLiveData<Async<StoryResponse>>(Async.Loading)
         try {
             val storyResponse = StoryResponse()
-            rootRef.firestoreSettings = FirebaseFirestoreSettings.Builder().build()
             rootRef.collection("stories")
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
