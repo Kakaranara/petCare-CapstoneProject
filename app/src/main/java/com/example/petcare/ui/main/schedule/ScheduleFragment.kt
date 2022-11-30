@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -14,6 +15,8 @@ import com.example.petcare.databinding.FragmentScheduleBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.DateHelper
 import com.example.petcare.helper.showToast
+import com.example.petcare.utils.gone
+import com.example.petcare.utils.visible
 
 
 class ScheduleFragment : Fragment(), View.OnClickListener {
@@ -73,6 +76,28 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                             todayList.add(schedule)
                         } else {
                             laterList.add(schedule)
+                        }
+                    }
+
+                    if (todayList.isEmpty() && laterList.isEmpty()) {
+                        binding.apply {
+                            tvTodaySchedule.gone()
+                            tvUpcoming.gone()
+                        }
+                    } else if (todayList.isEmpty()) {
+                        binding.apply {
+                            tvTodaySchedule.gone()
+                            tvUpcoming.visible()
+                        }
+                    } else if (laterList.isEmpty()) {
+                        binding.apply {
+                            tvTodaySchedule.visible()
+                            tvUpcoming.gone()
+                        }
+                    } else {
+                        binding.apply {
+                            tvTodaySchedule.visible()
+                            tvUpcoming.visible()
                         }
                     }
 
