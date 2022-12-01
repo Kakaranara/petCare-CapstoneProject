@@ -73,7 +73,7 @@ class StoryFragment : Fragment() {
             _binding?.noData?.visibility = View.VISIBLE
         }else {
             val currentUser = mAuth.currentUser!!.uid
-            adapter = StoryAdapter{stories->
+            adapter = StoryAdapter(onItemLiked = {stories->
                 isLiked = stories.like.contains(currentUser)
                 if (isLiked){
                     viewModel.deleteStoryLike(stories.postId, currentUser).observe(viewLifecycleOwner){result->
@@ -111,17 +111,43 @@ class StoryFragment : Fragment() {
                         }
                     }
                 }
-            }
+
+            },
+                onItemShared = {storieShared->
+                    //? update share
+                    val shareCount = storieShared.share + 1
+                    viewModel.addSharePost(storieShared.postId, shareCount).observe(viewLifecycleOwner){result->
+                        when(result){
+                            is Async.Loading -> {
+                                handleLoading(true)
+                            }
+                            is Async.Error -> {
+                                handleLoading(false)
+                                context?.showToast(result.error)
+                            }
+                            is Async.Success -> {
+                                handleLoading(false)
+                                getStories()
+                            }
+                        }
+                    }
+
+            })
             adapter.submitList(data)
             _binding?.rvItem?.adapter = adapter
         }
     }
 
     private fun handleLoading(isLoading: Boolean) {
-        if (isLoading){
-            _binding?.pbStory?.visibility = View.VISIBLE
-        }else{
-            _binding?.pbStory?.visibility = View.GONE
+        _binding?.pbStory?.apply {
+            isIndeterminate = isLoading
+            if (!isLoading){
+                progress = 0
+                visibility = View.GONE
+            }else{
+                visibility = View.VISIBLE
+
+            }
         }
     }
 

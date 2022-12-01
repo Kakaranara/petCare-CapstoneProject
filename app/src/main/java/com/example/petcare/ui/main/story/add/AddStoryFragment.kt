@@ -72,8 +72,6 @@ class AddStoryFragment : Fragment() {
 
         controlDescription()
 
-
-//        _binding?.btnGallery?.setOnClickListener { startGallery() }
         _binding?.tvCamera?.setOnClickListener { startCamera() }
         _binding?.btnUpload?.setOnClickListener { upload() }
         _binding?.tvPickPhoto?.setOnClickListener { startPickPhoto() }
@@ -111,10 +109,15 @@ class AddStoryFragment : Fragment() {
     }
 
     private fun handleLoading(isLoading: Boolean) {
-        if (isLoading){
-            _binding?.pbUpload?.visibility = View.VISIBLE
-        }else{
-            _binding?.pbUpload?.visibility = View.GONE
+        _binding?.pbUpload?.apply {
+            isIndeterminate = isLoading
+            if (!isLoading){
+                progress = 0
+                visibility = View.GONE
+            }else{
+                visibility = View.VISIBLE
+
+            }
         }
     }
 
@@ -136,7 +139,10 @@ class AddStoryFragment : Fragment() {
                         findNavController().navigate(R.id.action_addStoryFragmnet_to_action_story)
                         context?.showToast("upload success")
                     }
-                    is Async.Loading -> { handleLoading(true)}
+                    is Async.Loading -> {
+                        handleLoading(true)
+                        _binding?.btnUpload?.isEnabled = false
+                    }
                     is Async.Error -> {
                         context?.showToast(result.error)
                         handleLoading(false)

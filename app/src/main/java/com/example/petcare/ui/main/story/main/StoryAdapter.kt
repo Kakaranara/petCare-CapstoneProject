@@ -1,23 +1,30 @@
 package com.example.petcare.ui.main.story.main
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.petcare.BuildConfig
 import com.example.petcare.R
 import com.example.petcare.data.stori.Story
 import com.example.petcare.databinding.StoryItemLayoutBinding
+import com.example.petcare.helper.capitalizeWords
 import com.example.petcare.ui.main.story.comment.CommentFragment
 import com.example.petcare.ui.main.story.detail.DetailFragment
 import com.example.petcare.utils.DateFormatter
+import com.example.petcare.utils.ShareLink
 import com.google.firebase.auth.FirebaseAuth
 
-class StoryAdapter(private val onLikeClicked: (Story) -> Unit): ListAdapter<Story, StoryAdapter.StoryViewHolder>(DIFF_CALLBACK) {
+class StoryAdapter(private val onItemLiked: (Story) -> Unit, private val onItemShared: (Story) -> Unit): ListAdapter<Story, StoryAdapter.StoryViewHolder>(DIFF_CALLBACK) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StoryViewHolder {
         val binding = StoryItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return StoryViewHolder(binding)
@@ -38,7 +45,7 @@ class StoryAdapter(private val onLikeClicked: (Story) -> Unit): ListAdapter<Stor
             ivLike.setImageDrawable(ContextCompat.getDrawable(ivLike.context, R.drawable.ic_baseline_favorite_border_24))
         }
         ivLike.setOnClickListener {
-            onLikeClicked(data)
+            onItemLiked(data)
         }
         holder.itemView.setOnClickListener {
             val bundle = Bundle()
@@ -50,6 +57,31 @@ class StoryAdapter(private val onLikeClicked: (Story) -> Unit): ListAdapter<Stor
             val bundle = Bundle()
             bundle.putParcelable(CommentFragment.DATA_POST, data)
             it.findNavController().navigate(R.id.action_action_story_to_commentFragment, bundle)
+        }
+
+        holder.binding.share.setOnClickListener {
+            ShareLink.generateShareLink(
+                deepLink = "${BuildConfig.PREFIX}/post/${data.postId}".toUri(),
+                previewImgLink = data.urlImg!!.toUri()
+            ){generateLink->
+                try {
+                    val intentShare = Intent(Intent.ACTION_SEND)
+                    intentShare.type = "text/plan"
+                    intentShare.putExtra(Intent.EXTRA_SUBJECT, "Ada yang baru nihh ->")
+                    val body: String =
+                        "\n" + data.name!!.capitalizeWords() +"\n" + "Share post on PetCare App" + "\n" +  generateLink + "\n"
+                    intentShare.putExtra(Intent.EXTRA_TEXT, body)
+                    if (it.context != null){
+                        it.context.startActivity(Intent.createChooser(intentShare, "Share with: "))
+                    }
+
+                    //?set onClicked
+                    onItemShared(data)
+
+                }catch (e: Exception){
+                   Log.e("StoryFragmentAdapter", "onFailure: ${e.message.toString()}")
+                }
+            }
         }
     }
 
@@ -103,7 +135,7 @@ class StoryAdapter(private val onLikeClicked: (Story) -> Unit): ListAdapter<Stor
                     .circleCrop()
                     .into(binding.photoProfile)
             }else{
-                binding.photoProfile.setImageResource(R.drawable.ic_avatar_24)
+                binding.photoProfile.setImageResource(R.drawable.ic_launcher_foreground)
             }
 
         }

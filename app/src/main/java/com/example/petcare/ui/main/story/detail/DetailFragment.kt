@@ -112,7 +112,7 @@ class DetailFragment : Fragment() {
                 .circleCrop()
                 .into(_binding?.photoProfile!!)
         }else{
-            _binding?.photoProfile?.setImageResource(R.drawable.ic_avatar_24)
+            _binding?.photoProfile?.setImageResource(R.drawable.ic_launcher_foreground)
         }
         Glide.with(requireContext())
             .load(data.urlImg)
@@ -183,21 +183,21 @@ class DetailFragment : Fragment() {
                         "\n" + data.name!!.capitalizeWords() +"\n" + "Share post on PetCare App" + "\n" +  generateLink + "\n"
                     intentShare.putExtra(Intent.EXTRA_TEXT, body)
                     startActivity(Intent.createChooser(intentShare, "Share with: "))
-                    if (generateLink.isNotEmpty()){
-                        val shareCount = data.share + 1
-                        viewModel.addSharePost(data.postId, shareCount).observe(viewLifecycleOwner){result->
-                            when(result){
-                                is Async.Loading -> {
-                                    handleLoading(true)
-                                }
-                                is Async.Error -> {
-                                    handleLoading(false)
-                                    context?.showToast(result.error)
-                                }
-                                is Async.Success -> {
-                                    handleLoading(false)
-                                    getDetail(data.postId)
-                                }
+
+                    //? update data share
+                    val shareCount = data.share + 1
+                    viewModel.addSharePost(data.postId, shareCount).observe(viewLifecycleOwner){result->
+                        when(result){
+                            is Async.Loading -> {
+                                handleLoading(true)
+                            }
+                            is Async.Error -> {
+                                handleLoading(false)
+                                context?.showToast(result.error)
+                            }
+                            is Async.Success -> {
+                                handleLoading(false)
+                                getDetail(data.postId)
                             }
                         }
                     }

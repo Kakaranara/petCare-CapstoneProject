@@ -11,5 +11,7 @@ class StoryViewModel(private val storyRepository: StoryRepository): ViewModel() 
 
         fun addStoryLike(postId: String, uid: String) = storyRepository.addPostLike(postId, uid)
 
+        fun addSharePost(postId: String, share: Int) = storyRepository.updateSharePost(postId, share)
+
 
 }
