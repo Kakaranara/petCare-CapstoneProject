@@ -28,6 +28,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
@@ -42,6 +43,7 @@ import com.example.petcare.utils.StoryUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.*
 import java.io.File
 import kotlin.math.abs
 import kotlin.random.Random
@@ -87,21 +89,23 @@ class AddStoryFragment : Fragment() {
     }
 
     private fun upload() {
-        viewModel.postImage(imgUri!!).observe(viewLifecycleOwner){result->
-            when(result){
-                is Async.Error -> {
-                    handleLoading(false)
-                    context?.showToast(result.error)
+        lifecycleScope.launch {
+            viewModel.postImage(imgUri!!).observe(viewLifecycleOwner){result->
+                when(result){
+                    is Async.Error -> {
+                        handleLoading(false)
+                        context?.showToast(result.error)
+                    }
+                    is Async.Loading -> {
+                        handleLoading(true)
+                    }
+                    is Async.Success -> {
+                        handleLoading(false)
+                        handleSuccess(result.data)
+                    }
                 }
-                is Async.Loading -> {
-                    handleLoading(true)
-                }
-                is Async.Success -> {
-                    handleLoading(false)
-                    handleSuccess(result.data)
-                }
-            }
 
+            }
         }
     }
 
@@ -123,17 +127,19 @@ class AddStoryFragment : Fragment() {
         val story = Story(
             postId, uid, name, urlAvatar, data.toString(), desc, timeStamp,
         )
-        viewModel.postStory(story).observe(viewLifecycleOwner){result->
-            when(result){
-                is Async.Success->{
-                    handleLoading(false)
-                    findNavController().navigate(R.id.action_addStoryFragmnet_to_action_story)
-                    context?.showToast("upload success")
-                }
-                is Async.Loading -> { handleLoading(true)}
-                is Async.Error -> {
-                    context?.showToast(result.error)
-                    handleLoading(false)
+        lifecycleScope.launch {
+            viewModel.postStory(story).observe(viewLifecycleOwner){result->
+                when(result){
+                    is Async.Success->{
+                        handleLoading(false)
+                        findNavController().navigate(R.id.action_addStoryFragmnet_to_action_story)
+                        context?.showToast("upload success")
+                    }
+                    is Async.Loading -> { handleLoading(true)}
+                    is Async.Error -> {
+                        context?.showToast(result.error)
+                        handleLoading(false)
+                    }
                 }
             }
         }

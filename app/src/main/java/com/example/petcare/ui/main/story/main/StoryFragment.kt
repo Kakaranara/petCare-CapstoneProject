@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petcare.R
@@ -16,6 +17,7 @@ import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 
 class StoryFragment : Fragment() {
@@ -45,20 +47,22 @@ class StoryFragment : Fragment() {
     }
 
     private fun getStories() {
-        viewModel.getStories().observe(viewLifecycleOwner){result->
-            when(result){
-                is Async.Loading -> {
-                    handleLoading(true)
+        lifecycleScope.launch {
+            viewModel.getStories().observe(viewLifecycleOwner){result->
+                when(result){
+                    is Async.Loading -> {
+                        handleLoading(true)
+                    }
+                    is Async.Error -> {
+                        handleLoading(false)
+                        context?.showToast(result.error)
+                    }
+                    is Async.Success -> {
+                        handleLoading(false)
+                        setStory(result.data.story)
+                    }
+                    else -> {}
                 }
-                is Async.Error -> {
-                    handleLoading(false)
-                    context?.showToast(result.error)
-                }
-                is Async.Success -> {
-                    handleLoading(false)
-                    setStory(result.data.story)
-                }
-                else -> {}
             }
         }
 

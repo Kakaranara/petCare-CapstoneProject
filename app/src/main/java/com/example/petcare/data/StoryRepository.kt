@@ -23,7 +23,7 @@ class StoryRepository(
     private val mStorage: StorageReference
 ){
 
-    fun postImage(imageUri: Uri):LiveData<Async<Uri>> = liveData{
+    suspend fun postImage(imageUri: Uri):LiveData<Async<Uri>> = liveData{
 
         emit(Async.Loading)
         try {
@@ -36,7 +36,7 @@ class StoryRepository(
 
     }
 
-    fun addPost(story: Story):LiveData<Async<Boolean>> = liveData {
+    suspend fun addPost(story: Story):LiveData<Async<Boolean>> = liveData {
         emit(Async.Loading)
         try {
             rootRef.collection("stories").document().set(story).await()
@@ -81,7 +81,7 @@ class StoryRepository(
                             storyResponse.story = result.documents.mapNotNull { snapshot->
                                 snapshot.toObject(Story::class.java)
                             }
-                            liveData.value = Async.Success(storyResponse)
+                            liveData.postValue(Async.Success(storyResponse))
                         }
                     }else{
                         liveData.value = Async.Error(task.exception.toString())
