@@ -141,10 +141,13 @@ class ScheduleRepository(
             }
     }
 
-    override fun deleteData(documentId: String) {
+    override fun deleteData(context: Context, id: Int, documentId: String) {
+
         scheduleRefs.document(documentId)
             .delete()
             .addOnSuccessListener {
+                val alarm = AlarmReceiver()
+                alarm.cancelAlarm(context, id)
                 Log.d(TAG, "deleteData: Success")
             }.addOnFailureListener {
                 Log.e(TAG, "deleteData: Fail. ${it.message}")

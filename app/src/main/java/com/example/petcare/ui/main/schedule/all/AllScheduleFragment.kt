@@ -69,8 +69,8 @@ class AllScheduleFragment : Fragment() {
         }
 
         adapter.setClickListener(object : ScheduleChildAdapter.ScheduleButtonListener {
-            override fun onDeleteClicked(documentId: String) {
-                viewModel.deleteData(documentId)
+            override fun onDeleteClicked(schedule: Schedule) {
+                viewModel.deleteData(requireActivity(), schedule.id!!, schedule.uniqueId!!)
             }
 
             override fun onItemClicked(schedule: Schedule) {

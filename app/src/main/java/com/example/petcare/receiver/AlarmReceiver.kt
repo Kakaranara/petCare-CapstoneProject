@@ -46,6 +46,17 @@ class AlarmReceiver : BroadcastReceiver() {
         )
     }
 
+    fun cancelAlarm(context: Context, id: Int) {
+        val alarmService = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmReceiver::class.java)
+        val pendingIntent =
+            PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_IMMUTABLE)
+        pendingIntent.cancel()
+
+        alarmService.cancel(pendingIntent)
+        Log.e(TAG, "cancelAlarm: alarm removed")
+    }
+
     companion object {
         const val EXTRA_MESSAGE = "alarm_message"
         const val EXTRA_ID = "alarm_id"

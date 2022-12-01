@@ -16,7 +16,6 @@ import com.example.petcare.helper.Async
 import com.example.petcare.helper.DateHelper
 import com.example.petcare.helper.safeNav
 import com.example.petcare.helper.showToast
-import com.example.petcare.ui.dialog.DetailScheduleDialog
 import com.example.petcare.utils.gone
 import com.example.petcare.utils.visible
 
@@ -41,8 +40,8 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
         val divider2 = DividerItemDecoration(requireActivity(), manager2.orientation)
 
         val adapterClickListener = object : ScheduleChildAdapter.ScheduleButtonListener {
-            override fun onDeleteClicked(documentId: String) {
-                viewModel.deleteData(documentId)
+            override fun onDeleteClicked(schedule: Schedule) {
+                viewModel.deleteData(requireActivity(), schedule.id!!, schedule.uniqueId!!)
             }
 
             override fun onEditClicked(schedule: Schedule) {

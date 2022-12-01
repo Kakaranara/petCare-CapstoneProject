@@ -1,5 +1,6 @@
 package com.example.petcare.ui.main.schedule.all
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.example.petcare.data.repository.ScheduleRepository
 
@@ -8,5 +9,6 @@ class AllScheduleViewModel(
 ) : ViewModel() {
     fun listenData() = repository.listenAllData()
     fun unRegister() = repository.unRegisterAll()
-    fun deleteData(documentId: String) = repository.deleteData(documentId)
+    fun deleteData(context: Context, id: Int, documentId: String) =
+        repository.deleteData(context, id, documentId)
 }

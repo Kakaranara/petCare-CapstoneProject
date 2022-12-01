@@ -39,7 +39,7 @@ class ScheduleChildAdapter : RecyclerView.Adapter<ScheduleChildAdapter.ViewHolde
             binding.tvDateTime.text = displayDate
 
             binding.btnScheduleDelete.setOnClickListener {
-                listener?.onDeleteClicked(data.uniqueId!!)
+                listener?.onDeleteClicked(data)
             }
             binding.btnScheduleEdit.setOnClickListener {
                 listener?.onEditClicked(data)
@@ -51,7 +51,7 @@ class ScheduleChildAdapter : RecyclerView.Adapter<ScheduleChildAdapter.ViewHolde
     }
 
     interface ScheduleButtonListener {
-        fun onDeleteClicked(documentId: String)
+        fun onDeleteClicked(schedule: Schedule)
         fun onItemClicked(schedule: Schedule)
         fun onEditClicked(schedule: Schedule)
     }
