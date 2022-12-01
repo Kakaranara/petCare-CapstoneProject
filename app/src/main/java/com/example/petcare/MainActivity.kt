@@ -1,10 +1,13 @@
 package com.example.petcare
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavDestination
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.petcare.databinding.ActivityMainBinding
@@ -24,6 +27,12 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.containerView) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNavbar.setupWithNavController(navController)
+
+        //?deeplink to specified fragment
+        if (intent.data?.toString()?.contains(BuildConfig.PREFIX) == true){
+            navHostFragment.navController.navigate(R.id.action_story)
+        }
+
 
         navController.addOnDestinationChangedListener { _, destination: NavDestination, _ ->
             /**
@@ -61,5 +70,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun invisible() {
         binding.bottomNavbar.visibility = View.GONE
+    }
+
+    override fun onStart() {
+        super.onStart()
+
     }
 }

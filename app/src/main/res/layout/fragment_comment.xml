@@ -6,16 +6,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.main.story.comment.CommentFragment">
 
-    <ProgressBar
-        android:id="@+id/pb_comment"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:visibility="gone"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/postComment"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_item"
-        app:layout_constraintEnd_toEndOf="@+id/rv_item"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:textColor="?attr/colorOnSecondary"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rv_item" />
+        app:layout_constraintTop_toBottomOf="@id/photoprofile"
+        tools:text="Comments for bobi' post" />
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/photoprofile"
@@ -46,8 +50,8 @@
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/postComment"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
-        app:layout_constraintTop_toBottomOf="@+id/photoprofile"
         tools:listitem="@layout/comment_item_layout" />
 
 
@@ -92,5 +96,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pb_comment"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/rv_item"
+        app:layout_constraintEnd_toEndOf="@+id/rv_item"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rv_item" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

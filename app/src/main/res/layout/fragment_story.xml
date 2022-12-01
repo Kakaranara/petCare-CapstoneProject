@@ -6,23 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.story.main.StoryFragment">
 
-    <ProgressBar
-        android:id="@+id/pb_story"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/rv_item"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="-16dp"
         tools:listitem="@layout/story_item_layout" />
 
     <ImageView
@@ -47,5 +37,15 @@
         android:src="@drawable/ic_baseline_edit_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/pb_story"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

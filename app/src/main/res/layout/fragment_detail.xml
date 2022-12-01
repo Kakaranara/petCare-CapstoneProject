@@ -41,8 +41,8 @@
 
     <ImageView
         android:id="@+id/favorite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/ic_baseline_favorite_border_24"
@@ -53,16 +53,17 @@
         android:id="@+id/countLike"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:textSize="11sp"
+        tools:text="0 like"
         app:layout_constraintEnd_toEndOf="@+id/favorite"
         app:layout_constraintStart_toStartOf="@+id/favorite"
         app:layout_constraintTop_toBottomOf="@+id/favorite" />
 
     <ImageView
         android:id="@+id/comment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="25dp"
         android:src="@drawable/ic_baseline_mode_comment_24"
         app:layout_constraintBottom_toBottomOf="@+id/favorite"
         app:layout_constraintStart_toEndOf="@id/favorite"
@@ -73,20 +74,41 @@
         android:id="@+id/countComment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0"
+        android:textSize="11sp"
+        tools:text="0 comment"
         app:layout_constraintEnd_toEndOf="@+id/comment"
         app:layout_constraintStart_toStartOf="@+id/comment"
         app:layout_constraintTop_toBottomOf="@+id/comment" />
 
     <ImageView
         android:id="@+id/share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="25dp"
         android:src="@drawable/ic_baseline_share_24"
         app:layout_constraintBottom_toBottomOf="@+id/comment"
         app:layout_constraintStart_toEndOf="@id/comment"
         app:layout_constraintTop_toTopOf="@+id/comment" />
+
+    <TextView
+        android:id="@+id/countShare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        app:layout_constraintEnd_toEndOf="@+id/share"
+        app:layout_constraintStart_toStartOf="@+id/share"
+        app:layout_constraintTop_toBottomOf="@+id/share"
+        tools:text="0 share" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="4dp"
+        app:layout_constraintBottom_toBottomOf="@id/photo_profile"
+        app:layout_constraintStart_toStartOf="@id/photo_profile"
+        app:layout_constraintEnd_toEndOf="@id/username"
+        app:layout_constraintTop_toTopOf="@id/photo_profile"
+        android:background="@drawable/bg_view_transparant"/>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/photo_profile"
@@ -94,6 +116,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        tools:src="@drawable/ic_avatar_24"
         app:layout_constraintStart_toStartOf="@+id/photo_story"
         app:layout_constraintTop_toTopOf="@+id/photo_story" />
 
@@ -106,6 +129,7 @@
         android:textAlignment="textStart"
         android:textColor="@color/black"
         android:textSize="18sp"
+        tools:text="bobi"
         app:layout_constraintBottom_toBottomOf="@+id/photo_profile"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/photo_profile"
@@ -128,8 +152,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:textSize="11dp"
         app:layout_constraintEnd_toEndOf="@+id/description"
         app:layout_constraintTop_toBottomOf="@+id/description"
         tools:text="23 nov 2022" />
+
+    <ProgressBar
+        android:id="@+id/pb_detail"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

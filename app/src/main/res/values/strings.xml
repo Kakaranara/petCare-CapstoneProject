@@ -32,5 +32,14 @@
     <string name="add_schedule">add_schedule</string>
     <string name="latest_news">Latest News</string>
     <string name="no_news_found">No data found, try another keyword</string>
+    <string name="no_activity">Cheers! \n You have no activity in 1 week</string>
+    <string name="today_schedule">Today Schedule</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="check_all_shedule">Check All Shedule..</string>
+    <string name="no_schedule">No Schedule</string>
+    <string name="edit_schedule">Edit Schedule</string>
+    <string name="delete_schedule">Delete Schedule</string>
+    <string name="empty_data_image">Empty Data Image</string>
+    <string name="looks_like_you_don_t_have_any_schedule_yet">Looks like you don\'t have any schedule yet..</string>
 
 </resources>

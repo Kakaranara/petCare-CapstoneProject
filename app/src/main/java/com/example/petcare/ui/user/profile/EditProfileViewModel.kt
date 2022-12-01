@@ -8,6 +8,8 @@ import com.example.petcare.data.repository.model.IProfileRepository
 class EditProfileViewModel(
     private val repository: IProfileRepository = ProfileRepository()
 ) : ViewModel() {
+
+    fun postPhotoProfile(name: String, imgUri: Uri) = repository.postPhotoProfile(name, imgUri)
     fun updateProfileData(name: String, uri: Uri?) = repository.updateProfile(name, uri)
     fun getUser() = repository.getUser()
 }

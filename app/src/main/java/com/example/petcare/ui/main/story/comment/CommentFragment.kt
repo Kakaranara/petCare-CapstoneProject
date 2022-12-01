@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petcare.ViewModelFactory
-import com.example.petcare.data.BaseResult
 import com.example.petcare.data.stori.Comment
 import com.example.petcare.data.stori.CommentResponse
 import com.example.petcare.data.stori.Story
@@ -31,7 +30,13 @@ class CommentFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mAuth = FirebaseAuth.getInstance()
+        val currentName = mAuth.currentUser!!.displayName!!
         val data = arguments?.getParcelable<Story>(DATA_POST)
+        _binding?.postComment!!.text = buildString {
+            append("Komentar untuk postingan ")
+            if (currentName == data!!.name) append("kamu") else append(data.name)
+        }
         setUpRv()
         addCommentAction(data)
         getComment(data)
@@ -90,12 +95,12 @@ class CommentFragment : Fragment() {
             )
             viewModel.addComment(comment).observe(viewLifecycleOwner){result->
                 when(result){
-                    is BaseResult.Error -> {
+                    is Async.Error -> {
                         handleLoading(false)
-                        context?.showToast(result.message)
+                        context?.showToast(result.error)
                     }
-                    is BaseResult.Loading -> handleLoading(true)
-                    is BaseResult.Success -> {
+                    is Async.Loading -> handleLoading(true)
+                    is Async.Success -> {
                         handleLoading(false)
                         _binding?.etComment?.clearFocus()
                         _binding?.etComment?.text = null
@@ -116,7 +121,6 @@ class CommentFragment : Fragment() {
                 is Async.Loading -> handleLoading(true)
                 is Async.Success -> {
                     handleLoading(false)
-                    context?.showToast("post updated")
                 }
             }
         }
