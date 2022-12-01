@@ -14,6 +14,7 @@ import com.example.petcare.data.remote.response.Schedule
 import com.example.petcare.databinding.FragmentScheduleBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.DateHelper
+import com.example.petcare.helper.safeNav
 import com.example.petcare.helper.showToast
 import com.example.petcare.ui.dialog.DetailScheduleDialog
 import com.example.petcare.utils.gone
@@ -48,11 +49,13 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
             }
 
             override fun onItemClicked(schedule: Schedule) {
-                val go =
-                    ScheduleFragmentDirections.actionActionScheduleToDetailScheduleDialog(schedule)
-                findNavController().navigate(go)
-//                val dialog = DetailScheduleDialog()
-//                dialog.show(childFragmentManager, tag)
+                safeNav {
+                    val go =
+                        ScheduleFragmentDirections.actionActionScheduleToDetailScheduleDialog(
+                            schedule
+                        )
+                    findNavController().navigate(go)
+                }
             }
         }
 
