@@ -10,4 +10,6 @@ class DetailViewModel(private val repository: StoryRepository): ViewModel() {
 
     fun addPostLike(postId: String, uid: String) = repository.addPostLike(postId, uid)
 
+    fun addSharePost(postId: String, shareCount: Int) = repository.updateSharePost(postId, shareCount)
+
 }

@@ -6,8 +6,18 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.OpenableColumns
+import android.widget.Toast
 import androidx.annotation.RequiresApi
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import java.io.File
+import com.example.petcare.BuildConfig
+import com.example.petcare.MainActivity
+import com.example.petcare.ui.main.story.detail.DetailFragment
+import com.google.firebase.dynamiclinks.DynamicLink
+import com.google.firebase.dynamiclinks.ktx.androidParameters
+import com.google.firebase.dynamiclinks.ktx.dynamicLinks
+import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
+import com.google.firebase.ktx.Firebase
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.io.OutputStream
@@ -59,5 +69,57 @@ object DateFormatter{
         val formatter = SimpleDateFormat("dd MMM, yyyy")
         val result = Date(currentDate)
         return formatter.format(result)
+    }
+}
+
+object ShareLink{
+    fun generateShareLink(
+        deepLink: Uri,
+        previewImgLink: Uri,
+        getShareableLink: (String) -> Unit ={}
+    ){
+        val dynamicLink = FirebaseDynamicLinks.getInstance().createDynamicLink().run {
+            //? to get link parameter
+            link = deepLink
+
+            //?domain prefix is domain name on dynamic link firebase dashboard
+            domainUriPrefix = BuildConfig.PREFIX
+
+            //?pass preview image here
+            setSocialMetaTagParameters(
+                DynamicLink.SocialMetaTagParameters.Builder()
+                    .setImageUrl(previewImgLink)
+                    .build()
+            )
+
+            androidParameters {
+                build()
+            }
+
+            buildDynamicLink()
+
+        }
+
+        val shortLinkTask = Firebase.dynamicLinks.shortLinkAsync {
+            link = deepLink
+            domainUriPrefix = BuildConfig.PREFIX
+
+            //?pass preview image here
+            setSocialMetaTagParameters(
+                DynamicLink.SocialMetaTagParameters.Builder()
+                    .setImageUrl(previewImgLink)
+                    .build()
+            )
+
+            androidParameters {
+                build()
+            }
+
+            buildDynamicLink()
+
+        }.addOnSuccessListener {
+            getShareableLink.invoke(it.shortLink.toString())
+        }
+
     }
 }

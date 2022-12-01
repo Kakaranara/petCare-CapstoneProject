@@ -115,7 +115,7 @@ class AddStoryFragment : Fragment() {
 
     private fun handleSuccess(data: Uri) {
         val postId = abs(Random.nextInt()).toString()
-        val urlAvatar = if (mAuth.currentUser?.photoUrl != null) mAuth.currentUser?.photoUrl.toString() else null
+        val urlAvatar = if (mAuth.currentUser?.photoUrl!!.path != null) mAuth.currentUser?.photoUrl!!.path else null
         val desc = _binding?.etDescription?.text.toString()
         val uid = mAuth.currentUser?.uid.toString()
         val name = mAuth.currentUser?.displayName
@@ -125,14 +125,14 @@ class AddStoryFragment : Fragment() {
         )
         viewModel.postStory(story).observe(viewLifecycleOwner){result->
             when(result){
-                is BaseResult.Success->{
+                is Async.Success->{
                     handleLoading(false)
                     findNavController().navigate(R.id.action_addStoryFragmnet_to_action_story)
                     context?.showToast("upload success")
                 }
-                is BaseResult.Loading -> { handleLoading(true)}
-                is BaseResult.Error -> {
-                    context?.showToast(result.message)
+                is Async.Loading -> { handleLoading(true)}
+                is Async.Error -> {
+                    context?.showToast(result.error)
                     handleLoading(false)
                 }
             }

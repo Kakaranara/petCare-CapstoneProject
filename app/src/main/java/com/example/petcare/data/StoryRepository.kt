@@ -36,13 +36,13 @@ class StoryRepository(
 
     }
 
-    fun addPost(story: Story):LiveData<BaseResult<Boolean>> = liveData {
-        emit(BaseResult.Loading)
+    fun addPost(story: Story):LiveData<Async<Boolean>> = liveData {
+        emit(Async.Loading)
         try {
             rootRef.collection("stories").document().set(story).await()
-            emit(BaseResult.Success(true))
+            emit(Async.Success(true))
         }catch (e: Exception){
-            emit(BaseResult.Error(e.message.toString()))
+            emit(Async.Error(e.message.toString()))
         }
     }
 
@@ -110,7 +110,7 @@ class StoryRepository(
                     if (snapshot != null){
                         val data = snapshot.toObjects(Story::class.java)[0]
                         story = Story(
-                            data.postId, data.uid, data.name, data.avatarUrl, data.urlImg, data.description, data.createdAt, data.comment, data.like
+                            data.postId, data.uid, data.name, data.avatarUrl, data.urlImg, data.description, data.createdAt, data.comment, data.share, data.like
                         )
                         liveData.value = Async.Success(story!!)
                     }else{
@@ -172,14 +172,40 @@ class StoryRepository(
         return liveData
     }
 
+    fun updateSharePost(postId: String, share: Int): LiveData<Async<Boolean>>{
+        val liveData = MutableLiveData<Async<Boolean>>(Async.Loading)
+        try {
+            rootRef.collection("stories")
+                .whereEqualTo("postId", postId)
+                .get()
+                .addOnCompleteListener { task->
+                    if (task.isSuccessful){
+                        for (document in task.result){
+                            val update: MutableMap<String, Any> = HashMap()
+                            update["share"] = share
+                            rootRef.collection("stories").document(document.id).set(update, SetOptions.merge())
+                            liveData.value = Async.Success(task.isComplete)
+                        }
+                    }else{
+                        liveData.value = Async.Error(task.exception?.message.toString())
+                    }
+                }
 
-    fun addComment(comment: Comment): LiveData<BaseResult<Comment>> = liveData {
-        emit(BaseResult.Loading)
+        }catch (e: Exception){
+            liveData.value = Async.Error(e.message.toString())
+        }
+
+        return liveData
+    }
+
+
+    fun addComment(comment: Comment): LiveData<Async<Comment>> = liveData {
+        emit(Async.Loading)
         try {
             rootRef.collection("comment").document().set(comment)
-            emit(BaseResult.Success(comment))
+            emit(Async.Success(comment))
         }catch (e: Exception){
-            emit(BaseResult.Error(e.message.toString()))
+            emit(Async.Error(e.message.toString()))
         }
     }
 

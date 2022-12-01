@@ -10,11 +10,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.petcare.R
-import com.example.petcare.data.stori.Like
 import com.example.petcare.data.stori.Story
-import com.example.petcare.data.stori.StoryResponse
 import com.example.petcare.databinding.StoryItemLayoutBinding
-import com.example.petcare.ui.main.home.HomeFragmentDirections
 import com.example.petcare.ui.main.story.comment.CommentFragment
 import com.example.petcare.ui.main.story.detail.DetailFragment
 import com.example.petcare.utils.DateFormatter
@@ -62,6 +59,17 @@ class StoryAdapter(private val onLikeClicked: (Story) -> Unit): ListAdapter<Stor
             binding.username.text = data.name
             binding.description.text = data.description
             binding.date.text = DateFormatter.formatterDate(data.createdAt!!)
+            if (data.share == 0 || data.share ==1){
+                binding.shareCount.text = buildString {
+                    append(data.share)
+                    append(" share")
+                }
+            }else{
+                binding.shareCount.text = buildString {
+                    append(data.share)
+                    append(" shares")
+                }
+            }
             if (data.comment == 0 || data.comment == 1){
                 binding.commentCount.text = buildString {
                     append(data.comment)

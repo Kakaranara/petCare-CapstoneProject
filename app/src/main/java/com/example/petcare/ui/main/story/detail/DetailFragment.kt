@@ -1,23 +1,28 @@
 package com.example.petcare.ui.main.story.detail
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
+import com.example.petcare.BuildConfig
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
 import com.example.petcare.data.stori.Story
 import com.example.petcare.databinding.FragmentDetailBinding
 import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
+import com.example.petcare.helper.capitalizeWords
 import com.example.petcare.helper.showToast
 import com.example.petcare.ui.main.story.comment.CommentFragment
 import com.example.petcare.utils.DateFormatter
+import com.example.petcare.utils.ShareLink
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -67,6 +72,17 @@ class DetailFragment : Fragment() {
         _binding?.username?.text = data?.name
         _binding?.description?.text = data?.description
         _binding?.date?.text = DateFormatter.formatterDate(data?.createdAt!!)
+        if (data.share == 0 || data.share ==1){
+            _binding?.countShare?.text = buildString {
+                append(data.share.toString())
+                append(" share")
+            }
+        }else{
+            _binding?.countShare?.text = buildString {
+                append(data.share.toString())
+                append(" shares")
+            }
+        }
         if (data.comment == 0 || data.comment == 1){
             _binding?.countComment?.text = buildString {
                 append(data.comment.toString())
@@ -92,7 +108,7 @@ class DetailFragment : Fragment() {
         }
         if (data.avatarUrl != null) {
             Glide.with(requireContext())
-                .load(data.avatarUrl)
+                .load(data.avatarUrl!!.toUri())
                 .circleCrop()
                 .into(_binding?.photoProfile!!)
         }else{
@@ -150,6 +166,43 @@ class DetailFragment : Fragment() {
                             getDetail(data.postId)
                         }
                     }
+                }
+            }
+        }
+
+        _binding?.share?.setOnClickListener {
+            ShareLink.generateShareLink(
+                deepLink = "${BuildConfig.PREFIX}/post/${data.postId}".toUri(),
+                previewImgLink = data.urlImg!!.toUri()
+            ){generateLink->
+                try {
+                    val intentShare = Intent(Intent.ACTION_SEND)
+                    intentShare.type = "text/plan"
+                    intentShare.putExtra(Intent.EXTRA_SUBJECT, "Ada yang baru nihh ->")
+                    val body: String =
+                        "\n" + data.name!!.capitalizeWords() +"\n" + "Share post on PetCare App" + "\n" +  generateLink + "\n"
+                    intentShare.putExtra(Intent.EXTRA_TEXT, body)
+                    startActivity(Intent.createChooser(intentShare, "Share with: "))
+                    if (generateLink.isNotEmpty()){
+                        val shareCount = data.share + 1
+                        viewModel.addSharePost(data.postId, shareCount).observe(viewLifecycleOwner){result->
+                            when(result){
+                                is Async.Loading -> {
+                                    handleLoading(true)
+                                }
+                                is Async.Error -> {
+                                    handleLoading(false)
+                                    context?.showToast(result.error)
+                                }
+                                is Async.Success -> {
+                                    handleLoading(false)
+                                    getDetail(data.postId)
+                                }
+                            }
+                        }
+                    }
+                }catch (e: Exception){
+                    showToast("cannot, share")
                 }
             }
         }

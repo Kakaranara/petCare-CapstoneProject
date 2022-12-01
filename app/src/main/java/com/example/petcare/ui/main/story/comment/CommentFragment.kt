@@ -91,12 +91,12 @@ class CommentFragment : Fragment() {
                 )
                 viewModel.addComment(comment).observe(viewLifecycleOwner){result->
                     when(result){
-                        is BaseResult.Error -> {
+                        is Async.Error -> {
                             handleLoading(false)
-                            context?.showToast(result.message)
+                            context?.showToast(result.error)
                         }
-                        is BaseResult.Loading -> handleLoading(true)
-                        is BaseResult.Success -> {
+                        is Async.Loading -> handleLoading(true)
+                        is Async.Success -> {
                             handleLoading(false)
                             _binding?.etComment?.clearFocus()
                             _binding?.etComment?.text = null
