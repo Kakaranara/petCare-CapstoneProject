@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 class AddStoryViewModel(private val repository: StoryRepository): ViewModel() {
 
-    suspend fun postImage(imageUri: Uri) = repository.postImage(imageUri)
+    suspend fun postImage(name: String, imageUri: Uri) = repository.postImage(name, imageUri)
     suspend fun postStory(story: Story) = repository.addPost(story)
 
 

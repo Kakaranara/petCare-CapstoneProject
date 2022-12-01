@@ -90,7 +90,8 @@ class AddStoryFragment : Fragment() {
 
     private fun upload() {
         lifecycleScope.launch {
-            viewModel.postImage(imgUri!!).observe(viewLifecycleOwner){result->
+            val name = mAuth.currentUser?.displayName.toString()
+            viewModel.postImage(name, imgUri!!).observe(viewLifecycleOwner){result->
                 when(result){
                     is Async.Error -> {
                         handleLoading(false)
@@ -119,7 +120,7 @@ class AddStoryFragment : Fragment() {
 
     private fun handleSuccess(data: Uri) {
         val postId = abs(Random.nextInt()).toString()
-        val urlAvatar = if (mAuth.currentUser?.photoUrl!!.path != null) mAuth.currentUser?.photoUrl!!.path else null
+        val urlAvatar = if (mAuth.currentUser?.photoUrl != null) mAuth.currentUser?.photoUrl.toString() else null
         val desc = _binding?.etDescription?.text.toString()
         val uid = mAuth.currentUser?.uid.toString()
         val name = mAuth.currentUser?.displayName

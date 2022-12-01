@@ -23,11 +23,11 @@ class StoryRepository(
     private val mStorage: StorageReference
 ){
 
-    suspend fun postImage(imageUri: Uri):LiveData<Async<Uri>> = liveData{
+    suspend fun postImage(name: String, imageUri: Uri):LiveData<Async<Uri>> = liveData{
 
         emit(Async.Loading)
         try {
-            val downloadUrl = mStorage.child("Photo").putFile(imageUri).await()
+            val downloadUrl = mStorage.child(name).putFile(imageUri).await()
                 .storage.downloadUrl.await()
             emit(Async.Success(downloadUrl))
         }catch (e:Exception){

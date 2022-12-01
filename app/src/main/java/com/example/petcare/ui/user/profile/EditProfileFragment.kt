@@ -55,27 +55,41 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view) {
             binding.btnEditImage -> {
-                Intent(Intent.ACTION_GET_CONTENT).apply {
+                Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                     type = "image/*"
                 }.also { intentGallery.launch(Intent.createChooser(it, "im here bro")) }
             }
             binding.btnConfirmEdit -> {
                 val name = binding.etEditName.text.toString()
-                viewModel.updateProfileData(name, uri).observe(viewLifecycleOwner){
-                    when(it){
-                        is Async.Error -> {
-                            binding.btnConfirmEdit.isEnabled = true
-                            showToast("Failed. ${it.error}")
+                viewModel.postPhotoProfile(name, uri!!).observe(viewLifecycleOwner){result->
+                    when(result){
+                        is Async.Loading -> {
+                            _binding?.btnConfirmEdit?.isEnabled = false
                         }
-                        Async.Loading -> {
-                            binding.btnConfirmEdit.isEnabled = false
+                        is Async.Error -> {
+                            _binding?.btnConfirmEdit?.isEnabled = false
                         }
                         is Async.Success -> {
-                            showToast("Success")
-                            findNavController().popBackStack()
+                            val url = result.data
+                            viewModel.updateProfileData(name, url).observe(viewLifecycleOwner){
+                                when(it){
+                                    is Async.Error -> {
+                                        binding.btnConfirmEdit.isEnabled = true
+                                        showToast("Failed. ${it.error}")
+                                    }
+                                    Async.Loading -> {
+                                        binding.btnConfirmEdit.isEnabled = false
+                                    }
+                                    is Async.Success -> {
+                                        showToast("Success")
+                                        findNavController().popBackStack()
+                                    }
+                                }
+                            }
                         }
                     }
                 }
+
             }
         }
     }
