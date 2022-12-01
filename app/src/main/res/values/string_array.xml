@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Category">
+        <item>Makan</item>
+        <item>Jalan</item>
+        <item>Another</item>
+    </string-array>
+    <string-array name="remind_before">
+        <item>15 Minutes</item>
+        <item>30 Minutes</item>
+        <item>1 Hours</item>
+        <item>2 Hours</item>
+        <item>4 Hours</item>
+        <item>8 Hours</item>
+        <item>1 Day</item>
+    </string-array>
+
+</resources>
