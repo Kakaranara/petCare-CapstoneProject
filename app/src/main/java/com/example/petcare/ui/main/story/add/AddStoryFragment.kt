@@ -165,8 +165,8 @@ class AddStoryFragment : Fragment() {
                 }
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s?.length!! > 100){
-                    _binding!!.etDescription.isEnabled = false
+                if (s?.length!! == 100){
+                    showToast("max character for description is 100")
                 }
             }
             override fun afterTextChanged(s: Editable?) {
