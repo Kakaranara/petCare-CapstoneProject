@@ -15,6 +15,7 @@ import com.example.petcare.databinding.FragmentScheduleBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.DateHelper
 import com.example.petcare.helper.showToast
+import com.example.petcare.ui.dialog.DetailScheduleDialog
 import com.example.petcare.utils.gone
 import com.example.petcare.utils.visible
 
@@ -43,12 +44,15 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                 viewModel.deleteData(documentId)
             }
 
-            override fun onEditClicked() {
-
+            override fun onEditClicked(schedule: Schedule) {
             }
 
-            override fun onItemClicked() {
-                showToast("item clicked!")
+            override fun onItemClicked(schedule: Schedule) {
+                val go =
+                    ScheduleFragmentDirections.actionActionScheduleToDetailScheduleDialog(schedule)
+                findNavController().navigate(go)
+//                val dialog = DetailScheduleDialog()
+//                dialog.show(childFragmentManager, tag)
             }
         }
 

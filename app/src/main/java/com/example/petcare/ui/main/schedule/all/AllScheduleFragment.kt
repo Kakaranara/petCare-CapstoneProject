@@ -73,12 +73,15 @@ class AllScheduleFragment : Fragment() {
                 viewModel.deleteData(documentId)
             }
 
-            override fun onItemClicked() {
-
+            override fun onItemClicked(schedule: Schedule) {
+                val go =
+                    AllScheduleFragmentDirections.actionAllScheduleFragmentToDetailScheduleDialog(
+                        schedule
+                    )
+                findNavController().navigate(go)
             }
 
-            override fun onEditClicked() {
-
+            override fun onEditClicked(schedule: Schedule) {
             }
         })
     }

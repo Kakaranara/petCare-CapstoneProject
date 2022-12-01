@@ -42,18 +42,18 @@ class ScheduleChildAdapter : RecyclerView.Adapter<ScheduleChildAdapter.ViewHolde
                 listener?.onDeleteClicked(data.uniqueId!!)
             }
             binding.btnScheduleEdit.setOnClickListener {
-                listener?.onEditClicked()
+                listener?.onEditClicked(data)
             }
             binding.root.setOnClickListener {
-                listener?.onItemClicked()
+                listener?.onItemClicked(data)
             }
         }
     }
 
     interface ScheduleButtonListener {
         fun onDeleteClicked(documentId: String)
-        fun onItemClicked()
-        fun onEditClicked()
+        fun onItemClicked(schedule: Schedule)
+        fun onEditClicked(schedule: Schedule)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
