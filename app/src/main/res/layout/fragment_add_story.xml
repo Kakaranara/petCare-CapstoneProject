@@ -4,20 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.story.add.AddStoryFragmnet">
-
-    <ProgressBar
-        android:id="@+id/pb_upload"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/cardView"
-        app:layout_constraintEnd_toStartOf="@+id/btn_camera"
-        app:layout_constraintStart_toEndOf="@+id/btn_gallery"
-        app:layout_constraintTop_toBottomOf="@+id/preview_photo" />
+    tools:context=".ui.main.story.add.AddStoryFragment">
 
     <de.hdodenhof.circleimageview.CircleImageView
+        tools:viewBindingIgnore="true"
         android:id="@+id/circleImageView2"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -25,7 +15,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_baseline_person_24" />
+        android:src="@drawable/ic_launcher_foreground" />
 
     <TextView
         android:id="@+id/textView"
@@ -46,46 +36,52 @@
         android:id="@+id/preview_photo"
         android:layout_width="410dp"
         android:layout_height="400dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/circleImageView2" />
 
-    <Button
-        android:id="@+id/btn_gallery"
+    <TextView
+        android:id="@+id/tv_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Gallery"
-        android:backgroundTint="?attr/colorSecondaryVariant"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_camera"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_camera" />
-
-    <Button
-        android:id="@+id/btn_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/bg_border"
+        android:padding="12dp"
         android:text="Camera"
-        android:backgroundTint="?attr/colorSecondaryVariant"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/preview_photo" />
+        android:textColor="?attr/colorOnSecondary"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/tv_pickPhoto"
+        app:layout_constraintHorizontal_bias="0.61"
+        app:layout_constraintStart_toStartOf="@+id/tv_pickPhoto"
+        app:layout_constraintTop_toBottomOf="@+id/tv_pickPhoto" />
+
+    <TextView
+        android:id="@+id/tv_pickPhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_border"
+        android:padding="12dp"
+        android:text=" Select Photo"
+        android:textColor="?attr/colorOnSecondary"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/preview_photo"
+        app:layout_constraintEnd_toEndOf="@+id/preview_photo"
+        app:layout_constraintStart_toStartOf="@+id/preview_photo"
+        app:layout_constraintTop_toTopOf="@+id/preview_photo"
+        app:layout_constraintVertical_bias="0.36" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
         app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_camera">
+        app:layout_constraintTop_toBottomOf="@+id/preview_photo">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -97,21 +93,20 @@
                 android:layout_height="40dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/ic_baseline_person_24"
+                android:src="@drawable/ic_launcher_foreground"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_description"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="317dp"
+                android:layout_height="89dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@android:color/transparent"
                 android:gravity="start|top"
-                android:hint="type your feelin :)"
-                android:lines="3"
-                android:maxLines="3"
+                android:hint="Type anything"
+                android:maxLength="100"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/circleImageView3"
                 app:layout_constraintTop_toTopOf="@+id/circleImageView3" />
@@ -121,11 +116,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                android:text="0/100"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/et_description"
-                app:layout_constraintTop_toBottomOf="@+id/et_description"
-                android:text="0/100" />
+                app:layout_constraintTop_toBottomOf="@+id/et_description" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -140,6 +136,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/pb_upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/circleImageView2" />
 
 
 

@@ -15,7 +15,8 @@ data class Story(
     var description: String? = null,
     var createdAt: Long? = null,
     var comment: Int = 0,
-    var like: Int = 0
+    var share: Int = 0,
+    var like: ArrayList<String> = ArrayList<String>()
 ):Parcelable{
     constructor(): this("", "")
 }

@@ -1,8 +1,10 @@
 package com.example.petcare.ui.main.story.add
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
-import android.content.ContentResolver
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
@@ -10,22 +12,23 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.ext.SdkExtensions.getExtensionVersion
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
@@ -33,23 +36,20 @@ import com.example.petcare.data.BaseResult
 import com.example.petcare.data.stori.Story
 import com.example.petcare.databinding.FragmentAddStoryBinding
 import com.example.petcare.di.Injection
+import com.example.petcare.helper.Async
 import com.example.petcare.helper.showAlertDialog
 import com.example.petcare.helper.showToast
-import com.example.petcare.ui.main.story.main.StoryViewModel
 import com.example.petcare.utils.StoryUtil
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.coroutines.*
 import java.io.File
-import java.io.InputStream
-import java.util.UUID
+import kotlin.math.abs
 import kotlin.random.Random
-import kotlin.random.nextInt
 
 
-class AddStoryFragmnet : Fragment() {
+class AddStoryFragment : Fragment() {
     private var _binding: FragmentAddStoryBinding? = null
     private val binding get() = _binding!!
     private var imgUri: Uri? = null
@@ -57,12 +57,6 @@ class AddStoryFragmnet : Fragment() {
     private val viewModel by viewModels<AddStoryViewModel> {
         ViewModelFactory(Injection.provideStoryRepository())
     }
-
-    private var lat: Float? = null
-    private var lon: Float? = null
-
-    private lateinit var mDatabaseReference: DatabaseReference
-    private lateinit var mStorageReference: StorageReference
     private lateinit var mAuth: FirebaseAuth
 
 
@@ -74,48 +68,61 @@ class AddStoryFragmnet : Fragment() {
             REQUIRED_PERMISSION,
             REQUEST_CODE_PERMISSIONS)
         }
-
-        mStorageReference = FirebaseStorage.getInstance().reference
-        mDatabaseReference = FirebaseDatabase.getInstance("https://petcare-2e93d-default-rtdb.firebaseio.com/").reference
         mAuth = FirebaseAuth.getInstance()
 
         controlDescription()
 
-        _binding?.btnGallery?.setOnClickListener { startGallery() }
-        _binding?.btnCamera?.setOnClickListener { startCamera() }
+        _binding?.tvCamera?.setOnClickListener { startCamera() }
         _binding?.btnUpload?.setOnClickListener { upload() }
+        _binding?.tvPickPhoto?.setOnClickListener { startPickPhoto() }
+        _binding?.previewPhoto?.setOnClickListener {
+            startPickPhoto()
+        }
+
 
     }
 
-    private fun upload() {
-        viewModel.postImage(imgUri!!).observe(viewLifecycleOwner){result->
-            when(result){
-                is BaseResult.Error -> {
-                    handleLoading(false)
-                    context?.showToast(result.message)
-                }
-                is BaseResult.Loading -> {
-                    handleLoading(true)
-                }
-                is BaseResult.Success -> {
-                    handleLoading(false)
-                    handleSuccess(result.data)
-                }
-            }
+    private fun startPickPhoto() {
+        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
 
+    private fun upload() {
+        lifecycleScope.launch {
+            val name = mAuth.currentUser?.displayName.toString()
+            viewModel.postImage(name, imgUri!!).observe(viewLifecycleOwner){result->
+                when(result){
+                    is Async.Error -> {
+                        handleLoading(false)
+                        context?.showToast(result.error)
+                    }
+                    is Async.Loading -> {
+                        handleLoading(true)
+                    }
+                    is Async.Success -> {
+                        handleLoading(false)
+                        handleSuccess(result.data)
+                    }
+                }
+
+            }
         }
     }
 
     private fun handleLoading(isLoading: Boolean) {
-        if (isLoading){
-            _binding?.pbUpload?.visibility = View.VISIBLE
-        }else{
-            _binding?.pbUpload?.visibility = View.GONE
+        _binding?.pbUpload?.apply {
+            isIndeterminate = isLoading
+            if (!isLoading){
+                progress = 0
+                visibility = View.GONE
+            }else{
+                visibility = View.VISIBLE
+
+            }
         }
     }
 
     private fun handleSuccess(data: Uri) {
-        val postId = Random.nextInt().toString()
+        val postId = abs(Random.nextInt()).toString()
         val urlAvatar = if (mAuth.currentUser?.photoUrl != null) mAuth.currentUser?.photoUrl.toString() else null
         val desc = _binding?.etDescription?.text.toString()
         val uid = mAuth.currentUser?.uid.toString()
@@ -124,17 +131,22 @@ class AddStoryFragmnet : Fragment() {
         val story = Story(
             postId, uid, name, urlAvatar, data.toString(), desc, timeStamp,
         )
-        viewModel.postStory(story).observe(viewLifecycleOwner){result->
-            when(result){
-                is BaseResult.Success->{
-                    handleLoading(false)
-                    findNavController().navigate(R.id.action_addStoryFragmnet_to_action_story)
-                    context?.showToast("upload success")
-                }
-                is BaseResult.Loading -> { handleLoading(true)}
-                is BaseResult.Error -> {
-                    context?.showToast(result.message)
-                    handleLoading(false)
+        lifecycleScope.launch {
+            viewModel.postStory(story).observe(viewLifecycleOwner){result->
+                when(result){
+                    is Async.Success->{
+                        handleLoading(false)
+                        findNavController().navigate(R.id.action_addStoryFragmnet_to_action_story)
+                        context?.showToast("upload success")
+                    }
+                    is Async.Loading -> {
+                        handleLoading(true)
+                        _binding?.btnUpload?.isEnabled = false
+                    }
+                    is Async.Error -> {
+                        context?.showToast(result.error)
+                        handleLoading(false)
+                    }
                 }
             }
         }
@@ -158,31 +170,29 @@ class AddStoryFragmnet : Fragment() {
         }
     }
 
-    private fun startGallery() {
-        val intent = Intent()
-        intent.action = ACTION_GET_CONTENT
-        intent.type = "image/*"
-        val chooser = Intent.createChooser(intent, "Choose a picture")
-        launcherIntentGallery.launch(chooser)
-    }
-
     private fun controlDescription() {
         _binding?.etDescription?.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                _binding!!.counterWord.text = "0/100"
+                _binding!!.counterWord.text = buildString {
+                    append("0/100")
+                }
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s?.length!! > 100){
-                    _binding!!.etDescription.isEnabled = false
+                if (s?.length!! == 100){
+                    showToast("max character for description is 100")
                 }
             }
             override fun afterTextChanged(s: Editable?) {
                 val currentText = s.toString()
                 val currentLength = currentText.length
-                _binding!!.counterWord.text = "$currentLength/100"
+                _binding!!.counterWord.text = buildString {
+                    append(currentLength)
+                    append("/100")
+                }
             }
         })
     }
+
 
     private val launcherCameraIntent = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -192,16 +202,35 @@ class AddStoryFragmnet : Fragment() {
             imgUri = Uri.fromFile(myFile)
             val imgResult = BitmapFactory.decodeFile(myFile.path)
             _binding?.previewPhoto?.setImageBitmap(imgResult)
+            if (imgResult != null){
+                pickerVisible(true)
+            }else{
+                pickerVisible(false)
+            }
         }
     }
 
-    private val launcherIntentGallery = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ){result ->
-        if (result.resultCode == RESULT_OK){
-            val selectedImg: Uri = result?.data?.data as Uri
-            imgUri = selectedImg
-            _binding?.previewPhoto?.setImageURI(selectedImg)
+    /**
+     * *PickVisualMedia -> to get Photo from phone
+     */
+    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri!=null){
+            imgUri = uri
+            _binding?.previewPhoto?.setImageURI(uri)
+            pickerVisible(true)
+        }else{
+            pickerVisible(false)
+        }
+    }
+
+    private fun pickerVisible(isVisible: Boolean) {
+        if (isVisible){
+            _binding?.tvCamera?.visibility = View.GONE
+            _binding?.tvPickPhoto?.visibility = View.GONE
+        }else{
+            _binding?.tvCamera?.visibility = View.VISIBLE
+            _binding?.tvPickPhoto?.visibility = View.VISIBLE
+
         }
     }
 
@@ -219,11 +248,9 @@ class AddStoryFragmnet : Fragment() {
         }
     }
 
-    private fun allPermissionGranted() = Companion.REQUIRED_PERMISSION.all {
+    private fun allPermissionGranted() = REQUIRED_PERMISSION.all {
         ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
     }
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -233,8 +260,8 @@ class AddStoryFragmnet : Fragment() {
         return binding.root
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _binding = null
     }
 

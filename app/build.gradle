@@ -24,7 +24,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "BASE_URL", '"https://petcare-2e93d-default-rtdb.firebaseio.com/"'
+        buildConfigField "String", "PREFIX", '"https://petcareapp.page.link"'
     }
 
     buildFeatures {
@@ -63,6 +63,12 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
+
+    /**
+     * * Activity
+     */
+    implementation 'androidx.activity:activity-ktx:1.6.1'
+
     /**
      * * GService
      */
@@ -72,6 +78,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-database-ktx'
 
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
+
+
+    implementation 'com.firebaseui:firebase-ui-firestore:8.0.2'
+
+    // Dependency for Firebase Dynamic Links
+    implementation 'com.google.firebase:firebase-dynamic-links-ktx:21.1.0'
+
+    // Official Firebase documentation suggests adding this dependency as well.
+    implementation 'com.google.firebase:firebase-analytics-ktx:21.2.0'
 
 
 

@@ -11,10 +11,8 @@ import com.google.firebase.storage.StorageReference
 
 object Injection {
     fun provideStoryRepository(): StoryRepository{
-        val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
         val rooRef : FirebaseFirestore = FirebaseFirestore.getInstance()
-        val mDatabase: CollectionReference = rooRef.collection("stories")
         val mStorage: StorageReference = FirebaseStorage.getInstance().reference
-        return StoryRepository(mAuth,rooRef, mDatabase, mStorage)
+        return StoryRepository(rooRef, mStorage)
     }
 }
