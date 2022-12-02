@@ -154,6 +154,24 @@ class ScheduleRepository(
             }
     }
 
+    override fun editData(schedule: Schedule) {
+        val docRefs = scheduleRefs.document(schedule.uniqueId!!)
+        fireStore.runTransaction {
+            it.update(docRefs, "name", schedule.name)
+            it.update(docRefs, "category", schedule.category)
+            it.update(docRefs, "description", schedule.description)
+            it.update(docRefs, "reminderBefore", schedule.reminderBefore)
+            it.update(docRefs, "postScript", schedule.postScript)
+            it.update(docRefs, "date", schedule.date)
+            it.update(docRefs, "time", schedule.time)
+            it.update(docRefs, "timeStamp", schedule.timeStamp)
+        }.addOnSuccessListener {
+            Log.d(TAG, "editData: EDIT SUCCESS")
+        }.addOnFailureListener {
+            Log.e(TAG, "editData: ERROR ${it.message}")
+        }
+    }
+
     companion object {
         private const val TAG = "ScheduleRepository"
     }
