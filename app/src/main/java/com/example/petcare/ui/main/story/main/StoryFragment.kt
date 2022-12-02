@@ -18,11 +18,13 @@ import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
+import okhttp3.internal.notifyAll
 
 
 class StoryFragment : Fragment() {
     private var _binding: FragmentStoryBinding? = null
     private val binding get() = _binding!!
+    private lateinit var storyList: ArrayList<Story>
     private lateinit var mAuth: FirebaseAuth
     private var isLiked: Boolean = false
 
@@ -34,6 +36,8 @@ class StoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        storyList = ArrayList()
 
         mAuth = FirebaseAuth.getInstance()
         setRecyclerView()
@@ -61,7 +65,6 @@ class StoryFragment : Fragment() {
                         handleLoading(false)
                         setStory(result.data.story)
                     }
-                    else -> {}
                 }
             }
         }
@@ -76,37 +79,41 @@ class StoryFragment : Fragment() {
             adapter = StoryAdapter(onItemLiked = {stories->
                 isLiked = stories.like.contains(currentUser)
                 if (isLiked){
-                    viewModel.deleteStoryLike(stories.postId, currentUser).observe(viewLifecycleOwner){result->
-                        when(result){
-                            is Async.Loading -> {
-                                handleLoading(true)
-                            }
-                            is Async.Error -> {
-                                handleLoading(false)
-                                context?.showToast(result.error)
-                            }
-                            is Async.Success -> {
-                                handleLoading(false)
-                                isLiked = false
-                                getStories()
+                    lifecycleScope.launch{
+                        viewModel.deleteStoryLike(stories.postId, currentUser).observe(viewLifecycleOwner){result->
+                            when(result){
+                                is Async.Loading -> {
+                                    handleLoading(true)
+                                }
+                                is Async.Error -> {
+                                    handleLoading(false)
+                                    context?.showToast(result.error)
+                                }
+                                is Async.Success -> {
+                                    handleLoading(false)
+                                    isLiked = false
+                                    adapter.submitList(result.data.story)
+                                }
                             }
                         }
                     }
 
                 }else{
-                    viewModel.addStoryLike(stories.postId, currentUser).observe(viewLifecycleOwner){ result->
-                        when(result){
-                            is Async.Loading -> {
-                                handleLoading(true)
-                            }
-                            is Async.Error -> {
-                                handleLoading(false)
-                                context?.showToast(result.error)
-                            }
-                            is Async.Success -> {
-                                handleLoading(false)
-                                isLiked = false
-                                getStories()
+                    lifecycleScope.launch {
+                        viewModel.addStoryLike(stories.postId, currentUser).observe(viewLifecycleOwner){ result->
+                            when(result){
+                                is Async.Loading -> {
+                                    handleLoading(true)
+                                }
+                                is Async.Error -> {
+                                    handleLoading(false)
+                                    context?.showToast(result.error)
+                                }
+                                is Async.Success -> {
+                                    handleLoading(false)
+                                    adapter.submitList(result.data.story)
+                                    isLiked = false
+                                }
                             }
                         }
                     }
@@ -116,18 +123,20 @@ class StoryFragment : Fragment() {
                 onItemShared = {storieShared->
                     //? update share
                     val shareCount = storieShared.share + 1
-                    viewModel.addSharePost(storieShared.postId, shareCount).observe(viewLifecycleOwner){result->
-                        when(result){
-                            is Async.Loading -> {
-                                handleLoading(true)
-                            }
-                            is Async.Error -> {
-                                handleLoading(false)
-                                context?.showToast(result.error)
-                            }
-                            is Async.Success -> {
-                                handleLoading(false)
-                                getStories()
+                    lifecycleScope.launch {
+                        viewModel.addSharePost(storieShared.postId, shareCount).observe(viewLifecycleOwner){result->
+                            when(result){
+                                is Async.Loading -> {
+                                    handleLoading(true)
+                                }
+                                is Async.Error -> {
+                                    handleLoading(false)
+                                    context?.showToast(result.error)
+                                }
+                                is Async.Success -> {
+                                    handleLoading(false)
+                                    getStories()
+                                }
                             }
                         }
                     }
@@ -135,6 +144,8 @@ class StoryFragment : Fragment() {
             })
             adapter.submitList(data)
             _binding?.rvItem?.adapter = adapter
+
+
         }
     }
 
