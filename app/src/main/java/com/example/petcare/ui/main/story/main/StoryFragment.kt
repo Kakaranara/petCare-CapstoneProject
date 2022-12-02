@@ -135,7 +135,7 @@ class StoryFragment : Fragment() {
                                 }
                                 is Async.Success -> {
                                     handleLoading(false)
-                                    getStories()
+                                    adapter.submitList(result.data.story)
                                 }
                             }
                         }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.petcare.R
 import com.example.petcare.data.stori.Comment
 import com.example.petcare.databinding.CommentItemLayoutBinding
@@ -32,14 +33,11 @@ class CommentAdapter(): ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
             binding.name.text = data.name
             binding.comment.text = data.comment
             binding.date.text = DateFormatter.formatterDate(data.createdAt!!.toLong())
-            if (data.avatarUrl!!.isNotEmpty()){
-                Glide.with(itemView.context)
-                    .load(data.avatarUrl)
-                    .circleCrop()
-                    .into(binding.photoprofile)
-            }else{
-                binding.photoprofile.setImageResource(R.drawable.ic_avatar_24)
-            }
+            Glide.with(itemView.context)
+                .load(data.avatarUrl)
+                .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
+                .circleCrop()
+                .into(binding.photoprofile)
         }
 
     }
