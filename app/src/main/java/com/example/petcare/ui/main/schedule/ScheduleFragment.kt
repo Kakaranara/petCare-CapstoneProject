@@ -45,6 +45,9 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
             }
 
             override fun onEditClicked(schedule: Schedule) {
+                val go =
+                    ScheduleFragmentDirections.actionActionScheduleToEditScheduleFragment(schedule)
+                findNavController().navigate(go)
             }
 
             override fun onItemClicked(schedule: Schedule) {

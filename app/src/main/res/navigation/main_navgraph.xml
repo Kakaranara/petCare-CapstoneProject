@@ -82,6 +82,9 @@
         <action
             android:id="@+id/action_action_schedule_to_detailScheduleDialog"
             app:destination="@id/detailScheduleDialog" />
+        <action
+            android:id="@+id/action_action_schedule_to_editScheduleFragment"
+            app:destination="@id/editScheduleFragment" />
     </fragment>
     <action
         android:id="@+id/action_global_loginFragment"
@@ -183,4 +186,13 @@
         android:name="com.example.petcare.ui.main.other.petshop.PetShopFragment"
         android:label="fragment_pet_shop"
         tools:layout="@layout/fragment_pet_shop" />
+    <fragment
+        android:id="@+id/editScheduleFragment"
+        android:name="com.example.petcare.ui.main.schedule.edit.EditScheduleFragment"
+        android:label="fragment_edit_schedule"
+        tools:layout="@layout/fragment_edit_schedule" >
+        <argument
+            android:name="data"
+            app:argType="com.example.petcare.data.remote.response.Schedule" />
+    </fragment>
 </navigation>
