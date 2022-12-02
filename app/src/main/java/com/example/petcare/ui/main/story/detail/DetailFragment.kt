@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
 import com.example.petcare.BuildConfig
@@ -24,6 +25,7 @@ import com.example.petcare.ui.main.story.comment.CommentFragment
 import com.example.petcare.utils.DateFormatter
 import com.example.petcare.utils.ShareLink
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 
 class DetailFragment : Fragment() {
@@ -134,36 +136,40 @@ class DetailFragment : Fragment() {
 
         ivLike.setOnClickListener {
             if (isLiked){
-                viewModel.deletePostLike(data.postId, currentUser).observe(viewLifecycleOwner){result->
-                    when(result){
-                        is Async.Loading -> {
-                            handleLoading(true)
-                        }
-                        is Async.Error -> {
-                            handleLoading(false)
-                            context?.showToast(result.error)
-                        }
-                        is Async.Success -> {
-                            handleLoading(false)
-                            isLiked = false
-                            getDetail(data.postId)
+                lifecycleScope.launch {
+                    viewModel.deletePostLike(data.postId, currentUser).observe(viewLifecycleOwner){result->
+                        when(result){
+                            is Async.Loading -> {
+                                handleLoading(true)
+                            }
+                            is Async.Error -> {
+                                handleLoading(false)
+                                context?.showToast(result.error)
+                            }
+                            is Async.Success -> {
+                                handleLoading(false)
+                                isLiked = false
+                                getDetail(data.postId)
+                            }
                         }
                     }
                 }
             }else{
-                viewModel.addPostLike(data.postId, currentUser).observe(viewLifecycleOwner){result->
-                    when(result){
-                        is Async.Loading -> {
-                            handleLoading(true)
-                        }
-                        is Async.Error -> {
-                            handleLoading(false)
-                            context?.showToast(result.error)
-                        }
-                        is Async.Success -> {
-                            handleLoading(false)
-                            isLiked = false
-                            getDetail(data.postId)
+                lifecycleScope.launch {
+                    viewModel.addPostLike(data.postId, currentUser).observe(viewLifecycleOwner){result->
+                        when(result){
+                            is Async.Loading -> {
+                                handleLoading(true)
+                            }
+                            is Async.Error -> {
+                                handleLoading(false)
+                                context?.showToast(result.error)
+                            }
+                            is Async.Success -> {
+                                handleLoading(false)
+                                isLiked = false
+                                getDetail(data.postId)
+                            }
                         }
                     }
                 }
@@ -186,18 +192,20 @@ class DetailFragment : Fragment() {
 
                     //? update data share
                     val shareCount = data.share + 1
-                    viewModel.addSharePost(data.postId, shareCount).observe(viewLifecycleOwner){result->
-                        when(result){
-                            is Async.Loading -> {
-                                handleLoading(true)
-                            }
-                            is Async.Error -> {
-                                handleLoading(false)
-                                context?.showToast(result.error)
-                            }
-                            is Async.Success -> {
-                                handleLoading(false)
-                                getDetail(data.postId)
+                    lifecycleScope.launch {
+                        viewModel.addSharePost(data.postId, shareCount).observe(viewLifecycleOwner){result->
+                            when(result){
+                                is Async.Loading -> {
+                                    handleLoading(true)
+                                }
+                                is Async.Error -> {
+                                    handleLoading(false)
+                                    context?.showToast(result.error)
+                                }
+                                is Async.Success -> {
+                                    handleLoading(false)
+                                    getDetail(data.postId)
+                                }
                             }
                         }
                     }
