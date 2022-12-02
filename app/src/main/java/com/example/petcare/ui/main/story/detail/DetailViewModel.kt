@@ -6,10 +6,10 @@ import com.example.petcare.data.StoryRepository
 class DetailViewModel(private val repository: StoryRepository): ViewModel() {
     fun getDetailPost(postId: String) = repository.getDetailStory(postId)
 
-//    fun deletePostLike(postId: String, uid: String) = repository.deletePostLike(postId, uid)
+    suspend fun deletePostLike(postId: String, uid: String) = repository.deletePostLike(postId, uid)
 
-//    fun addPostLike(postId: String, uid: String) = repository.addPostLike(postId, uid)
+    suspend fun addPostLike(postId: String, uid: String) = repository.addPostLike(postId, uid)
 
-//    fun addSharePost(postId: String, shareCount: Int) = repository.updateSharePost(postId, shareCount)
+    suspend fun addSharePost(postId: String, shareCount: Int) = repository.updateSharePost(postId, shareCount)
 
 }
