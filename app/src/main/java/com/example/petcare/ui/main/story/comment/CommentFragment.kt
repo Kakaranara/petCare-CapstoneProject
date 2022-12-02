@@ -1,21 +1,23 @@
 package com.example.petcare.ui.main.story.comment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.petcare.ViewModelFactory
 import com.example.petcare.data.stori.Comment
-import com.example.petcare.data.stori.CommentResponse
 import com.example.petcare.data.stori.Story
 import com.example.petcare.databinding.FragmentCommentBinding
 import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.launch
 
 
 class CommentFragment : Fragment() {
@@ -33,13 +35,28 @@ class CommentFragment : Fragment() {
         mAuth = FirebaseAuth.getInstance()
         val currentName = mAuth.currentUser!!.displayName!!
         val data = arguments?.getParcelable<Story>(DATA_POST)
+
         _binding?.postComment!!.text = buildString {
             append("Komentar untuk postingan ")
             if (currentName == data!!.name) append("kamu") else append(data.name)
         }
+
+        val id = mAuth.currentUser?.uid
+        val avatarUrl = mAuth.currentUser?.photoUrl.toString()
+        val timeStamp = System.currentTimeMillis().toString()
+        _binding?.ivSend?.setOnClickListener {
+            val commentText = _binding?.etComment?.text.toString()
+            if (commentText.isNotEmpty()){
+                val comment = Comment(
+                    data!!.postId, id, avatarUrl, currentName, commentText, timeStamp
+                )
+                addCommentAction(comment)
+            }
+        }
         setUpRv()
-        addCommentAction(data)
         getComment(data)
+
+
 
 
     }
@@ -61,39 +78,30 @@ class CommentFragment : Fragment() {
                 }
                 is Async.Success -> {
                     handleLoading(false)
-                    handleSuccess(result.data)
-                    var postId = String()
-                    result.data.comments?.forEach {data->
-                        postId = data.idPost.toString()
-                    }
-                    updatePost(postId, result.data.comments!!.size)
+                    handleSuccess(result.data.comments)
                 }
             }
         }
     }
 
-    private fun handleSuccess(data: CommentResponse) {
-        if (data.comments?.size == 0){
+    private fun handleSuccess(data: List<Comment>?) {
+        if (data?.size == 0){
             _binding?.noData?.visibility = View.VISIBLE
             _binding?.etComment?.hint = "Jadilah yang pertama comment"
         }else {
-            mAdapter = CommentAdapter(data.comments!!)
+            _binding?.noData?.visibility = View.GONE
+            mAdapter = CommentAdapter()
+            mAdapter.submitList(data)
             _binding?.rvItem?.adapter = mAdapter
+            data?.forEach{
+                updatePost(it.idPost.toString(), data.size)
+            }
         }
     }
 
-    private fun addCommentAction(data: Story?) {
-        mAuth = FirebaseAuth.getInstance()
-        val id = mAuth.currentUser?.uid
-        val avatarUrl = mAuth.currentUser?.photoUrl.toString()
-        val name = mAuth.currentUser?.displayName
-        val timeStamp = System.currentTimeMillis().toString()
-        _binding?.ivSend?.setOnClickListener {
-            val commentText = _binding?.etComment?.text.toString()
-            val comment = Comment(
-                data?.postId, id, avatarUrl, name, commentText, timeStamp
-            )
-            viewModel.addComment(comment).observe(viewLifecycleOwner){result->
+    private fun addCommentAction(data: Comment) {
+        lifecycleScope.launch {
+            viewModel.addComment(data).observe(viewLifecycleOwner){result->
                 when(result){
                     is Async.Error -> {
                         handleLoading(false)
@@ -104,7 +112,7 @@ class CommentFragment : Fragment() {
                         handleLoading(false)
                         _binding?.etComment?.clearFocus()
                         _binding?.etComment?.text = null
-                        getComment(data)
+                        handleSuccess(result.data.comments)
                     }
                 }
             }
@@ -112,25 +120,34 @@ class CommentFragment : Fragment() {
     }
 
     private fun updatePost(postId: String, comment: Int) {
-        viewModel.updateComment(postId, comment).observe(viewLifecycleOwner){result->
-            when(result){
-                is Async.Error -> {
-                    handleLoading(false)
-                    context?.showToast(result.error)
-                }
-                is Async.Loading -> handleLoading(true)
-                is Async.Success -> {
-                    handleLoading(false)
+        lifecycleScope.launch {
+            viewModel.updatePostComment(postId, comment).observe(viewLifecycleOwner){result->
+                when(result){
+                    is Async.Error -> {
+                        handleLoading(false)
+                        context?.showToast(result.error)
+                    }
+                    is Async.Loading -> handleLoading(true)
+                    is Async.Success -> {
+                        handleLoading(false)
+                        Log.d(TAG, "update post comment")
+                    }
                 }
             }
+
         }
     }
 
     private fun handleLoading(isLoading: Boolean) {
-        if (isLoading){
-            _binding?.pbComment?.visibility = View.VISIBLE
-        }else{
-            _binding?.pbComment?.visibility = View.GONE
+        _binding?.pbComment?.apply {
+            isIndeterminate = isLoading
+            if (!isLoading){
+                progress = 0
+                visibility = View.GONE
+            }else{
+                visibility = View.VISIBLE
+
+            }
         }
     }
 

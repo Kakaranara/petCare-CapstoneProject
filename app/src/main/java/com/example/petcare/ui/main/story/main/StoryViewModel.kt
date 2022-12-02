@@ -7,11 +7,11 @@ class StoryViewModel(private val storyRepository: StoryRepository): ViewModel() 
 
         fun getStories() =  storyRepository.getAllStory()
 
-        fun deleteStoryLike(postId: String, uid: String) = storyRepository.deletePostLike(postId, uid)
+        suspend fun deleteStoryLike(postId: String, uid: String) = storyRepository.deletePostLike(postId, uid)
 
-        fun addStoryLike(postId: String, uid: String) = storyRepository.addPostLike(postId, uid)
+        suspend fun addStoryLike(postId: String, uid: String) = storyRepository.addPostLike(postId, uid)
 
-        fun addSharePost(postId: String, share: Int) = storyRepository.updateSharePost(postId, share)
+        suspend fun addSharePost(postId: String, share: Int) = storyRepository.updateSharePost(postId, share)
 
 
 }

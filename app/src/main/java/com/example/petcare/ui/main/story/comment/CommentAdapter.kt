@@ -3,6 +3,8 @@ package com.example.petcare.ui.main.story.comment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.petcare.R
@@ -10,7 +12,8 @@ import com.example.petcare.data.stori.Comment
 import com.example.petcare.databinding.CommentItemLayoutBinding
 import com.example.petcare.utils.DateFormatter
 
-class CommentAdapter(private val listComment: List<Comment>): RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
+class CommentAdapter(): ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
+    DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
         val binding = CommentItemLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -18,11 +21,11 @@ class CommentAdapter(private val listComment: List<Comment>): RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        val data = listComment[position]
-        holder.bind(data)
+        val data = getItem(position)
+        if (data != null){
+            holder.bind(data)
+        }
     }
-
-    override fun getItemCount(): Int = listComment.size
 
     class CommentViewHolder(val binding: CommentItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
         fun bind(data: Comment) {
@@ -39,5 +42,18 @@ class CommentAdapter(private val listComment: List<Comment>): RecyclerView.Adapt
             }
         }
 
+    }
+
+    companion object{
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Comment>(){
+            override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
+                return oldItem.idPost == newItem.idPost
+            }
+
+        }
     }
 }

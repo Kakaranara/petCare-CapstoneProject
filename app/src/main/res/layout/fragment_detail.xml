@@ -12,7 +12,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/ic_avatar_24"
+        android:src="@drawable/ic_launcher_foreground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -116,6 +116,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:padding="4dp"
         tools:src="@drawable/ic_avatar_24"
         app:layout_constraintStart_toStartOf="@+id/photo_story"
         app:layout_constraintTop_toTopOf="@+id/photo_story" />
@@ -127,7 +128,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:textAlignment="textStart"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorOnSecondary"
         android:textSize="18sp"
         tools:text="bobi"
         app:layout_constraintBottom_toBottomOf="@+id/photo_profile"
@@ -163,9 +164,9 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@id/photo_story"
+        app:layout_constraintEnd_toEndOf="@id/photo_story"
+        app:layout_constraintStart_toStartOf="@id/photo_story"
+        app:layout_constraintTop_toTopOf="@id/photo_story" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
