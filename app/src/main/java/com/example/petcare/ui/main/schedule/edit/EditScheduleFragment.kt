@@ -1,16 +1,15 @@
 package com.example.petcare.ui.main.schedule.edit
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
 import com.example.petcare.R
-import com.example.petcare.data.remote.response.Schedule
 import com.example.petcare.databinding.FragmentEditScheduleBinding
 import com.example.petcare.helper.DateHelper
 import com.example.petcare.helper.showToast
@@ -95,7 +94,7 @@ class EditScheduleFragment : Fragment(), View.OnClickListener,
                 }
 
                 showToast("Edited")
-                viewModel.edit(args.data)
+                viewModel.edit(requireActivity(), args.data)
                 findNavController().popBackStack()
             }
         }

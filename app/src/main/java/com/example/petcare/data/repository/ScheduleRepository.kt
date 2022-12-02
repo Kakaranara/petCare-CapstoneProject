@@ -154,8 +154,18 @@ class ScheduleRepository(
             }
     }
 
-    override fun editData(schedule: Schedule) {
+    override fun editData(context : Context, schedule: Schedule) {
         val docRefs = scheduleRefs.document(schedule.uniqueId!!)
+        val alarm = AlarmReceiver()
+
+        /**
+         * ! note that im not canceling alarm in onSuccessListener
+         * ! Because my feature depends on cache / offline-first.
+         * ? onSuccessListener is not called when user is offline.
+         */
+
+        alarm.cancelAlarm(context, schedule.id!!)
+        alarm.setSchedule(context, schedule)
         fireStore.runTransaction {
             it.update(docRefs, "name", schedule.name)
             it.update(docRefs, "category", schedule.category)
