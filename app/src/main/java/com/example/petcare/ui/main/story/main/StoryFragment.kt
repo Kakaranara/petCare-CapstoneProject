@@ -120,11 +120,11 @@ class StoryFragment : Fragment() {
                 }
 
             },
-                onItemShared = {storieShared->
+                onItemShared = {storiesShared->
                     //? update share
-                    val shareCount = storieShared.share + 1
+                    val shareCount = storiesShared.share + 1
                     lifecycleScope.launch {
-                        viewModel.addSharePost(storieShared.postId, shareCount).observe(viewLifecycleOwner){result->
+                        viewModel.addSharePost(storiesShared.postId, shareCount).observe(viewLifecycleOwner){result->
                             when(result){
                                 is Async.Loading -> {
                                     handleLoading(true)

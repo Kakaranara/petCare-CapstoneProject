@@ -69,7 +69,7 @@
             android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:hint="type your comment"
+            android:hint="Type your comment here"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_send"
             app:layout_constraintStart_toStartOf="parent"
@@ -86,27 +86,47 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ImageView
-        android:id="@+id/no_data"
-        android:layout_width="100dp"
-        android:layout_height="150dp"
-        android:visibility="gone"
-        android:src="@drawable/ic_nodata_50"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/pb_comment"
-        style="@style/Widget.AppCompat.ProgressBar"
-        android:visibility="gone"
+    <LinearLayout
+        android:id="@+id/no_data"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/rv_item"
         app:layout_constraintEnd_toEndOf="@+id/rv_item"
+        app:layout_constraintStart_toStartOf="@+id/rv_item"
+        app:layout_constraintTop_toBottomOf="@+id/postComment">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_nodata_50"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="No Comment yet" />
+
+    </LinearLayout>
+
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/pb_comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/postComment"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rv_item" />
+        app:layout_constraintTop_toBottomOf="@+id/photoprofile" />
 
 
 

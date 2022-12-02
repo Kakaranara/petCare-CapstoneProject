@@ -38,9 +38,9 @@ class StoryAdapter(private val onItemLiked: (Story) -> Unit, private val onItemS
         }
         val mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser!!.uid
-//        val isLiked = data.like.contains(currentUser)
+        val isLiked = data.like.contains(currentUser)
         val ivLike = holder.binding.favorite
-        if (data.like.contains(currentUser)){
+        if (isLiked){
             ivLike.setImageDrawable(ContextCompat.getDrawable(ivLike.context, R.drawable.ic_baseline_favorite_24))
         }else{
             ivLike.setImageDrawable(ContextCompat.getDrawable(ivLike.context, R.drawable.ic_baseline_favorite_border_24))
