@@ -89,6 +89,7 @@ class CommentFragment : Fragment() {
             _binding?.noData?.visibility = View.VISIBLE
             _binding?.etComment?.hint = "Jadilah yang pertama comment"
         }else {
+            _binding?.noData?.visibility = View.GONE
             mAdapter = CommentAdapter()
             mAdapter.submitList(data)
             _binding?.rvItem?.adapter = mAdapter
