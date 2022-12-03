@@ -26,7 +26,7 @@ class ScheduleRepository(
     var listener: ListenerRegistration? = null
     var listenerAll: ListenerRegistration? = null
 
-    override fun listenData(): LiveData<Async<QuerySnapshot?>> {
+    override fun listenOverviewSchedule(): LiveData<Async<QuerySnapshot?>> {
         val liveData = MutableLiveData<Async<QuerySnapshot?>>(Async.Loading)
         listener = scheduleRefs
             .whereEqualTo("userId", auth.currentUser?.uid)
@@ -64,7 +64,7 @@ class ScheduleRepository(
         return liveData
     }
 
-    fun unRegister() {
+    fun unRegisterOveriewListener() {
         listener?.remove()
     }
 
@@ -102,7 +102,7 @@ class ScheduleRepository(
         return liveData
     }
 
-    fun unRegisterAll() {
+    fun unRegisterAllScheduleListener() {
         listenerAll?.remove()
     }
 

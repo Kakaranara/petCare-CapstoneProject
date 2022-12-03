@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:text="Kegiatan"
+            android:text="@string/activity"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/addScheduleToolbar" />
 
@@ -33,7 +33,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Jenis Kegiatan"
+            android:labelFor="@id/acActivityCategory"
+            android:text="@string/activity_category"
             app:layout_constraintStart_toStartOf="@+id/textView2"
             app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -53,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="none"
-                android:text="Another"
+                android:text="@string/another"
                 app:simpleItems="@array/Category" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -63,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Nama Kegiatan"
+            android:text="@string/activity_name"
             app:layout_constraintStart_toStartOf="@+id/textinputlayout1"
             app:layout_constraintTop_toBottomOf="@+id/textinputlayout1" />
 
@@ -73,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:hint="Nama"
+            android:hint="@string/name"
             app:counterEnabled="true"
             app:counterMaxLength="35"
             app:layout_constraintEnd_toEndOf="parent"
@@ -93,7 +94,7 @@
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Deskripsi Kegiatan"
+            android:text="@string/activity_description"
             app:layout_constraintStart_toStartOf="@+id/textInputLayout"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
@@ -103,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:hint="Deskripsi"
+            android:hint="@string/description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textView4"
             app:layout_constraintTop_toBottomOf="@id/textView4">
@@ -124,7 +125,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Waktu dan Tempat"
+            android:text="@string/schedule_time"
             app:layout_constraintStart_toStartOf="@+id/textInputLayout2"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout2" />
 
@@ -135,11 +136,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:text="14/12/2022"
             app:layout_constraintEnd_toStartOf="@+id/btnAddTime"
             app:layout_constraintHorizontal_weight="3"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintTop_toBottomOf="@+id/textView5"
+            tools:text="14/12/2022" />
 
         <Button
             android:id="@+id/btnAddTime"
@@ -147,11 +148,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
-            android:text="15:00"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toEndOf="@+id/btnAddDate"
-            app:layout_constraintTop_toBottomOf="@+id/textView5" />
+            app:layout_constraintTop_toBottomOf="@+id/textView5"
+            tools:text="15:00" />
 
         <TextView
             android:id="@+id/textView6"
@@ -159,7 +160,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Catatan Tambahan"
+            android:text="@string/additional_notes"
             app:layout_constraintStart_toStartOf="@+id/btnAddDate"
             app:layout_constraintTop_toBottomOf="@+id/acRemindBeforeLayout" />
 
@@ -168,7 +169,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
-            android:hint="Notes"
+            android:hint="@string/notes"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textView6"
             app:layout_constraintTop_toBottomOf="@id/textView6">
@@ -188,7 +189,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:text="Tambah Jadwal"
+            android:text="@string/add_schedule"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -196,11 +197,12 @@
 
         <TextView
             android:id="@+id/textView7"
+            style="@style/TextAppearance.Material3.LabelLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:text="Remind Before"
-            style="@style/TextAppearance.Material3.LabelLarge"
+            android:labelFor="@id/acRemindBeforeActivity"
+            android:text="@string/remind_before"
             app:layout_constraintBottom_toBottomOf="@+id/acRemindBeforeLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/acRemindBeforeLayout" />
