@@ -189,7 +189,7 @@
     <fragment
         android:id="@+id/editScheduleFragment"
         android:name="com.example.petcare.ui.main.schedule.edit.EditScheduleFragment"
-        android:label="fragment_edit_schedule"
+        android:label="Edit Schedule"
         tools:layout="@layout/fragment_edit_schedule" >
         <argument
             android:name="data"
