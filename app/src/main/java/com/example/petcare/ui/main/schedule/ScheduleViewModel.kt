@@ -12,6 +12,7 @@ class ScheduleViewModel(private val repository: ScheduleRepository = ScheduleRep
     ViewModel() {
 
     var overviewListener: LiveData<Async<QuerySnapshot?>> = MutableLiveData()
+    var allScheduleListener: LiveData<Async<QuerySnapshot?>> = MutableLiveData()
 
     fun startListeningOverview() {
         overviewListener = repository.listenOverviewSchedule()
@@ -21,8 +22,14 @@ class ScheduleViewModel(private val repository: ScheduleRepository = ScheduleRep
         repository.unRegisterOveriewListener()
     }
 
-    fun listenAllSchedule() = repository.listenAllData()
-    fun unRegisterAllSchedule() = repository.unRegisterAll()
+    fun startListeningAllSchedule() {
+        allScheduleListener = repository.listenAllData()
+    }
+
+    fun stopListeningAllSchedule() {
+        repository.unRegisterAllScheduleListener()
+    }
+
     fun deleteData(context: Context, id: Int, documentId: String) =
         repository.deleteData(context, id, documentId)
 }

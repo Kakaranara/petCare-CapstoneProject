@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.petcare.data.remote.response.Schedule
 import com.example.petcare.databinding.FragmentAddScheduleBinding
-import com.example.petcare.ui.dialog.DatePickerFragment
-import com.example.petcare.ui.dialog.TimePickerFragment
 import com.example.petcare.helper.DateHelper
 import com.example.petcare.helper.showToast
+import com.example.petcare.ui.dialog.DatePickerFragment
+import com.example.petcare.ui.dialog.TimePickerFragment
 import java.util.*
 
 
@@ -22,7 +22,7 @@ class AddScheduleFragment : Fragment(), View.OnClickListener, TimePickerFragment
     private var _binding: FragmentAddScheduleBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel by viewModels<AddScheduleViewModel>()
+    private val viewModel by activityViewModels<AddScheduleViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

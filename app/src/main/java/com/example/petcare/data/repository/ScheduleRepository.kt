@@ -102,7 +102,7 @@ class ScheduleRepository(
         return liveData
     }
 
-    fun unRegisterAll() {
+    fun unRegisterAllScheduleListener() {
         listenerAll?.remove()
     }
 

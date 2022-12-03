@@ -172,6 +172,9 @@
         <action
             android:id="@+id/action_allScheduleFragment_to_detailScheduleDialog"
             app:destination="@id/detailScheduleDialog" />
+        <action
+            android:id="@+id/action_allScheduleFragment_to_editScheduleFragment"
+            app:destination="@id/editScheduleFragment" />
     </fragment>
     <dialog
         android:id="@+id/detailScheduleDialog"

@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         scheduleViewModel.startListeningOverview()
-        scheduleViewModel.listenAllSchedule()
+        scheduleViewModel.startListeningAllSchedule()
 
         //? setup for bottom navigation bar | same menu id & fragment = destination for bottom bar
         val navHostFragment =
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         Log.e(TAG, "onDestroy: ACTIVITY", )
-        scheduleViewModel.unRegisterAllSchedule()
+        scheduleViewModel.stopListeningAllSchedule()
         scheduleViewModel.stopListeningOverview()
     }
     

@@ -34,7 +34,6 @@ class EditScheduleFragment : Fragment(), View.OnClickListener,
         binding.btnAddTime.setOnClickListener(this)
         binding.btnAddSchedule.setOnClickListener(this)
 
-
         val data = args.data
         val dataTime = data.time!!
         val initDate = DateHelper.formatDate(Date(dataTime))
