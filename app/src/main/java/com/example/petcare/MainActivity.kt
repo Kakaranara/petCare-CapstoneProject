@@ -11,6 +11,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.petcare.databinding.ActivityMainBinding
 import com.example.petcare.ui.main.schedule.ScheduleViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,12 +21,28 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen() // !required for splash screen
-        Log.e(TAG, "onCreate: ACTIVITY", )
+        Log.e(TAG, "onCreate: ACTIVITY")
 
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        scheduleViewModel.startListeningOverview()
-        scheduleViewModel.startListeningAllSchedule()
+
+        if (Firebase.auth.currentUser != null) {
+            scheduleViewModel.setHasLogin()
+        }
+
+        //? schedule-listener purpose
+        scheduleViewModel.isLoginListener.observe(this) {
+            when (it) {
+                true -> {
+                    scheduleViewModel.startListeningOverview()
+                    scheduleViewModel.startListeningAllSchedule()
+                }
+                false -> {
+                    scheduleViewModel.stopListeningOverview()
+                    scheduleViewModel.stopListeningAllSchedule()
+                }
+            }
+        }
 
         //? setup for bottom navigation bar | same menu id & fragment = destination for bottom bar
         val navHostFragment =
@@ -78,12 +96,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.e(TAG, "onDestroy: ACTIVITY", )
+        Log.e(TAG, "onDestroy: ACTIVITY")
         scheduleViewModel.stopListeningAllSchedule()
         scheduleViewModel.stopListeningOverview()
     }
-    
-    companion object{
+
+    companion object {
         private const val TAG = "MainActivity"
     }
 }

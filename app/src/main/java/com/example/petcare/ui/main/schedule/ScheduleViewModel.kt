@@ -13,6 +13,16 @@ class ScheduleViewModel(private val repository: ScheduleRepository = ScheduleRep
 
     var overviewListener: LiveData<Async<QuerySnapshot?>> = MutableLiveData()
     var allScheduleListener: LiveData<Async<QuerySnapshot?>> = MutableLiveData()
+    private val _isLoginListener: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isLoginListener: LiveData<Boolean> get() = _isLoginListener
+
+    fun setHasLogin() {
+        _isLoginListener.value = true
+    }
+
+    fun setHasLogout() {
+        _isLoginListener.value = false
+    }
 
     fun startListeningOverview() {
         overviewListener = repository.listenOverviewSchedule()

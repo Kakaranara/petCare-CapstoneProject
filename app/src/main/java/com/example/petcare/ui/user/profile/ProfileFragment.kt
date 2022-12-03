@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.petcare.constant.OtherMenu
 import com.example.petcare.databinding.FragmentProfileBinding
 import com.example.petcare.helper.showToast
+import com.example.petcare.ui.main.schedule.ScheduleViewModel
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -19,6 +21,7 @@ import com.google.firebase.ktx.Firebase
 class ProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
+    private val viewModel by activityViewModels<ScheduleViewModel>()
 
     //? other list menu item (check enum OtherMenu in constant package)
     private val listMenuArray: Array<String> = OtherMenu.values().map { it.string }.toTypedArray()
@@ -80,6 +83,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         Firebase.auth.signOut()
         val go = ProfileFragmentDirections.actionGlobalLoginFragment()
         findNavController().navigate(go)
+        viewModel.setHasLogout()
         Log.d(TAG, "onClick: LOGOUT SUCCESS")
     }
 
