@@ -11,6 +11,8 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.example.petcare.BuildConfig
@@ -42,6 +44,7 @@ class DetailFragment : Fragment() {
 
         val data = arguments?.getParcelable<Story>(DATA)
         mAuth = FirebaseAuth.getInstance()
+        setupToolbar()
         getDetail(data!!.postId)
     }
 
@@ -211,6 +214,13 @@ class DetailFragment : Fragment() {
                     showToast("cannot, share")
                 }
             }
+        }
+    }
+
+    private fun setupToolbar() {
+        _binding?.postingantoolbar?.apply {
+            setupWithNavController(findNavController(), null)
+            title = getString(R.string.detail_title)
         }
     }
 

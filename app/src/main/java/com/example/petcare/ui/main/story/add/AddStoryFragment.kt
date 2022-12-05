@@ -30,6 +30,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
 import com.example.petcare.data.BaseResult
@@ -72,6 +73,10 @@ class AddStoryFragment : Fragment() {
 
         controlDescription()
 
+        _binding?.addstorytoolbar?.apply {
+            setupWithNavController(findNavController() , null )
+            title = getString(R.string.add_post)
+        }
         _binding?.tvCamera?.setOnClickListener { startCamera() }
         _binding?.btnUpload?.setOnClickListener { upload() }
         _binding?.tvPickPhoto?.setOnClickListener { startPickPhoto() }
@@ -136,8 +141,8 @@ class AddStoryFragment : Fragment() {
                 when(result){
                     is Async.Success->{
                         handleLoading(false)
-                        findNavController().navigate(R.id.action_addStoryFragmnet_to_action_story)
-                        context?.showToast("upload success")
+                        findNavController().popBackStack()
+                        context?.showToast(getString(R.string.upload_success_text))
                     }
                     is Async.Loading -> {
                         handleLoading(true)
@@ -174,12 +179,12 @@ class AddStoryFragment : Fragment() {
         _binding?.etDescription?.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 _binding!!.counterWord.text = buildString {
-                    append("0/100")
+                    append(getString(R.string.description_counter_text))
                 }
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s?.length!! == 100){
-                    showToast("max character for description is 100")
+                    showToast(getString(R.string.description_max_char))
                 }
             }
             override fun afterTextChanged(s: Editable?) {
@@ -187,7 +192,7 @@ class AddStoryFragment : Fragment() {
                 val currentLength = currentText.length
                 _binding!!.counterWord.text = buildString {
                     append(currentLength)
-                    append("/100")
+                    append(getString(R.string.max_char))
                 }
             }
         })
@@ -243,7 +248,7 @@ class AddStoryFragment : Fragment() {
         if (requestCode == REQUEST_CODE_PERMISSIONS){
             if (!allPermissionGranted()){
                 // ? using extention function
-                context?.showAlertDialog("Not getting camera permission")
+                context?.showAlertDialog(getString(R.string.not_get_permission))
             }
         }
     }

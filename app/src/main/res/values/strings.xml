@@ -19,7 +19,6 @@
     <string name="other">Other</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="logout">Logout</string>
-    <string name="add_story">Add Story</string>
 
     <string name="add_post">Share Your Story</string>
 
@@ -32,5 +31,15 @@
     <string name="add_schedule">add_schedule</string>
     <string name="latest_news">Latest News</string>
     <string name="no_news_found">No data found, try another keyword</string>
+    <string name="btn_upload_text">Upload</string>
+    <string name="description_counter_text">0/100</string>
+    <string name="description_hint">Type anything</string>
+    <string name="btn_gallery_text">Select Photo</string>
+    <string name="btn_camera_text">Camera</string>
+    <string name="upload_success_text">upload success</string>
+    <string name="description_max_char">max character for description is 100</string>
+    <string name="max_char">/100</string>
+    <string name="not_get_permission">Not getting camera permission</string>
+    <string name="detail_title">Postingan</string>
 
 </resources>
