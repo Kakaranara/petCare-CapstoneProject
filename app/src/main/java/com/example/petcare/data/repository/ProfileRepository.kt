@@ -20,20 +20,8 @@ import kotlinx.coroutines.tasks.await
 
 class ProfileRepository(
     private val auth: FirebaseAuth = Firebase.auth,
-    private val mStorage: StorageReference = FirebaseStorage.getInstance().reference,
     private val rootRef: FirebaseFirestore = FirebaseFirestore.getInstance()
 ) : IProfileRepository {
-
-    override fun postPhotoProfile(name: String, imgUri: Uri):LiveData<Async<Uri>> = liveData {
-        emit(Async.Loading)
-        try {
-            val url = mStorage.child(name).putFile(imgUri).await()
-                .storage.downloadUrl.await()
-            emit(Async.Success(url))
-        }catch (e: Exception){
-            emit(Async.Error(e.message.toString()))
-        }
-    }
 
 
     override fun updateProfile(name: String, uri: Uri?): LiveData<Async<Unit>> {
@@ -68,6 +56,26 @@ class ProfileRepository(
     }
 
     override fun getUser(): FirebaseUser? = auth.currentUser
+
+
+    override suspend fun updateUserToFirestore(name: String, uri: Uri): LiveData<Async<Unit>> {
+        val liveData = MutableLiveData<Async<Unit>>(Async.Loading)
+        try {
+            val uid = auth.currentUser?.uid.toString()
+            val update: MutableMap<String, Any> = HashMap()
+            update["name"] = name
+            update["urlImg"] = uri
+            rootRef.collection("users").document(uid).set(update, SetOptions.merge()).addOnSuccessListener {
+                liveData.postValue(Async.Success(Unit))
+            }.addOnFailureListener {
+                liveData.postValue(Async.Error(it.toString()))
+            }
+        }catch (e: Exception){
+            liveData.postValue(Async.Error(e.toString()))
+        }
+
+        return liveData
+    }
 
     companion object {
         const val TAG = "Profile Repository"

@@ -3,6 +3,7 @@ package com.example.petcare.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.petcare.data.User
 import com.example.petcare.data.repository.model.IAuthRepository
 import com.example.petcare.helper.Async
 import com.example.petcare.ui.user.auth.login.LoginFragment
@@ -11,9 +12,12 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
+import java.sql.Timestamp
+import kotlin.system.measureTimeMillis
 
-class AuthRepository(private val auth: FirebaseAuth = Firebase.auth) : IAuthRepository {
+class AuthRepository(private val auth: FirebaseAuth = Firebase.auth, private val rootRef: FirebaseFirestore = FirebaseFirestore.getInstance()) : IAuthRepository {
 
     override fun loginEmail(email: String, password: String): LiveData<Async<Unit>> {
         val liveData = MutableLiveData<Async<Unit>>()
@@ -34,8 +38,8 @@ class AuthRepository(private val auth: FirebaseAuth = Firebase.auth) : IAuthRepo
         email: String,
         password: String,
         name: String
-    ): LiveData<Async<Unit>> {
-        val liveData = MutableLiveData<Async<Unit>>(Async.Loading)
+    ): LiveData<Async<User>> {
+        val liveData = MutableLiveData<Async<User>>(Async.Loading)
 
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -45,8 +49,12 @@ class AuthRepository(private val auth: FirebaseAuth = Firebase.auth) : IAuthRepo
                     val profileUpdate = userProfileChangeRequest {
                         displayName = name
                     }
+                    val data = task.result.user!!
+                    val dataUser = User(
+                        data.uid, name, data.email,  data.photoUrl.toString(), System.currentTimeMillis()
+                    )
                     user?.updateProfile(profileUpdate)
-                    liveData.postValue(Async.Success(Unit))
+                    liveData.postValue(Async.Success(dataUser))
                 } else {
                     liveData.postValue(Async.Error(task.exception?.message.toString()))
                     Log.d(
@@ -73,4 +81,21 @@ class AuthRepository(private val auth: FirebaseAuth = Firebase.auth) : IAuthRepo
             }
         return liveData
     }
+
+    override suspend fun addUserToFirestore(data: User): LiveData<Async<Unit>> {
+        val liveData = MutableLiveData<Async<Unit>>(Async.Loading)
+        try {
+            rootRef.collection("users").document(data.uid).set(data).addOnSuccessListener {
+                liveData.postValue(Async.Success(Unit))
+            }.addOnFailureListener {
+                liveData.postValue(Async.Error(it.message.toString()))
+            }
+        }catch (e: Exception){
+            liveData.postValue(Async.Error(e.toString()))
+        }
+
+        return liveData
+    }
+
+
 }

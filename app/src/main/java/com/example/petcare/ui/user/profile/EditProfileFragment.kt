@@ -62,8 +62,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             }
             binding.btnConfirmEdit -> {
                 val name = binding.etEditName.text.toString()
-                val mAuth = FirebaseAuth.getInstance()
-                val url = mAuth.currentUser?.photoUrl!!
                 updateProfileData(name, uri!!)
 
             }
@@ -83,6 +81,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 is Async.Success -> {
                     showToast("Success")
                     findNavController().popBackStack()
+                    viewModel.updateUserToFirebase(name, uri!!)
                 }
             }
         }
