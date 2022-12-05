@@ -53,6 +53,7 @@ class ProfileRepository(
                             for (document in task.result){
                                 val update: MutableMap<String, Any> = HashMap()
                                 update["avatarUrl"] = user.photoUrl.toString()
+                                update["name"] = user.displayName.toString()
                                 rootRef.collection("stories").document(document.id).set(update, SetOptions.merge())
                             }
                         }

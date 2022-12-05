@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.example.petcare.databinding.FragmentEditProfileBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
+import com.google.firebase.auth.FirebaseAuth
 
 class EditProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentEditProfileBinding? = null
@@ -61,35 +62,28 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
             }
             binding.btnConfirmEdit -> {
                 val name = binding.etEditName.text.toString()
-                viewModel.postPhotoProfile(name, uri!!).observe(viewLifecycleOwner){result->
-                    when(result){
-                        is Async.Loading -> {
-                            _binding?.btnConfirmEdit?.isEnabled = false
-                        }
-                        is Async.Error -> {
-                            _binding?.btnConfirmEdit?.isEnabled = false
-                        }
-                        is Async.Success -> {
-                            val url = result.data
-                            viewModel.updateProfileData(name, url).observe(viewLifecycleOwner){
-                                when(it){
-                                    is Async.Error -> {
-                                        binding.btnConfirmEdit.isEnabled = true
-                                        showToast("Failed. ${it.error}")
-                                    }
-                                    Async.Loading -> {
-                                        binding.btnConfirmEdit.isEnabled = false
-                                    }
-                                    is Async.Success -> {
-                                        showToast("Success")
-                                        findNavController().popBackStack()
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                val mAuth = FirebaseAuth.getInstance()
+                val url = mAuth.currentUser?.photoUrl!!
+                updateProfileData(name, uri!!)
 
+            }
+        }
+    }
+
+    private fun updateProfileData(name: String, url: Uri) {
+        viewModel.updateProfileData(name, url).observe(viewLifecycleOwner){
+            when(it){
+                is Async.Error -> {
+                    binding.btnConfirmEdit.isEnabled = true
+                    showToast("Failed. ${it.error}")
+                }
+                Async.Loading -> {
+                    binding.btnConfirmEdit.isEnabled = false
+                }
+                is Async.Success -> {
+                    showToast("Success")
+                    findNavController().popBackStack()
+                }
             }
         }
     }

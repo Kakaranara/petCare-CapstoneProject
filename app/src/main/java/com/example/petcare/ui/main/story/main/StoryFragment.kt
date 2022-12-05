@@ -9,6 +9,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
 import com.example.petcare.data.stori.Story
@@ -40,6 +42,12 @@ class StoryFragment : Fragment() {
         storyList = ArrayList()
 
         mAuth = FirebaseAuth.getInstance()
+        _binding?.nameCurrentuser?.text = mAuth.currentUser?.displayName
+        Glide.with(requireContext())
+            .load(mAuth.currentUser?.photoUrl)
+            .circleCrop()
+            .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
+            .into(_binding?.photoProfile!!)
         setRecyclerView()
         getStories()
         goToAdd()
