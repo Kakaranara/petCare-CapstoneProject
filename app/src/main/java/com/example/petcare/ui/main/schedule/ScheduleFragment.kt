@@ -121,7 +121,9 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                         }
                     }
 
-                    todayAdapter.submitList(todayList)
+                    val todaySorted = todayList.sortedBy { schedule -> schedule.time!! }
+
+                    todayAdapter.submitList(todaySorted)
                     upcomingAdapter.submitList(laterList)
 
                     Log.e(TAG, "today : $todayList")
@@ -158,24 +160,24 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.e(TAG, "onCreate: FRAGMENT", )
+        Log.e(TAG, "onCreate: FRAGMENT")
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        Log.e(TAG, "onAttach: FRAGMENT", )
+        Log.e(TAG, "onAttach: FRAGMENT")
     }
-    
+
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.e(TAG, "onDestroyView: FRAGMENT", )
+        Log.e(TAG, "onDestroyView: FRAGMENT")
         _binding = null
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.e(TAG, "onDestroy: FRAGMENT", )
+        Log.e(TAG, "onDestroy: FRAGMENT")
     }
 
     companion object {
