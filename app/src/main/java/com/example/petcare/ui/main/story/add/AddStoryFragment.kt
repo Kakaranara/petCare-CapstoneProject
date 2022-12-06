@@ -100,11 +100,16 @@ class AddStoryFragment : Fragment() {
                 Glide.with(requireActivity())
                     .load(imgUri)
                     .into(binding.previewPhoto)
+                if (imgUri != null){
+                    pickerVisible(true)
+                }else{
+                    pickerVisible(false)
+                }
             }
         }
 
     private fun startPickPhoto() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         } else {
             Intent(Intent.ACTION_PICK).apply {
