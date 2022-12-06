@@ -1,7 +1,12 @@
 package com.example.petcare.ui.main.schedule
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +22,7 @@ import com.example.petcare.helper.Async
 import com.example.petcare.helper.DateHelper
 import com.example.petcare.helper.safeNav
 import com.example.petcare.helper.showToast
+import com.example.petcare.service.NotificationService
 import com.example.petcare.utils.gone
 import com.example.petcare.utils.visible
 
@@ -37,6 +43,25 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
         val upcomingAdapter = ScheduleChildAdapter()
         val divider1 = DividerItemDecoration(requireActivity(), manager.orientation)
         val divider2 = DividerItemDecoration(requireActivity(), manager2.orientation)
+
+        viewModel.isDialogAlreadyShow.observe(viewLifecycleOwner) { shown ->
+            if(!shown){
+                val alertDialog = AlertDialog.Builder(context)
+                    .setTitle("Have you already turn on notification setting?")
+                    .setMessage("For better experience, please activate this in setting to notify your schedule.")
+                    .setNegativeButton("No, Thanks") { _, _ ->
+                        viewModel.setDialogHasShown()
+                    }
+                    .setNeutralButton("settings") { _, _ ->
+                        goToNotificationSettings(null, requireActivity())
+                    }
+                    .setPositiveButton("yes") { dialogInterface: DialogInterface, i: Int ->
+                        viewModel.setDialogHasShown()
+                    }
+
+                alertDialog.show()
+            }
+        }
 
         val adapterClickListener = object : ScheduleChildAdapter.ScheduleButtonListener {
             override fun onDeleteClicked(schedule: Schedule) {
@@ -146,6 +171,29 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                 findNavController().navigate(go)
             }
         }
+    }
+
+    private fun goToNotificationSettings(channel: String?, context: Context) {
+        val intent = Intent()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            if (channel != null) {
+                intent.action = Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel)
+            } else {
+                intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+            }
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName())
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (channel != null) {
+                intent.action = Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel)
+            } else {
+                intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+            }
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName())
+        }
+        context.startActivity(intent)
     }
 
     override fun onCreateView(

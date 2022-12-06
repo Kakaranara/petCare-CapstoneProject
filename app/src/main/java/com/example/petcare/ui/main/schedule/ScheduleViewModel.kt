@@ -1,18 +1,21 @@
 package com.example.petcare.ui.main.schedule
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.example.petcare.data.repository.ScheduleRepository
 import com.example.petcare.helper.Async
+import com.example.petcare.preferences.SchedulePreferences
 import com.google.firebase.firestore.QuerySnapshot
+import kotlinx.coroutines.launch
 
-class ScheduleViewModel(private val repository: ScheduleRepository = ScheduleRepository()) :
+class ScheduleViewModel(
+    private val repository: ScheduleRepository = ScheduleRepository(),
+    private val preferences: SchedulePreferences
+) :
     ViewModel() {
 
     private val isLoginListener: MutableLiveData<Boolean> = MutableLiveData(false)
+    val isDialogAlreadyShow = preferences.isDialogShow().asLiveData()
 
     val overviewListener: LiveData<Async<QuerySnapshot?>> =
         Transformations.switchMap(isLoginListener) {
@@ -42,6 +45,12 @@ class ScheduleViewModel(private val repository: ScheduleRepository = ScheduleRep
         }
 
 
+    fun setDialogHasShown() {
+        viewModelScope.launch {
+            preferences.setDialogShown()
+        }
+    }
+
     fun setHasLogin() {
         isLoginListener.value = true
     }
@@ -60,4 +69,15 @@ class ScheduleViewModel(private val repository: ScheduleRepository = ScheduleRep
 
     fun deleteData(context: Context, id: Int, documentId: String) =
         repository.deleteData(context, id, documentId)
+}
+
+@Suppress("UNCHECKED_CAST")
+class ScheduleVMFactory(private val schedulePreferences: SchedulePreferences) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ScheduleViewModel::class.java)) {
+            return ScheduleViewModel(preferences = schedulePreferences) as T
+        }
+        return super.create(modelClass)
+    }
 }
