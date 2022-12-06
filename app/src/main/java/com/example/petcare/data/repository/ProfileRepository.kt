@@ -21,7 +21,8 @@ import kotlinx.coroutines.tasks.await
 
 class ProfileRepository(
     private val auth: FirebaseAuth = Firebase.auth,
-    private val rootRef: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val rootRef: FirebaseFirestore = FirebaseFirestore.getInstance(),
+    private val storageRef: StorageReference = FirebaseStorage.getInstance().reference
 ) : IProfileRepository {
 
 
@@ -57,6 +58,20 @@ class ProfileRepository(
     }
 
     override fun getUser(): FirebaseUser? = auth.currentUser
+
+
+    override suspend fun uploadPhotoToStorage(name: String, uri: Uri): LiveData<Async<Uri>> {
+        val liveData = MutableLiveData<Async<Uri>>(Async.Loading)
+        try {
+            val urlPhoto = storageRef.child(name).putFile(uri).await()
+                .storage.downloadUrl.await()
+            liveData.postValue(Async.Success(urlPhoto))
+        }catch (e: Exception){
+            liveData.postValue(Async.Error(e.toString()))
+        }
+
+        return liveData
+    }
 
 
     override suspend fun updateUserToFirestore(name: String, uri: Uri): LiveData<Async<Unit>> {

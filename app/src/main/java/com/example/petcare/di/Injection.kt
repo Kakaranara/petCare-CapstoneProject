@@ -19,6 +19,7 @@ object Injection {
     fun provideProfileRepository(): ProfileRepository{
         val mAuth : FirebaseAuth = FirebaseAuth.getInstance()
         val rooRef : FirebaseFirestore = FirebaseFirestore.getInstance()
-        return ProfileRepository(mAuth, rooRef)
+        val storageRef: StorageReference = FirebaseStorage.getInstance().reference
+        return ProfileRepository(mAuth, rooRef, storageRef)
     }
 }
