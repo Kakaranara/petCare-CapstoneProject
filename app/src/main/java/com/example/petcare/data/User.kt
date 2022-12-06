@@ -8,4 +8,6 @@ data class User(
     var createdAt: Long? = 0,
     var listPost: ArrayList<String>? = null,
     var listPet: ArrayList<String>? = null
-)
+){
+    constructor(): this("")
+}

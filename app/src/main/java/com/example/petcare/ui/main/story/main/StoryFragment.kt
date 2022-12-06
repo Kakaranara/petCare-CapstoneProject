@@ -2,6 +2,7 @@ package com.example.petcare.ui.main.story.main
 
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +22,7 @@ import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.internal.notifyAll
 
@@ -35,7 +37,7 @@ class StoryFragment : Fragment() {
 
     private lateinit var adapter: StoryAdapter
     private val viewModel by activityViewModels<StoryViewModel> {
-        ViewModelFactory(Injection.provideStoryRepository())
+        StoryViewModelFactory(Injection.provideStoryRepository(), Injection.provideProfileRepository())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -44,9 +46,9 @@ class StoryFragment : Fragment() {
         storyList = ArrayList()
 
         mAuth = FirebaseAuth.getInstance()
+
+        setupProfile()
         _binding?.nameCurrentuser?.text = mAuth.currentUser?.displayName
-        val pathUri = Uri.parse(mAuth.currentUser?.photoUrl.toString())
-        val realPath =
         Glide.with(requireContext())
             .load(mAuth.currentUser?.photoUrl?.getPath())
             .circleCrop()
@@ -58,6 +60,29 @@ class StoryFragment : Fragment() {
         setRecyclerView()
         getStories()
         goToAdd()
+    }
+
+    private fun setupProfile() {
+            viewModel.getUserDataFirestore(mAuth.currentUser!!.uid).observe(viewLifecycleOwner){
+                when(it){
+                    is Async.Loading -> handleLoading(true)
+                    is Async.Error -> {
+                        handleLoading(false)
+                        Log.e(TAG, "onfailure: ${it.error}")
+                    }
+                    is Async.Success->{
+                        handleLoading(false)
+                        _binding?.apply {
+                            nameCurrentuser.text = it.data.name
+                            Glide.with(requireContext())
+                                .load(it.data.urlImg)
+                                .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
+                                .circleCrop()
+                                .into(photoProfile)
+                        }
+                    }
+                }
+            }
     }
 
     private fun setRecyclerView() {
