@@ -15,7 +15,10 @@ import com.example.petcare.databinding.FragmentAllScheduleBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.safeNav
 import com.example.petcare.helper.showToast
+import com.example.petcare.preferences.SchedulePreferences
+import com.example.petcare.scheduleDataStore
 import com.example.petcare.ui.main.schedule.ScheduleChildAdapter
+import com.example.petcare.ui.main.schedule.ScheduleVMFactory
 import com.example.petcare.ui.main.schedule.ScheduleViewModel
 import com.example.petcare.utils.gone
 import com.example.petcare.utils.visible
@@ -23,7 +26,9 @@ import com.example.petcare.utils.visible
 class AllScheduleFragment : Fragment() {
     private var _binding: FragmentAllScheduleBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by activityViewModels<ScheduleViewModel>()
+    private val viewModel by activityViewModels<ScheduleViewModel>(){
+        ScheduleVMFactory(SchedulePreferences(requireActivity().scheduleDataStore))
+    }
     private lateinit var adapter: ScheduleChildAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
