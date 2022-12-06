@@ -1,6 +1,7 @@
 package com.example.petcare.ui.main.story.comment
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
@@ -12,8 +13,9 @@ import com.example.petcare.R
 import com.example.petcare.data.stori.Comment
 import com.example.petcare.databinding.CommentItemLayoutBinding
 import com.example.petcare.utils.DateFormatter
+import com.google.firebase.auth.FirebaseAuth
 
-class CommentAdapter(): ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
+class CommentAdapter: ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
     DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CommentViewHolder {
@@ -45,11 +47,11 @@ class CommentAdapter(): ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
     companion object{
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Comment>(){
             override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-                return oldItem == newItem
+                return oldItem.idComment == newItem.idComment
             }
 
             override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-                return oldItem.idPost == newItem.idPost
+                return oldItem == newItem
             }
 
         }
