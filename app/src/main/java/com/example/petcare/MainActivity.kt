@@ -30,20 +30,6 @@ class MainActivity : AppCompatActivity() {
             scheduleViewModel.setHasLogin()
         }
 
-        //? schedule-listener purpose
-        scheduleViewModel.isLoginListener.observe(this) {
-            when (it) {
-                true -> {
-                    scheduleViewModel.startListeningOverview()
-                    scheduleViewModel.startListeningAllSchedule()
-                }
-                false -> {
-                    scheduleViewModel.stopListeningOverview()
-                    scheduleViewModel.stopListeningAllSchedule()
-                }
-            }
-        }
-
         //? setup for bottom navigation bar | same menu id & fragment = destination for bottom bar
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.containerView) as NavHostFragment

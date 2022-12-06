@@ -3,6 +3,7 @@ package com.example.petcare.ui.main.schedule
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.example.petcare.data.repository.ScheduleRepository
 import com.example.petcare.helper.Async
@@ -11,29 +12,46 @@ import com.google.firebase.firestore.QuerySnapshot
 class ScheduleViewModel(private val repository: ScheduleRepository = ScheduleRepository()) :
     ViewModel() {
 
-    var overviewListener: LiveData<Async<QuerySnapshot?>> = MutableLiveData()
-    var allScheduleListener: LiveData<Async<QuerySnapshot?>> = MutableLiveData()
-    private val _isLoginListener: MutableLiveData<Boolean> = MutableLiveData(false)
-    val isLoginListener: LiveData<Boolean> get() = _isLoginListener
+    private val isLoginListener: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    val overviewListener: LiveData<Async<QuerySnapshot?>> =
+        Transformations.switchMap(isLoginListener) {
+            when (it) {
+                true -> {
+                    repository.listenOverviewSchedule()
+
+                }
+                false -> {
+                    repository.unRegisterOveriewListener()
+                    MutableLiveData()
+                }
+            }
+        }
+
+    val allScheduleListener: LiveData<Async<QuerySnapshot?>> =
+        Transformations.switchMap(isLoginListener) {
+            when (it) {
+                true -> {
+                    repository.listenAllData()
+                }
+                false -> {
+                    repository.unRegisterAllScheduleListener()
+                    MutableLiveData()
+                }
+            }
+        }
+
 
     fun setHasLogin() {
-        _isLoginListener.value = true
+        isLoginListener.value = true
     }
 
     fun setHasLogout() {
-        _isLoginListener.value = false
-    }
-
-    fun startListeningOverview() {
-        overviewListener = repository.listenOverviewSchedule()
+        isLoginListener.value = false
     }
 
     fun stopListeningOverview() {
         repository.unRegisterOveriewListener()
-    }
-
-    fun startListeningAllSchedule() {
-        allScheduleListener = repository.listenAllData()
     }
 
     fun stopListeningAllSchedule() {

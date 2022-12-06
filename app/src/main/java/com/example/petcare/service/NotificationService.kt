@@ -4,6 +4,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.media.RingtoneManager
 import androidx.core.app.NotificationCompat
+import androidx.navigation.NavDeepLinkBuilder
 import com.example.petcare.R
 import com.example.petcare.data.remote.response.Schedule
 import java.text.SimpleDateFormat
@@ -19,11 +20,18 @@ class NotificationService(private val context: Context) {
         val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val dateTime = dateFormat.format(schedule.time!!)
         val title = "${schedule.name?.ifEmpty { "No Title" }} - ${schedule.category}"
+
+        val pendingIntent = NavDeepLinkBuilder(context)
+            .setGraph(R.navigation.main_navgraph)
+            .setDestination(R.id.action_schedule)
+            .createPendingIntent()
+
         val builder = NotificationCompat.Builder(context, SCHEDULE_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle(title)
             .setContentText(dateTime)
             .setSound(soundUri)
+            .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
 
         val postScript = schedule.postScript!!
