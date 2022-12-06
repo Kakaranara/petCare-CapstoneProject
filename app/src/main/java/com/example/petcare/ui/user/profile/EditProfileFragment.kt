@@ -56,7 +56,7 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view) {
             binding.btnEditImage -> {
-                Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                Intent(Intent.ACTION_PICK).apply {
                     type = "image/*"
                 }.also { intentGallery.launch(Intent.createChooser(it, "im here bro")) }
             }
