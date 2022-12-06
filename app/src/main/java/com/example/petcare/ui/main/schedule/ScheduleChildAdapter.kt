@@ -75,7 +75,7 @@ class ScheduleChildAdapter : RecyclerView.Adapter<ScheduleChildAdapter.ViewHolde
             }
 
             override fun areContentsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
-                return oldItem == newItem
+                return oldItem.timeStamp == newItem.timeStamp
             }
         }
     }
