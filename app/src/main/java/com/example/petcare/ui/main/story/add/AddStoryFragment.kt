@@ -2,6 +2,7 @@ package com.example.petcare.ui.main.story.add
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -31,6 +32,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
 import com.example.petcare.data.BaseResult
@@ -73,11 +75,7 @@ class AddStoryFragment : Fragment() {
         mAuth = FirebaseAuth.getInstance()
 
         controlDescription()
-
-        _binding?.addstorytoolbar?.apply {
-            setupWithNavController(findNavController() , null )
-            title = getString(R.string.add_post)
-        }
+        setupToolbar()
         _binding?.tvCamera?.setOnClickListener { startCamera() }
         _binding?.btnUpload?.setOnClickListener { upload() }
         _binding?.tvPickPhoto?.setOnClickListener { startPickPhoto() }
@@ -88,8 +86,31 @@ class AddStoryFragment : Fragment() {
 
     }
 
+    private fun setupToolbar() {
+        _binding?.addstorytoolbar?.apply {
+            setupWithNavController(findNavController() , null )
+            title = getString(R.string.add_post)
+        }
+    }
+
+    private val intentGallery =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                imgUri = result.data?.data
+                Glide.with(requireActivity())
+                    .load(imgUri)
+                    .into(binding.previewPhoto)
+            }
+        }
+
     private fun startPickPhoto() {
-        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } else {
+            Intent(Intent.ACTION_PICK).apply {
+                type = "image/*"
+            }.also { intentGallery.launch(Intent.createChooser(it, "Select the photo")) }
+        }
     }
 
     private fun upload() {
