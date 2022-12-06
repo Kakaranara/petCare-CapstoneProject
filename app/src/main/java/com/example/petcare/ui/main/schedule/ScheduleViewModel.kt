@@ -14,9 +14,28 @@ class ScheduleViewModel(
 ) :
     ViewModel() {
 
+    /**
+     * login listener
+     * is used to consider listening schedule in repository or not.
+     * Bug can be happen if we're not doing this,
+     * Because it still listen to the previous account.
+     */
     private val isLoginListener: MutableLiveData<Boolean> = MutableLiveData(false)
+
+    /**
+     * dialog
+     * This will listen to preference where we need to show dialog,
+     * IF app is opened first time.
+     * User can pick whether yes r no. ** user supposed to turn on notification setting **
+     * At the end, it's user choice.
+     */
     val isDialogAlreadyShow = preferences.isDialogShow().asLiveData()
 
+    /**
+     * This 2 listener will respond and depend on loginListener.
+     * Login listener will be set to true if user already login.
+     * Check main activity.
+     */
     val overviewListener: LiveData<Async<QuerySnapshot?>> =
         Transformations.switchMap(isLoginListener) {
             when (it) {
