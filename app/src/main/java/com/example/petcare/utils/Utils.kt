@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.OpenableColumns
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -71,6 +72,13 @@ object DateFormatter{
         return formatter.format(result)
     }
 }
+
+object GeneratePostId{
+    fun postIdRandom(): String = kotlin.collections.List(20){
+        (('a'..'z') + ('A'..'Z') + ('0'..'9')).random()
+    }.joinToString("")
+}
+
 
 object ShareLink{
     fun generateShareLink(

@@ -16,6 +16,7 @@ import com.example.petcare.databinding.FragmentCommentBinding
 import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
+import com.example.petcare.utils.GeneratePostId
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
@@ -37,18 +38,20 @@ class CommentFragment : Fragment() {
         val data = arguments?.getParcelable<Story>(DATA_POST)
 
         _binding?.postComment!!.text = buildString {
-            append("Komentar untuk postingan ")
-            if (currentName == data!!.name) append("kamu") else append(data.name)
+            append("Comment for ")
+            if (currentName == data!!.name) append("your ") else append("${data.name}'s ")
+            append("post")
         }
 
         val id = mAuth.currentUser?.uid
         val avatarUrl = mAuth.currentUser?.photoUrl.toString()
         val timeStamp = System.currentTimeMillis().toString()
+        val idComment = GeneratePostId.postIdRandom()
         _binding?.ivSend?.setOnClickListener {
             val commentText = _binding?.etComment?.text.toString()
             if (commentText.isNotEmpty()){
                 val comment = Comment(
-                    data!!.postId, id, avatarUrl, currentName, commentText, timeStamp
+                   idComment,data!!.postId, id, avatarUrl, currentName, commentText, timeStamp
                 )
                 addCommentAction(comment)
             }
@@ -87,8 +90,9 @@ class CommentFragment : Fragment() {
     private fun handleSuccess(data: List<Comment>?) {
         if (data?.size == 0){
             _binding?.noData?.visibility = View.VISIBLE
-            _binding?.etComment?.hint = "Jadilah yang pertama comment"
+            _binding?.etComment?.hint = "Be the first person"
         }else {
+            _binding?.etComment?.hint = "Type your comment here"
             _binding?.noData?.visibility = View.GONE
             mAdapter = CommentAdapter()
             mAdapter.submitList(data)

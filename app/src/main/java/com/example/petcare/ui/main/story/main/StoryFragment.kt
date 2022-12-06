@@ -1,9 +1,11 @@
 package com.example.petcare.ui.main.story.main
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.PathUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -43,8 +45,10 @@ class StoryFragment : Fragment() {
 
         mAuth = FirebaseAuth.getInstance()
         _binding?.nameCurrentuser?.text = mAuth.currentUser?.displayName
+        val pathUri = Uri.parse(mAuth.currentUser?.photoUrl.toString())
+        val realPath =
         Glide.with(requireContext())
-            .load(mAuth.currentUser?.photoUrl)
+            .load(mAuth.currentUser?.photoUrl?.getPath())
             .circleCrop()
             .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
             .into(_binding?.photoProfile!!)

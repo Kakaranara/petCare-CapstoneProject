@@ -40,6 +40,7 @@ import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showAlertDialog
 import com.example.petcare.helper.showToast
+import com.example.petcare.utils.GeneratePostId
 import com.example.petcare.utils.StoryUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -127,7 +128,7 @@ class AddStoryFragment : Fragment() {
     }
 
     private fun handleSuccess(data: Uri) {
-        val postId = abs(Random.nextInt()).toString()
+        val postId = GeneratePostId.postIdRandom()
         val urlAvatar = if (mAuth.currentUser?.photoUrl != null) mAuth.currentUser?.photoUrl.toString() else null
         val desc = _binding?.etDescription?.text.toString()
         val uid = mAuth.currentUser?.uid.toString()
