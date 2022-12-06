@@ -1,12 +1,13 @@
 package com.example.petcare.ui.main.schedule
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,9 +24,7 @@ import com.example.petcare.utils.visible
 class ScheduleFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
-
-    private val viewModel by viewModels<ScheduleViewModel>()
-
+    private val viewModel by activityViewModels<ScheduleViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -45,6 +44,9 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
             }
 
             override fun onEditClicked(schedule: Schedule) {
+                val go =
+                    ScheduleFragmentDirections.actionActionScheduleToEditScheduleFragment(schedule)
+                findNavController().navigate(go)
             }
 
             override fun onItemClicked(schedule: Schedule) {
@@ -61,7 +63,6 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
         todayAdapter.setClickListener(adapterClickListener)
         upcomingAdapter.setClickListener(adapterClickListener)
 
-
         binding.apply {
             rvToday.adapter = todayAdapter
             rvToday.layoutManager = manager
@@ -71,7 +72,7 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
             rvUpcoming.addItemDecoration(divider2)
         }
 
-        viewModel.listenForDataChanges().observe(viewLifecycleOwner) {
+        viewModel.overviewListener.observe(viewLifecycleOwner) {
             when (it) {
                 is Async.Error -> {
                     showToast("error ${it.error}")
@@ -120,7 +121,9 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                         }
                     }
 
-                    todayAdapter.submitList(todayList)
+                    val todaySorted = todayList.sortedBy { schedule -> schedule.time!! }
+
+                    todayAdapter.submitList(todaySorted)
                     upcomingAdapter.submitList(laterList)
 
                     Log.e(TAG, "today : $todayList")
@@ -150,14 +153,31 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.e(TAG, "onCreateView: FRAGMENT !")
         _binding = FragmentScheduleBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.e(TAG, "onCreate: FRAGMENT")
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        Log.e(TAG, "onAttach: FRAGMENT")
+    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
+        Log.e(TAG, "onDestroyView: FRAGMENT")
         _binding = null
-        viewModel.unRegister()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.e(TAG, "onDestroy: FRAGMENT")
     }
 
     companion object {

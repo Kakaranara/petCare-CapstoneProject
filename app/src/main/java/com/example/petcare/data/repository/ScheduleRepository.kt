@@ -26,7 +26,7 @@ class ScheduleRepository(
     var listener: ListenerRegistration? = null
     var listenerAll: ListenerRegistration? = null
 
-    override fun listenData(): LiveData<Async<QuerySnapshot?>> {
+    override fun listenOverviewSchedule(): LiveData<Async<QuerySnapshot?>> {
         val liveData = MutableLiveData<Async<QuerySnapshot?>>(Async.Loading)
         listener = scheduleRefs
             .whereEqualTo("userId", auth.currentUser?.uid)
@@ -64,7 +64,7 @@ class ScheduleRepository(
         return liveData
     }
 
-    fun unRegister() {
+    fun unRegisterOveriewListener() {
         listener?.remove()
     }
 
@@ -102,7 +102,7 @@ class ScheduleRepository(
         return liveData
     }
 
-    fun unRegisterAll() {
+    fun unRegisterAllScheduleListener() {
         listenerAll?.remove()
     }
 
@@ -152,6 +152,34 @@ class ScheduleRepository(
             }.addOnFailureListener {
                 Log.e(TAG, "deleteData: Fail. ${it.message}")
             }
+    }
+
+    override fun editData(context : Context, schedule: Schedule) {
+        val docRefs = scheduleRefs.document(schedule.uniqueId!!)
+        val alarm = AlarmReceiver()
+
+        /**
+         * ! note that im not canceling alarm in onSuccessListener
+         * ! Because my feature depends on cache / offline-first.
+         * ? onSuccessListener is not called when user is offline.
+         */
+
+        alarm.cancelAlarm(context, schedule.id!!)
+        alarm.setSchedule(context, schedule)
+        fireStore.runTransaction {
+            it.update(docRefs, "name", schedule.name)
+            it.update(docRefs, "category", schedule.category)
+            it.update(docRefs, "description", schedule.description)
+            it.update(docRefs, "reminderBefore", schedule.reminderBefore)
+            it.update(docRefs, "postScript", schedule.postScript)
+            it.update(docRefs, "date", schedule.date)
+            it.update(docRefs, "time", schedule.time)
+            it.update(docRefs, "timeStamp", schedule.timeStamp)
+        }.addOnSuccessListener {
+            Log.d(TAG, "editData: EDIT SUCCESS")
+        }.addOnFailureListener {
+            Log.e(TAG, "editData: ERROR ${it.message}")
+        }
     }
 
     companion object {

@@ -1,48 +1,60 @@
-package com.example.petcare.ui.main.schedule.add
+package com.example.petcare.ui.main.schedule.edit
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.ui.setupWithNavController
-import com.example.petcare.data.remote.response.Schedule
-import com.example.petcare.databinding.FragmentAddScheduleBinding
+import com.example.petcare.R
+import com.example.petcare.databinding.FragmentEditScheduleBinding
 import com.example.petcare.helper.DateHelper
 import com.example.petcare.helper.showToast
 import com.example.petcare.ui.dialog.DatePickerFragment
 import com.example.petcare.ui.dialog.TimePickerFragment
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import java.util.*
 
 
-class AddScheduleFragment : Fragment(), View.OnClickListener, TimePickerFragment.TimeDialogListener,
+class EditScheduleFragment : Fragment(), View.OnClickListener,
+    TimePickerFragment.TimeDialogListener,
     DatePickerFragment.DateDialogListener {
-    private var _binding: FragmentAddScheduleBinding? = null
+    private var _binding: FragmentEditScheduleBinding? = null
     private val binding get() = _binding!!
-
-    private val viewModel by activityViewModels<AddScheduleViewModel>()
+    private val viewModel by viewModels<EditScheduleViewModel>()
+    private val args: EditScheduleFragmentArgs by navArgs()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.addScheduleToolbar.setupWithNavController(findNavController())
+        binding.editScheduleToolbar.setupWithNavController(findNavController())
         binding.btnAddDate.setOnClickListener(this)
         binding.btnAddTime.setOnClickListener(this)
         binding.btnAddSchedule.setOnClickListener(this)
 
-        initDate()
-    }
+        val data = args.data
+        val dataTime = data.time!!
+        val initDate = DateHelper.formatDate(Date(dataTime))
+        val initTime = DateHelper.formatTime(Date(dataTime))
 
-    private fun initDate() {
-        val calendar = Calendar.getInstance()
-        val time = calendar.time
+        binding.apply {
+            acActivityCategory.setText(data.category)
+            etActivityName.setText(data.name)
+            etActivityDesc.setText(data.description)
+            acRemindBeforeActivity.setText(data.reminderBefore)
+            etActivityPostScript.setText(data.postScript)
+            binding.btnAddDate.text = initDate
+            binding.btnAddTime.text = initTime
+        }
 
-        val dateNow = DateHelper.formatDate(time)
-        val timeNow = DateHelper.formatTime(time)
+        val categoryArr = requireActivity().resources.getStringArray(R.array.Category)
+        (binding.acActivityCategory as MaterialAutoCompleteTextView).setSimpleItems(categoryArr)
 
-        binding.btnAddDate.text = dateNow
-        binding.btnAddTime.text = timeNow
+        val remindArr = requireActivity().resources.getStringArray(R.array.remind_before)
+        (binding.acRemindBeforeActivity as MaterialAutoCompleteTextView).setSimpleItems(remindArr)
+
     }
 
     override fun onClick(view: View) {
@@ -69,19 +81,19 @@ class AddScheduleFragment : Fragment(), View.OnClickListener, TimePickerFragment
                 val dateTime = DateHelper.fullParse(rawDatetime)
                 val date = DateHelper.parseDate(rawDate)
 
-                val schedule = Schedule(
-                    name = name,
-                    category = category,
-                    description = desc,
-                    reminderBefore = remindBefore,
-                    postScript = ps,
-                    time = dateTime?.time,
-                    date = date?.time,
-                    timeStamp = timeStamp
-                )
+                args.data.apply {
+                    this.name = name
+                    this.description = desc
+                    this.category = category
+                    this.reminderBefore = remindBefore
+                    this.postScript = ps
+                    this.timeStamp = timeStamp
+                    this.date = date?.time
+                    this.time = dateTime?.time
+                }
 
-                viewModel.addData(schedule, requireActivity())
-                showToast("Set")
+                showToast("Edited")
+                viewModel.edit(requireActivity(), args.data)
                 findNavController().popBackStack()
             }
         }
@@ -104,11 +116,14 @@ class AddScheduleFragment : Fragment(), View.OnClickListener, TimePickerFragment
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentAddScheduleBinding.inflate(inflater, container, false)
+        _binding = FragmentEditScheduleBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    companion object {
-        private const val TAG = "AddScheduleFragment"
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
+
 }
+

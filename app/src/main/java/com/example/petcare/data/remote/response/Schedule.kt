@@ -16,7 +16,7 @@ data class Schedule(
     var postScript: String? = null,
     @get:Exclude var uniqueId: String? = null,
     var id: Int? = null,
-    val date: Long? = null,
+    var date: Long? = null,
     var time: Long? = null,
     var timeStamp: Long? = null
 ) : Parcelable
