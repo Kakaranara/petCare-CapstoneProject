@@ -50,5 +50,18 @@
     <string name="description">Description</string>
     <string name="activity_name">Activity Name</string>
     <string name="another">Another</string>
-
+    <string name="mapbox_token">pk.eyJ1IjoiZGFyZW5ubm4xMjMiLCJhIjoiY2xiN2p5eXl1MDgyMjNub2Y3dGJldmF5ayJ9.qJd7TsmIIbXdLTfKx4DelA</string>
+    <string name="see_all_map">See All Map</string>
+    <string name="no_permission">Not getting permission</string>
+    <string name="nearby_pet_shop">Nearby Pet Shop</string>
+    <string name="your_location">Your Location</string>
+    <string name="pet_shop_near_you">Pet Shop Near You</string>
+    <string name="location_not_found">Location is not found, Try Again</string>
+    <string name="header_location_three_text">Press the floating button to see all the places at once on the map</string>
+    <string name="empty_petshop_caution">There are no pet shop data near you</string>
+    <string name="credit_location_text">Press the floating button to see all the places at once on the map</string>
+    <string name="location_symbol">Location Symbol</string>
+    <string name="pet_shop_name">Pet Shop Name</string>
+    <string name="pet_shop_address">Pet Shop Address</string>
+    <string name="style_map_error">Style parsing failed</string>
 </resources>

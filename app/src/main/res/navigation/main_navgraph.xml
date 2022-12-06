@@ -47,6 +47,9 @@
         <action
             android:id="@+id/action_action_profile_to_petShopFragment"
             app:destination="@id/petShopFragment" />
+        <action
+            android:id="@+id/action_action_profile_to_petShopListFragment"
+            app:destination="@id/petShopListFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -197,5 +200,15 @@
         <argument
             android:name="data"
             app:argType="com.example.petcare.data.remote.response.Schedule" />
+    </fragment>
+    <fragment
+        android:id="@+id/petShopListFragment"
+        android:name="com.example.petcare.ui.main.other.petshop.PetShopListFragment"
+        android:label="fragment_pet_shop_list"
+        tools:layout="@layout/fragment_pet_shop_list" >
+        <action
+            android:id="@+id/action_petShopListFragment_to_petShopFragment"
+            app:destination="@id/petShopFragment" >
+        </action>
     </fragment>
 </navigation>
