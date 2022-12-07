@@ -2,6 +2,7 @@ package com.example.petcare.ui.main.story.add
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.DialogInterface
@@ -30,6 +31,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
 import com.example.petcare.data.BaseResult
@@ -39,6 +42,7 @@ import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showAlertDialog
 import com.example.petcare.helper.showToast
+import com.example.petcare.utils.GeneratePostId
 import com.example.petcare.utils.StoryUtil
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -71,7 +75,7 @@ class AddStoryFragment : Fragment() {
         mAuth = FirebaseAuth.getInstance()
 
         controlDescription()
-
+        setupToolbar()
         _binding?.tvCamera?.setOnClickListener { startCamera() }
         _binding?.btnUpload?.setOnClickListener { upload() }
         _binding?.tvPickPhoto?.setOnClickListener { startPickPhoto() }
@@ -82,8 +86,36 @@ class AddStoryFragment : Fragment() {
 
     }
 
+    private fun setupToolbar() {
+        _binding?.addstorytoolbar?.apply {
+            setupWithNavController(findNavController() , null )
+            title = getString(R.string.add_post)
+        }
+    }
+
+    private val intentGallery =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                imgUri = result.data?.data
+                Glide.with(requireActivity())
+                    .load(imgUri)
+                    .into(binding.previewPhoto)
+                if (imgUri != null){
+                    pickerVisible(true)
+                }else{
+                    pickerVisible(false)
+                }
+            }
+        }
+
     private fun startPickPhoto() {
-        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } else {
+            Intent(Intent.ACTION_PICK).apply {
+                type = "image/*"
+            }.also { intentGallery.launch(Intent.createChooser(it, "Select the photo")) }
+        }
     }
 
     private fun upload() {
@@ -122,7 +154,7 @@ class AddStoryFragment : Fragment() {
     }
 
     private fun handleSuccess(data: Uri) {
-        val postId = abs(Random.nextInt()).toString()
+        val postId = GeneratePostId.postIdRandom()
         val urlAvatar = if (mAuth.currentUser?.photoUrl != null) mAuth.currentUser?.photoUrl.toString() else null
         val desc = _binding?.etDescription?.text.toString()
         val uid = mAuth.currentUser?.uid.toString()
@@ -136,8 +168,8 @@ class AddStoryFragment : Fragment() {
                 when(result){
                     is Async.Success->{
                         handleLoading(false)
-                        findNavController().navigate(R.id.action_addStoryFragmnet_to_action_story)
-                        context?.showToast("upload success")
+                        findNavController().popBackStack()
+                        context?.showToast(getString(R.string.upload_success_text))
                     }
                     is Async.Loading -> {
                         handleLoading(true)
@@ -174,12 +206,12 @@ class AddStoryFragment : Fragment() {
         _binding?.etDescription?.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 _binding!!.counterWord.text = buildString {
-                    append("0/100")
+                    append(getString(R.string.description_counter_text))
                 }
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s?.length!! == 100){
-                    showToast("max character for description is 100")
+                    showToast(getString(R.string.description_max_char))
                 }
             }
             override fun afterTextChanged(s: Editable?) {
@@ -187,7 +219,7 @@ class AddStoryFragment : Fragment() {
                 val currentLength = currentText.length
                 _binding!!.counterWord.text = buildString {
                     append(currentLength)
-                    append("/100")
+                    append(getString(R.string.max_char))
                 }
             }
         })
@@ -243,7 +275,7 @@ class AddStoryFragment : Fragment() {
         if (requestCode == REQUEST_CODE_PERMISSIONS){
             if (!allPermissionGranted()){
                 // ? using extention function
-                context?.showAlertDialog("Not getting camera permission")
+                context?.showAlertDialog(getString(R.string.not_get_permission))
             }
         }
     }

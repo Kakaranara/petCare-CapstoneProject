@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.petcare.BuildConfig
 import com.example.petcare.R
 import com.example.petcare.data.stori.Story
@@ -130,14 +131,11 @@ class StoryAdapter(private val onItemLiked: (Story) -> Unit, private val onItemS
                 .load(data.urlImg)
                 .centerCrop()
                 .into(binding.previewPhoto)
-            if (data.avatarUrl != null) {
-                Glide.with(itemView.context)
-                    .load(data.avatarUrl)
-                    .circleCrop()
-                    .into(binding.photoProfile)
-            }else{
-                binding.photoProfile.setImageResource(R.drawable.ic_launcher_foreground)
-            }
+            Glide.with(itemView.context)
+                .load(data.avatarUrl)
+                .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
+                .circleCrop()
+                .into(binding.photoProfile)
 
         }
     }

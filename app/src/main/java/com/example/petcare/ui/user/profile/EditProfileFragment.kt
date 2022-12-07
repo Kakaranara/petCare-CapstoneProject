@@ -3,19 +3,25 @@ package com.example.petcare.ui.user.profile
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.nfc.Tag
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.example.petcare.databinding.FragmentEditProfileBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class EditProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentEditProfileBinding? = null
@@ -55,41 +61,53 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view) {
             binding.btnEditImage -> {
-                Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                Intent(Intent.ACTION_PICK).apply {
                     type = "image/*"
                 }.also { intentGallery.launch(Intent.createChooser(it, "im here bro")) }
             }
             binding.btnConfirmEdit -> {
                 val name = binding.etEditName.text.toString()
-                viewModel.postPhotoProfile(name, uri!!).observe(viewLifecycleOwner){result->
-                    when(result){
-                        is Async.Loading -> {
-                            _binding?.btnConfirmEdit?.isEnabled = false
-                        }
-                        is Async.Error -> {
-                            _binding?.btnConfirmEdit?.isEnabled = false
-                        }
-                        is Async.Success -> {
-                            val url = result.data
-                            viewModel.updateProfileData(name, url).observe(viewLifecycleOwner){
-                                when(it){
-                                    is Async.Error -> {
-                                        binding.btnConfirmEdit.isEnabled = true
-                                        showToast("Failed. ${it.error}")
-                                    }
-                                    Async.Loading -> {
-                                        binding.btnConfirmEdit.isEnabled = false
-                                    }
-                                    is Async.Success -> {
-                                        showToast("Success")
-                                        findNavController().popBackStack()
-                                    }
+                // ? to check is the uri is content provider or url of firebase storage
+                val arrayUri: Array<String> = uri!!.toString().toCharArray().map { it.toString() }.toTypedArray()
+                if (arrayUri[0] == "c"){
+                    lifecycleScope.launch {
+                        viewModel.postPhotoToStorage(name, uri!!).observe(viewLifecycleOwner){result->
+                            when(result){
+                                is Async.Loading -> {
+                                    Log.d(TAG, "Upload File to storage...")
+                                    binding.btnConfirmEdit.isEnabled = false
+                                }
+                                is Async.Error -> Log.e(TAG, "onFailure: ${result.error}")
+                                is Async.Success -> {
+                                    binding.btnConfirmEdit.isEnabled = false
+                                    Log.d(TAG, "Success upload file to storage")
+                                    updateProfileData(name, result.data)
                                 }
                             }
                         }
                     }
+                }else{
+                    updateProfileData(name, uri!!)
                 }
 
+            }
+        }
+    }
+
+    private fun updateProfileData(name: String, url: Uri) {
+        viewModel.updateProfileData(name, url).observe(viewLifecycleOwner){
+            when(it){
+                is Async.Error -> {
+                    binding.btnConfirmEdit.isEnabled = true
+                    showToast("Failed. ${it.error}")
+                }
+                Async.Loading -> {
+                    binding.btnConfirmEdit.isEnabled = false
+                }
+                is Async.Success -> {
+                    showToast("Success")
+                    findNavController().popBackStack()
+                }
             }
         }
     }

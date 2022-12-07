@@ -1,14 +1,19 @@
 package com.example.petcare.ui.main.story.main
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.graphics.PathUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
 import com.example.petcare.data.stori.Story
@@ -17,6 +22,7 @@ import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import okhttp3.internal.notifyAll
 
@@ -40,9 +46,21 @@ class StoryFragment : Fragment() {
         storyList = ArrayList()
 
         mAuth = FirebaseAuth.getInstance()
+
+        setupProfile()
         setRecyclerView()
         getStories()
         goToAdd()
+    }
+
+    private fun setupProfile() {
+        val currentUser = mAuth.currentUser!!
+        _binding?.nameCurrentuser?.text = currentUser.displayName
+        Glide.with(requireContext())
+            .load(currentUser.photoUrl)
+            .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
+            .circleCrop()
+            .into(binding.photoProfile)
     }
 
     private fun setRecyclerView() {
@@ -135,7 +153,7 @@ class StoryFragment : Fragment() {
                                 }
                                 is Async.Success -> {
                                     handleLoading(false)
-                                    getStories()
+                                    adapter.submitList(result.data.story)
                                 }
                             }
                         }

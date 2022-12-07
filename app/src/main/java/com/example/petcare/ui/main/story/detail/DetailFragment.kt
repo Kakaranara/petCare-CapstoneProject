@@ -11,7 +11,10 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.petcare.BuildConfig
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
@@ -41,6 +44,7 @@ class DetailFragment : Fragment() {
 
         val data = arguments?.getParcelable<Story>(DATA)
         mAuth = FirebaseAuth.getInstance()
+        setupToolbar()
         getDetail(data!!.postId)
     }
 
@@ -108,14 +112,11 @@ class DetailFragment : Fragment() {
             }
 
         }
-        if (data.avatarUrl != null) {
-            Glide.with(requireContext())
-                .load(data.avatarUrl!!.toUri())
-                .circleCrop()
-                .into(_binding?.photoProfile!!)
-        }else{
-            _binding?.photoProfile?.setImageResource(R.drawable.ic_launcher_foreground)
-        }
+        Glide.with(requireContext())
+            .load(data.avatarUrl!!.toUri())
+            .circleCrop()
+            .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
+            .into(_binding?.photoProfile!!)
         Glide.with(requireContext())
             .load(data.urlImg)
             .centerCrop()
@@ -213,6 +214,13 @@ class DetailFragment : Fragment() {
                     showToast("cannot, share")
                 }
             }
+        }
+    }
+
+    private fun setupToolbar() {
+        _binding?.postingantoolbar?.apply {
+            setupWithNavController(findNavController(), null)
+            title = getString(R.string.detail_title)
         }
     }
 
