@@ -73,9 +73,13 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                     lifecycleScope.launch {
                         viewModel.postPhotoToStorage(name, uri!!).observe(viewLifecycleOwner){result->
                             when(result){
-                                is Async.Loading -> Log.d(TAG, "Upload File to storage...")
+                                is Async.Loading -> {
+                                    Log.d(TAG, "Upload File to storage...")
+                                    binding.btnConfirmEdit.isEnabled = false
+                                }
                                 is Async.Error -> Log.e(TAG, "onFailure: ${result.error}")
                                 is Async.Success -> {
+                                    binding.btnConfirmEdit.isEnabled = false
                                     Log.d(TAG, "Success upload file to storage")
                                     updateProfileData(name, result.data)
                                 }
