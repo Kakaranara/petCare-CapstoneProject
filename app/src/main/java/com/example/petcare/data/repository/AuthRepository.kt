@@ -38,8 +38,8 @@ class AuthRepository(private val auth: FirebaseAuth = Firebase.auth, private val
         email: String,
         password: String,
         name: String
-    ): LiveData<Async<User>> {
-        val liveData = MutableLiveData<Async<User>>(Async.Loading)
+    ): LiveData<Async<Unit>> {
+        val liveData = MutableLiveData<Async<Unit>>(Async.Loading)
 
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
@@ -49,12 +49,8 @@ class AuthRepository(private val auth: FirebaseAuth = Firebase.auth, private val
                     val profileUpdate = userProfileChangeRequest {
                         displayName = name
                     }
-                    val data = task.result.user!!
-                    val dataUser = User(
-                        data.uid, name, data.email,  data.photoUrl.toString(), System.currentTimeMillis()
-                    )
                     user?.updateProfile(profileUpdate)
-                    liveData.postValue(Async.Success(dataUser))
+                    liveData.postValue(Async.Success(Unit))
                 } else {
                     liveData.postValue(Async.Error(task.exception?.message.toString()))
                     Log.d(
@@ -83,21 +79,6 @@ class AuthRepository(private val auth: FirebaseAuth = Firebase.auth, private val
                     Log.d(LoginFragment.TAG, "firebaseAuthWithGoogle: FAILED ${task.exception}")
                 }
             }
-        return liveData
-    }
-
-    override suspend fun addUserToFirestore(data: User): LiveData<Async<Unit>> {
-        val liveData = MutableLiveData<Async<Unit>>(Async.Loading)
-        try {
-            rootRef.collection("users").document(data.uid).set(data).addOnSuccessListener {
-                liveData.postValue(Async.Success(Unit))
-            }.addOnFailureListener {
-                liveData.postValue(Async.Error(it.message.toString()))
-            }
-        }catch (e: Exception){
-            liveData.postValue(Async.Error(e.toString()))
-        }
-
         return liveData
     }
 

@@ -107,7 +107,6 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 is Async.Success -> {
                     showToast("Success")
                     findNavController().popBackStack()
-                    viewModel.updateUserToFirebase(name, url)
                 }
             }
         }

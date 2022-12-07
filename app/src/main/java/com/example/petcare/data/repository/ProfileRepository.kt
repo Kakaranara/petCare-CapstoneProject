@@ -73,50 +73,6 @@ class ProfileRepository(
         return liveData
     }
 
-
-    override suspend fun updateUserToFirestore(name: String, uri: Uri): LiveData<Async<Unit>> {
-        val liveData = MutableLiveData<Async<Unit>>(Async.Loading)
-        try {
-            val uid = auth.currentUser?.uid.toString()
-            val update: MutableMap<String, Any> = HashMap()
-            update["name"] = name
-            update["urlImg"] = uri
-            rootRef.collection("users").document(uid).set(update, SetOptions.merge()).addOnSuccessListener {
-                liveData.postValue(Async.Success(Unit))
-            }.addOnFailureListener {
-                liveData.postValue(Async.Error(it.toString()))
-            }
-        }catch (e: Exception){
-            liveData.postValue(Async.Error(e.toString()))
-        }
-
-        return liveData
-    }
-
-    fun getUserDataFirestore(uid: String):LiveData<Async<User>>{
-        val liveData = MutableLiveData<Async<User>>(Async.Loading)
-        try {
-            var user: User? = null
-            rootRef.collection("users").document(uid).get().addOnSuccessListener { snapshot->
-                if (snapshot != null){
-                    val data = snapshot.toObject(User::class.java)!!
-                    user = User(
-                        data.uid, data.name, data.email, data.urlImg, data.createdAt, data.listPost, data.listPet
-                    )
-                    liveData.postValue(Async.Success(user!!))
-                }else{
-                    liveData.postValue(Async.Error("there is no snapshot"))
-                }
-            }.addOnFailureListener {
-                liveData.postValue(Async.Error(it.toString()))
-            }
-        }catch (e:Exception){
-            liveData.postValue(Async.Error(e.toString()))
-        }
-
-        return liveData
-    }
-
     companion object {
         const val TAG = "Profile Repository"
     }

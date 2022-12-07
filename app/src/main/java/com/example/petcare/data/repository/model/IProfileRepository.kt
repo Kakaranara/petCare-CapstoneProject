@@ -9,5 +9,4 @@ interface IProfileRepository {
     fun updateProfile(name: String, uri: Uri?) : LiveData<Async<Unit>>
     fun getUser() : FirebaseUser?
     suspend fun uploadPhotoToStorage(name: String, uri: Uri): LiveData<Async<Uri>>
-    suspend fun updateUserToFirestore(name: String, uri: Uri): LiveData<Async<Unit>>
 }

@@ -54,11 +54,9 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                                 binding.btnRegister.isEnabled = true
                                 binding.registerProgress.visibility = View.INVISIBLE
                                 showToast("Account successfully created.")
-
                                 val go =
                                     RegisterFragmentDirections.actionGlobalLoginFragment()
                                 findNavController().navigate(go)
-                                viewModel.addUserToFirestore(it.data)
                             }
                         }
                     }

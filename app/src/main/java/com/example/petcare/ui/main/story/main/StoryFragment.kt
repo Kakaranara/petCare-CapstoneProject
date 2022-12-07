@@ -37,7 +37,7 @@ class StoryFragment : Fragment() {
 
     private lateinit var adapter: StoryAdapter
     private val viewModel by activityViewModels<StoryViewModel> {
-        StoryViewModelFactory(Injection.provideStoryRepository(), Injection.provideProfileRepository())
+        ViewModelFactory(Injection.provideStoryRepository())
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,41 +48,19 @@ class StoryFragment : Fragment() {
         mAuth = FirebaseAuth.getInstance()
 
         setupProfile()
-        _binding?.nameCurrentuser?.text = mAuth.currentUser?.displayName
-        Glide.with(requireContext())
-            .load(mAuth.currentUser?.photoUrl?.getPath())
-            .circleCrop()
-            .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
-            .into(_binding?.photoProfile!!)
-        _binding?.tvToProfile?.setOnClickListener {
-            findNavController().navigate(R.id.action_profile)
-        }
         setRecyclerView()
         getStories()
         goToAdd()
     }
 
     private fun setupProfile() {
-            viewModel.getUserDataFirestore(mAuth.currentUser!!.uid).observe(viewLifecycleOwner){
-                when(it){
-                    is Async.Loading -> handleLoading(true)
-                    is Async.Error -> {
-                        handleLoading(false)
-                        Log.e(TAG, "onfailure: ${it.error}")
-                    }
-                    is Async.Success->{
-                        handleLoading(false)
-                        _binding?.apply {
-                            nameCurrentuser.text = it.data.name
-                            Glide.with(requireContext())
-                                .load(it.data.urlImg)
-                                .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
-                                .circleCrop()
-                                .into(photoProfile)
-                        }
-                    }
-                }
-            }
+        val currentUser = mAuth.currentUser!!
+        _binding?.nameCurrentuser?.text = currentUser.displayName
+        Glide.with(requireContext())
+            .load(currentUser.photoUrl)
+            .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
+            .circleCrop()
+            .into(binding.photoProfile)
     }
 
     private fun setRecyclerView() {
