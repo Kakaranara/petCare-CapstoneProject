@@ -3,6 +3,8 @@ package com.example.petcare
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.petcare.data.StoryRepository
+import com.example.petcare.di.Injection
+import com.example.petcare.ui.main.other.petshop.PetShopViewModel
 import com.example.petcare.ui.main.story.add.AddStoryViewModel
 import com.example.petcare.ui.main.story.comment.CommentViewModel
 import com.example.petcare.ui.main.story.detail.DetailViewModel
@@ -25,6 +27,9 @@ class ViewModelFactory(private val repository: StoryRepository):ViewModelProvide
         }
         if (modelClass.isAssignableFrom(DetailViewModel::class.java)){
             return DetailViewModel(repository) as T
+        }
+        if (modelClass.isAssignableFrom(PetShopViewModel::class.java)){
+            return PetShopViewModel(Injection.providePetShopRepository()) as T
         }
         return super.create(modelClass)
     }
