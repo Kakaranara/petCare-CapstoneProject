@@ -61,6 +61,9 @@ class StoryFragment : Fragment() {
             .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
             .circleCrop()
             .into(binding.photoProfile)
+        _binding?.tvToProfile?.setOnClickListener {
+            findNavController().navigate(R.id.action_profile)
+        }
     }
 
     private fun setRecyclerView() {
