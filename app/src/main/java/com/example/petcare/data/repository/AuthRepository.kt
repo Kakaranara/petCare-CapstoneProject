@@ -67,12 +67,16 @@ class AuthRepository(private val auth: FirebaseAuth = Firebase.auth, private val
         return liveData
     }
 
-    override fun googleOneTapLogin(credential: AuthCredential): LiveData<Async<String>> {
-        val liveData = MutableLiveData<Async<String>>(Async.Loading)
+    override fun googleOneTapLogin(credential: AuthCredential): LiveData<Async<User>> {
+        val liveData = MutableLiveData<Async<User>>(Async.Loading)
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    liveData.postValue(Async.Success(auth.currentUser?.displayName ?: "No name"))
+                    val currentUser = auth.currentUser!!
+                    val user = User(
+                        currentUser.uid, currentUser.displayName, currentUser.email, currentUser.photoUrl.toString(), System.currentTimeMillis()
+                    )
+                    liveData.postValue(Async.Success(user))
                     Log.d(LoginFragment.TAG, "firebaseAuthWithGoogle: Success")
                 } else {
                     liveData.postValue(Async.Error(task.exception?.message.toString()))

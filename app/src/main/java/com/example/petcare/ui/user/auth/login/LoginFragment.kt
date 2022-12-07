@@ -125,7 +125,9 @@ class LoginFragment : Fragment(), View.OnClickListener {
                     binding.loginProgress.visibility = View.VISIBLE
                 }
                 is Async.Success -> {
-                    showToast("Hello, ${it.data}", true)
+                    val name = it.data.name ?: "No Name"
+                    showToast("Hello, $name", true)
+                    viewModel.addUserToFirestore(it.data)
                     val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
                     findNavController().navigate(go)
                 }

@@ -9,6 +9,6 @@ import com.google.firebase.auth.AuthCredential
 interface IAuthRepository {
     fun loginEmail(email: String, password: String): LiveData<Async<Unit>>
     fun registerEmail(email: String, password: String, name: String): LiveData<Async<User>>
-    fun googleOneTapLogin(credential : AuthCredential) : LiveData<Async<String>>
+    fun googleOneTapLogin(credential : AuthCredential) : LiveData<Async<User>>
     suspend fun addUserToFirestore(data: User): LiveData<Async<Unit>>
 }
