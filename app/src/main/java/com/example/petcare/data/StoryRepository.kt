@@ -128,18 +128,17 @@ class StoryRepository(
         val liveData = MutableLiveData<Async<Story>>(Async.Loading)
         try {
             var story: Story? = null
-            rootRef.collection("stories")
+            val query = rootRef.collection("stories")
                 .document(postId)
-                .get()
-                .addOnSuccessListener { snapshot->
-                    if (snapshot != null){
-                        val data = snapshot.toObject(Story::class.java)!!
-                        story = data
-                        liveData.value = Async.Success(story!!)
-                    }else{
-                        liveData.value = Async.Error("no data exists")
-                    }
+            query.addSnapshotListener { value, error ->
+                if (error != null){
+                    liveData.value = Async.Error(error.localizedMessage!!)
                 }
+                value?.let {
+                    story = it.toObject(Story::class.java)
+                    liveData.value = Async.Success(story!!)
+                }
+            }
         }catch (e: Exception){
             liveData.value = Async.Error(e.message.toString())
         }
