@@ -1,9 +1,7 @@
 package com.example.petcare.ui.main.story.comment
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +11,6 @@ import com.example.petcare.R
 import com.example.petcare.data.stori.Comment
 import com.example.petcare.databinding.CommentItemLayoutBinding
 import com.example.petcare.utils.DateFormatter
-import com.google.firebase.auth.FirebaseAuth
 
 class CommentAdapter: ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
     DIFF_CALLBACK) {

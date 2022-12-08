@@ -8,9 +8,6 @@ import com.example.petcare.ui.main.story.comment.CommentViewModel
 import com.example.petcare.ui.main.story.detail.DetailViewModel
 import com.example.petcare.ui.main.story.main.StoryViewModel
 import com.example.petcare.ui.main.story.profile.ProfileViewModel
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.ktx.storageMetadata
 
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory(private val repository: StoryRepository):ViewModelProvider.Factory {

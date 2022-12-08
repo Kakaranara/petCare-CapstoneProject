@@ -2,10 +2,8 @@ package com.example.petcare.ui.main.story.add
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.petcare.data.StoryRepository
 import com.example.petcare.data.stori.Story
-import kotlinx.coroutines.launch
 
 class AddStoryViewModel(private val repository: StoryRepository): ViewModel() {
 

@@ -1,12 +1,10 @@
 package com.example.petcare.ui.main.story.main
 
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.PathUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -20,12 +18,9 @@ import com.example.petcare.data.stori.Story
 import com.example.petcare.databinding.FragmentStoryBinding
 import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
-import com.example.petcare.helper.showToast
 import com.example.petcare.ui.main.story.profile.ProfileUserFragment
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.internal.notifyAll
 
 
 class StoryFragment : Fragment() {

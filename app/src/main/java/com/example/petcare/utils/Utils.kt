@@ -1,31 +1,17 @@
 package com.example.petcare.utils
 
-import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.os.Environment
-import android.provider.DocumentsContract
-import android.provider.OpenableColumns
-import android.widget.Toast
-import androidx.annotation.RequiresApi
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
-import java.io.File
 import com.example.petcare.BuildConfig
-import com.example.petcare.MainActivity
-import com.example.petcare.ui.main.story.detail.DetailFragment
 import com.google.firebase.dynamiclinks.DynamicLink
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.dynamiclinks.ktx.androidParameters
 import com.google.firebase.dynamiclinks.ktx.dynamicLinks
 import com.google.firebase.dynamiclinks.ktx.shortLinkAsync
 import com.google.firebase.ktx.Firebase
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.File
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 /**

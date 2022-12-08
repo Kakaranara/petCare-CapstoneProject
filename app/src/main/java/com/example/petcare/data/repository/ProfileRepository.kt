@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import com.example.petcare.data.User
 import com.example.petcare.data.repository.model.IProfileRepository
 import com.example.petcare.helper.Async
 import com.google.firebase.auth.FirebaseAuth

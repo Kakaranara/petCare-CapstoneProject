@@ -14,8 +14,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import java.sql.Timestamp
-import kotlin.system.measureTimeMillis
 
 class AuthRepository(private val auth: FirebaseAuth = Firebase.auth, private val rootRef: FirebaseFirestore = FirebaseFirestore.getInstance()) : IAuthRepository {
 

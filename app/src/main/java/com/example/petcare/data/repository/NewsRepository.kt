@@ -1,12 +1,12 @@
 package com.example.petcare.data.repository
 
+import com.example.petcare.data.remote.Result
 import com.example.petcare.data.remote.response.News
 import com.example.petcare.data.remote.response.NewsResponse
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.Flow
-import com.example.petcare.data.remote.Result
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
