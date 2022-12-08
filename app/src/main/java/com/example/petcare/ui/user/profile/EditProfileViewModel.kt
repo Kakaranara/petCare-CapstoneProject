@@ -13,5 +13,5 @@ class EditProfileViewModel(
 ) : ViewModel() {
     fun updateProfileData(name: String, uri: Uri?) = repository.updateProfile(name, uri)
     fun getUser() = repository.getUser()
-    suspend fun postPhotoToStorage(name: String, uri: Uri) = repository.uploadPhotoToStorage(name, uri)
+    fun postPhotoToStorage(name: String, uri: Uri) = repository.uploadPhotoToStorage(name, uri)
 }
