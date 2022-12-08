@@ -20,6 +20,7 @@ import com.example.petcare.databinding.StoryItemLayoutBinding
 import com.example.petcare.helper.capitalizeWords
 import com.example.petcare.ui.main.story.comment.CommentFragment
 import com.example.petcare.ui.main.story.detail.DetailFragment
+import com.example.petcare.ui.main.story.profile.ProfileUserFragment
 import com.example.petcare.utils.DateFormatter
 import com.example.petcare.utils.ShareLink
 import com.google.firebase.auth.FirebaseAuth
@@ -53,6 +54,12 @@ class StoryAdapter(private val onItemLiked: (Story) -> Unit, private val onItemS
             val bundle = Bundle()
             bundle.putParcelable(DetailFragment.DATA, data)
             it.findNavController().navigate(R.id.action_action_story_to_detailFragment, bundle)
+        }
+
+        holder.binding.photoProfile.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString(ProfileUserFragment.ID, data.uid)
+            it.findNavController().navigate(R.id.action_action_story_to_profileUserFragment, bundle)
         }
 
         holder.binding.comment.setOnClickListener {

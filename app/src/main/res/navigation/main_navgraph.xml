@@ -64,6 +64,9 @@
         <action
             android:id="@+id/action_action_story_to_commentFragment"
             app:destination="@id/commentFragment" />
+        <action
+            android:id="@+id/action_action_story_to_profileUserFragment"
+            app:destination="@id/profileUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/action_schedule"
@@ -142,5 +145,14 @@
         <action
             android:id="@+id/action_searchNewsFragment_to_newsDetailFragment"
             app:destination="@id/newsDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileUserFragment"
+        android:name="com.example.petcare.ui.main.story.profile.ProfileUserFragment"
+        android:label="fragment_profile_user"
+        tools:layout="@layout/fragment_profile_user" >
+        <action
+            android:id="@+id/action_profileUserFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
 </navigation>

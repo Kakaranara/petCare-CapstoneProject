@@ -41,5 +41,7 @@
     <string name="max_char">/100</string>
     <string name="not_get_permission">Not getting camera permission</string>
     <string name="detail_title">Postingan</string>
+    <string name="no_post_yet">No post yet</string>
+    <string name="view_profile">View Profile</string>
 
 </resources>

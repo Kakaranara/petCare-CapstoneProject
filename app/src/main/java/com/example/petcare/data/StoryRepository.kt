@@ -108,6 +108,31 @@ class StoryRepository(
         return liveData
     }
 
+    fun getStoryById(uid: String): LiveData<Async<StoryResponse>>{
+        val liveData = MutableLiveData<Async<StoryResponse>>(Async.Loading)
+        try {
+            val storyResponse = StoryResponse()
+            rootRef.collection("stories").whereEqualTo("uid", uid)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .get().addOnCompleteListener { task->
+                    if (task.isSuccessful){
+                        val result = task.result
+                        result?.let {
+                            storyResponse.story = result.documents.mapNotNull { snapshot->
+                                snapshot.toObject(Story::class.java)
+                            }
+                            liveData.postValue(Async.Success(storyResponse))
+                        }
+                    }else{
+                        liveData.postValue(Async.Error(task.exception.toString()))
+                    }
+                }
+        }catch (e: Exception){
+            liveData.postValue(Async.Error(e.toString()))
+        }
+        return liveData
+    }
+
     fun getDetailStory(postId: String): LiveData<Async<Story>>{
         val liveData = MutableLiveData<Async<Story>>(Async.Loading)
         try {

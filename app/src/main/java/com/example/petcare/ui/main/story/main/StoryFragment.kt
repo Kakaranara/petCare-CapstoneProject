@@ -21,6 +21,7 @@ import com.example.petcare.databinding.FragmentStoryBinding
 import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
+import com.example.petcare.ui.main.story.profile.ProfileUserFragment
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -62,7 +63,9 @@ class StoryFragment : Fragment() {
             .circleCrop()
             .into(binding.photoProfile)
         _binding?.tvToProfile?.setOnClickListener {
-            findNavController().navigate(R.id.action_profile)
+            val bundle = Bundle()
+            bundle.putString(ProfileUserFragment.ID, currentUser.uid)
+            findNavController().navigate(R.id.action_action_story_to_profileUserFragment, bundle)
         }
     }
 
