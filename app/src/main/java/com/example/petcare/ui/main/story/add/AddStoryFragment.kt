@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -64,10 +65,10 @@ class AddStoryFragment : Fragment() {
 
         controlDescription()
         setupToolbar()
-        _binding?.tvCamera?.setOnClickListener { startCamera() }
-        _binding?.btnUpload?.setOnClickListener { upload() }
-        _binding?.tvPickPhoto?.setOnClickListener { startPickPhoto() }
-        _binding?.previewPhoto?.setOnClickListener {
+        binding.tvCamera.setOnClickListener { startCamera() }
+        binding.btnUpload.setOnClickListener { upload() }
+        binding.tvPickPhoto.setOnClickListener { startPickPhoto() }
+        binding.previewPhoto.setOnClickListener {
             startPickPhoto()
         }
 
@@ -75,7 +76,7 @@ class AddStoryFragment : Fragment() {
     }
 
     private fun setupToolbar() {
-        _binding?.addstorytoolbar?.apply {
+        binding.addstorytoolbar.apply {
             setupWithNavController(findNavController() , null )
             title = getString(R.string.add_postingan)
         }
@@ -113,10 +114,11 @@ class AddStoryFragment : Fragment() {
                 when(result){
                     is Async.Error -> {
                         handleLoading(false)
-                        context?.showToast(result.error)
+                        Log.e(TAG, "onFailure: ${result.error}")
                     }
                     is Async.Loading -> {
                         handleLoading(true)
+                        binding.btnUpload.isEnabled = false
                     }
                     is Async.Success -> {
                         handleLoading(false)
@@ -136,7 +138,6 @@ class AddStoryFragment : Fragment() {
                 visibility = View.GONE
             }else{
                 visibility = View.VISIBLE
-
             }
         }
     }
@@ -144,7 +145,7 @@ class AddStoryFragment : Fragment() {
     private fun handleSuccess(data: Uri) {
         val postId = GeneratePostId.postIdRandom()
         val urlAvatar = if (mAuth.currentUser?.photoUrl != null) mAuth.currentUser?.photoUrl.toString() else null
-        val desc = _binding?.etDescription?.text.toString()
+        val desc = binding.etDescription.text.toString()
         val uid = mAuth.currentUser?.uid.toString()
         val name = mAuth.currentUser?.displayName
         val timeStamp = System.currentTimeMillis()
@@ -164,13 +165,12 @@ class AddStoryFragment : Fragment() {
                         _binding?.btnUpload?.isEnabled = false
                     }
                     is Async.Error -> {
-                        context?.showToast(result.error)
+                        Log.e(TAG, "onFailure: ${result.error}")
                         handleLoading(false)
                     }
                 }
             }
         }
-
     }
 
 

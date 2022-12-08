@@ -44,5 +44,7 @@
     <string name="no_post_yet">No post yet</string>
     <string name="view_profile">View Profile</string>
     <string name="comment_text_toolbar">Comment</string>
+    <string name="extra_subject_share"><![CDATA[Ada yang baru nihh ->]]></string>
+    <string name="extra_body_share">Share post on PetCare App</string>
 
 </resources>

@@ -24,10 +24,8 @@ class CommentAdapter: ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        val data = getItem(position)
-        if (data != null){
-            holder.bind(data)
-        }
+        val data = getItem(position) ?: return
+        holder.bind(data)
     }
 
     class CommentViewHolder(val binding: CommentItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
@@ -41,7 +39,6 @@ class CommentAdapter: ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
                 .circleCrop()
                 .into(binding.photoprofile)
         }
-
     }
 
     companion object{

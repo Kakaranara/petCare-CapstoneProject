@@ -34,22 +34,24 @@ class StoryAdapter(private val onItemLiked: (Story) -> Unit, private val onItemS
     }
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
-        val data = getItem(position)
-        if (data != null){
-            holder.bind(data)
-        }
+        val data = getItem(position) ?: return
+        holder.bind(data)
+
         val mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser!!.uid
         val isLiked = data.like.contains(currentUser)
         val ivLike = holder.binding.favorite
+
         if (isLiked){
             ivLike.setImageDrawable(ContextCompat.getDrawable(ivLike.context, R.drawable.ic_baseline_favorite_24))
         }else{
             ivLike.setImageDrawable(ContextCompat.getDrawable(ivLike.context, R.drawable.ic_baseline_favorite_border_24))
         }
+
         ivLike.setOnClickListener {
             onItemLiked(data)
         }
+
         holder.itemView.setOnClickListener {
             val bundle = Bundle()
             bundle.putParcelable(DetailFragment.DATA, data)
@@ -143,18 +145,17 @@ class StoryAdapter(private val onItemLiked: (Story) -> Unit, private val onItemS
                 .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
                 .circleCrop()
                 .into(binding.photoProfile)
-
         }
     }
 
     companion object{
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Story>(){
             override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean {
-                return oldItem == newItem
+                return oldItem.postId == newItem.postId
             }
 
             override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean {
-                return oldItem.uid == newItem.uid
+                return oldItem == newItem
             }
 
         }

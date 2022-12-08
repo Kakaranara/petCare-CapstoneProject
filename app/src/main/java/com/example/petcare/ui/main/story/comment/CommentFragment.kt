@@ -64,9 +64,6 @@ class CommentFragment : Fragment() {
         setUpRv()
         getComment(data)
 
-
-
-
     }
 
     private fun setupToolbar() {
