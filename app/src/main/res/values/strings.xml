@@ -43,5 +43,6 @@
     <string name="detail_title">Postingan</string>
     <string name="no_post_yet">No post yet</string>
     <string name="view_profile">View Profile</string>
+    <string name="comment_text_toolbar">Comment</string>
 
 </resources>
