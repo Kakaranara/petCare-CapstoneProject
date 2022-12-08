@@ -1,9 +1,7 @@
 package com.example.petcare.ui.main.story.comment
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +11,6 @@ import com.example.petcare.R
 import com.example.petcare.data.stori.Comment
 import com.example.petcare.databinding.CommentItemLayoutBinding
 import com.example.petcare.utils.DateFormatter
-import com.google.firebase.auth.FirebaseAuth
 
 class CommentAdapter: ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
     DIFF_CALLBACK) {
@@ -24,10 +21,8 @@ class CommentAdapter: ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
     }
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
-        val data = getItem(position)
-        if (data != null){
-            holder.bind(data)
-        }
+        val data = getItem(position) ?: return
+        holder.bind(data)
     }
 
     class CommentViewHolder(val binding: CommentItemLayoutBinding): RecyclerView.ViewHolder(binding.root) {
@@ -41,7 +36,6 @@ class CommentAdapter: ListAdapter<Comment, CommentAdapter.CommentViewHolder>(
                 .circleCrop()
                 .into(binding.photoprofile)
         }
-
     }
 
     companion object{

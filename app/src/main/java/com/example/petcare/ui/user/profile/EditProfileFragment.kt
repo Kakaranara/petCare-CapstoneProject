@@ -3,7 +3,6 @@ package com.example.petcare.ui.user.profile
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import android.nfc.Tag
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,16 +11,12 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.example.petcare.databinding.FragmentEditProfileBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
-import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class EditProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentEditProfileBinding? = null
@@ -70,19 +65,20 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
                 // ? to check is the uri is content provider or url of firebase storage
                 val arrayUri: Array<String> = uri!!.toString().toCharArray().map { it.toString() }.toTypedArray()
                 if (arrayUri[0] == "c"){
-                    lifecycleScope.launch {
-                        viewModel.postPhotoToStorage(name, uri!!).observe(viewLifecycleOwner){result->
-                            when(result){
-                                is Async.Loading -> {
-                                    Log.d(TAG, "Upload File to storage...")
-                                    binding.btnConfirmEdit.isEnabled = false
-                                }
-                                is Async.Error -> Log.e(TAG, "onFailure: ${result.error}")
-                                is Async.Success -> {
-                                    binding.btnConfirmEdit.isEnabled = false
-                                    Log.d(TAG, "Success upload file to storage")
-                                    updateProfileData(name, result.data)
-                                }
+                    viewModel.postPhotoToStorage(name, uri!!).observe(viewLifecycleOwner){result->
+                        when(result){
+                            is Async.Loading -> {
+                                Log.d(TAG, "Upload File to storage...")
+                                binding.btnConfirmEdit.isEnabled = false
+                            }
+                            is Async.Error -> {
+                                Log.e(TAG, "onFailure: ${result.error}")
+                                binding.btnConfirmEdit.isEnabled = true
+                            }
+                            is Async.Success -> {
+                                binding.btnConfirmEdit.isEnabled = false
+                                Log.d(TAG, "Success upload file to storage")
+                                updateProfileData(name, result.data)
                             }
                         }
                     }

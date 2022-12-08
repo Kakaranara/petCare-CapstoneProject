@@ -1,33 +1,27 @@
 package com.example.petcare.ui.main.story.add
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.ext.SdkExtensions.getExtensionVersion
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -35,7 +29,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
-import com.example.petcare.data.BaseResult
 import com.example.petcare.data.stori.Story
 import com.example.petcare.databinding.FragmentAddStoryBinding
 import com.example.petcare.di.Injection
@@ -45,12 +38,8 @@ import com.example.petcare.helper.showToast
 import com.example.petcare.utils.GeneratePostId
 import com.example.petcare.utils.StoryUtil
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import java.io.File
-import kotlin.math.abs
-import kotlin.random.Random
 
 
 class AddStoryFragment : Fragment() {
@@ -76,10 +65,10 @@ class AddStoryFragment : Fragment() {
 
         controlDescription()
         setupToolbar()
-        _binding?.tvCamera?.setOnClickListener { startCamera() }
-        _binding?.btnUpload?.setOnClickListener { upload() }
-        _binding?.tvPickPhoto?.setOnClickListener { startPickPhoto() }
-        _binding?.previewPhoto?.setOnClickListener {
+        binding.tvCamera.setOnClickListener { startCamera() }
+        binding.btnUpload.setOnClickListener { upload() }
+        binding.tvPickPhoto.setOnClickListener { startPickPhoto() }
+        binding.previewPhoto.setOnClickListener {
             startPickPhoto()
         }
 
@@ -87,9 +76,9 @@ class AddStoryFragment : Fragment() {
     }
 
     private fun setupToolbar() {
-        _binding?.addstorytoolbar?.apply {
+        binding.addstorytoolbar.apply {
             setupWithNavController(findNavController() , null )
-            title = getString(R.string.add_post)
+            title = getString(R.string.add_postingan)
         }
     }
 
@@ -125,10 +114,11 @@ class AddStoryFragment : Fragment() {
                 when(result){
                     is Async.Error -> {
                         handleLoading(false)
-                        context?.showToast(result.error)
+                        Log.e(TAG, "onFailure: ${result.error}")
                     }
                     is Async.Loading -> {
                         handleLoading(true)
+                        binding.btnUpload.isEnabled = false
                     }
                     is Async.Success -> {
                         handleLoading(false)
@@ -148,7 +138,6 @@ class AddStoryFragment : Fragment() {
                 visibility = View.GONE
             }else{
                 visibility = View.VISIBLE
-
             }
         }
     }
@@ -156,7 +145,7 @@ class AddStoryFragment : Fragment() {
     private fun handleSuccess(data: Uri) {
         val postId = GeneratePostId.postIdRandom()
         val urlAvatar = if (mAuth.currentUser?.photoUrl != null) mAuth.currentUser?.photoUrl.toString() else null
-        val desc = _binding?.etDescription?.text.toString()
+        val desc = binding.etDescription.text.toString()
         val uid = mAuth.currentUser?.uid.toString()
         val name = mAuth.currentUser?.displayName
         val timeStamp = System.currentTimeMillis()
@@ -176,13 +165,12 @@ class AddStoryFragment : Fragment() {
                         _binding?.btnUpload?.isEnabled = false
                     }
                     is Async.Error -> {
-                        context?.showToast(result.error)
+                        Log.e(TAG, "onFailure: ${result.error}")
                         handleLoading(false)
                     }
                 }
             }
         }
-
     }
 
 

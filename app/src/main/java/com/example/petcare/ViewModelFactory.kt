@@ -9,9 +9,7 @@ import com.example.petcare.ui.main.story.add.AddStoryViewModel
 import com.example.petcare.ui.main.story.comment.CommentViewModel
 import com.example.petcare.ui.main.story.detail.DetailViewModel
 import com.example.petcare.ui.main.story.main.StoryViewModel
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.ktx.storageMetadata
+import com.example.petcare.ui.main.story.profile.ProfileViewModel
 
 @Suppress("UNCHECKED_CAST")
 class ViewModelFactory(private val repository: StoryRepository):ViewModelProvider.Factory {
@@ -28,6 +26,8 @@ class ViewModelFactory(private val repository: StoryRepository):ViewModelProvide
         if (modelClass.isAssignableFrom(DetailViewModel::class.java)){
             return DetailViewModel(repository) as T
         }
+        if (modelClass.isAssignableFrom(ProfileViewModel::class.java)){
+            return ProfileViewModel(repository) as T
         if (modelClass.isAssignableFrom(PetShopViewModel::class.java)){
             return PetShopViewModel(Injection.providePetShopRepository()) as T
         }

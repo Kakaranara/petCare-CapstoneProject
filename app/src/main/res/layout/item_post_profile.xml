@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="4dp"
+    app:cardMaxElevation="6dp"
+    app:cardUseCompatPadding="true">
+
+    <ImageView
+        android:id="@+id/post_img"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        tools:src="@tools:sample/avatars"
+        />
+
+</androidx.cardview.widget.CardView>

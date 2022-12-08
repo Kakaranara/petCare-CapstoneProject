@@ -1,6 +1,5 @@
 package com.example.petcare.data.repository.model
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.example.petcare.data.User
 import com.example.petcare.helper.Async

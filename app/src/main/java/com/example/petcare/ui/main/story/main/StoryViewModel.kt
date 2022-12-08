@@ -2,7 +2,6 @@ package com.example.petcare.ui.main.story.main
 
 import androidx.lifecycle.ViewModel
 import com.example.petcare.data.StoryRepository
-import com.example.petcare.data.repository.ProfileRepository
 
 class StoryViewModel(private val storyRepository: StoryRepository): ViewModel() {
 

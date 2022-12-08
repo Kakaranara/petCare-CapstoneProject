@@ -2,13 +2,16 @@ package com.example.petcare.ui.main.story.comment
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
 import com.example.petcare.data.stori.Comment
 import com.example.petcare.data.stori.Story
@@ -37,6 +40,8 @@ class CommentFragment : Fragment() {
         val currentName = mAuth.currentUser!!.displayName!!
         val data = arguments?.getParcelable<Story>(DATA_POST)
 
+        setupToolbar()
+
         _binding?.postComment!!.text = buildString {
             append("Comment for ")
             if (currentName == data!!.name) append("your ") else append("${data.name}'s ")
@@ -59,9 +64,13 @@ class CommentFragment : Fragment() {
         setUpRv()
         getComment(data)
 
+    }
 
-
-
+    private fun setupToolbar() {
+        _binding?.commmentToolbar?.apply {
+            setupWithNavController(findNavController(), null)
+            title = context.getString(R.string.comment_text_toolbar)
+        }
     }
 
     private fun setUpRv() {
