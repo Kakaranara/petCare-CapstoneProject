@@ -10,12 +10,17 @@ import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.petcare.R
 import com.example.petcare.databinding.FragmentLoginBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
+import com.example.petcare.preferences.SchedulePreferences
+import com.example.petcare.scheduleDataStore
+import com.example.petcare.ui.main.schedule.ScheduleVMFactory
+import com.example.petcare.ui.main.schedule.ScheduleViewModel
 import com.example.petcare.utils.AuthUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -34,6 +39,11 @@ class LoginFragment : Fragment(), View.OnClickListener {
     private lateinit var oneTapClient: GoogleSignInClient
 
     private val viewModel by viewModels<LoginViewModel>()
+
+    //! if we have another signin option, please set scheduleViewModel.setHasLogin()
+    private val scheduleViewModel by activityViewModels<ScheduleViewModel>(){
+        ScheduleVMFactory(SchedulePreferences(requireActivity().scheduleDataStore))
+    }
 
     //? used for google one tap sign-in
     private var resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
@@ -109,6 +119,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 is Async.Success -> {
                     binding.btnLogin.isEnabled = true
                     binding.loginProgress.visibility = View.INVISIBLE
+                    scheduleViewModel.setHasLogin()
                     showToast("Success")
                     val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
                     findNavController().navigate(go)
@@ -124,9 +135,9 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 is Async.Loading -> {
                     binding.loginProgress.visibility = View.VISIBLE
                 }
-                is Async.Success -> {
+                is Async.Success -> { 
                     val name = it.data.name ?: "No Name"
-                    showToast("Hello, $name", true)
+                    showToast("Hello, $name", true) 
                     val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
                     findNavController().navigate(go)
                 }
