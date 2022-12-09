@@ -2,6 +2,8 @@
 
 PetCare merupakan sebuah aplikasi android yang memungkinkan pengguna untuk berinteraksi dengan dokter hewan untuk berkonsultasi terkait kendala dalam kesehatan hewan peliharaan kesayangan. Selain itu, pengguna juga dapat saling bertukar cerita dengan orang lain lewat fitur story. 
 
+** Kekurangan ** : Dengan terbatasnya sumber daya, maka kami menggunakan chatbot sebagai ganti dari konsultasi dengan dokter secara langsung. 
+
 ## Fitur 
 * Chatbot   : Fitur untuk melakukan konsultasi hewan peliharaan melalui chatbot.
 * Story     : Fitur untuk menambahkan, mengupload, dan melihat cerita mengenai hewan peliharaan. 
@@ -9,4 +11,5 @@ PetCare merupakan sebuah aplikasi android yang memungkinkan pengguna untuk berin
 * News      : Fitur untuk menampilkan berita terkait hewan / peliharaan. Berita ini disajikan dalam beberapa kategori.
 * Nearest Petshop : Fitur untuk melihat titik lokasi pet shop terdekat dari lokasi pengguna sekarang. 
 
-#Screenshot
+## Screenshot
+
