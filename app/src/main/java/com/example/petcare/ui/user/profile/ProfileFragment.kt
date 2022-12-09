@@ -13,6 +13,9 @@ import com.bumptech.glide.Glide
 import com.example.petcare.constant.OtherMenu
 import com.example.petcare.databinding.FragmentProfileBinding
 import com.example.petcare.helper.showToast
+import com.example.petcare.preferences.SchedulePreferences
+import com.example.petcare.scheduleDataStore
+import com.example.petcare.ui.main.schedule.ScheduleVMFactory
 import com.example.petcare.ui.main.schedule.ScheduleViewModel
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -21,7 +24,9 @@ import com.google.firebase.ktx.Firebase
 class ProfileFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by activityViewModels<ScheduleViewModel>()
+    private val scheduleViewModel by activityViewModels<ScheduleViewModel>() {
+        ScheduleVMFactory(SchedulePreferences(requireActivity().scheduleDataStore))
+    }
 
     //? other list menu item (check enum OtherMenu in constant package)
     private val listMenuArray: Array<String> = OtherMenu.values().map { it.string }.toTypedArray()
@@ -68,7 +73,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
                     showToast("Other Feature")
                 }
                 OtherMenu.PetShop.string -> {
-                    val go = ProfileFragmentDirections.actionActionProfileToPetShopFragment()
+                    val go = ProfileFragmentDirections.actionActionProfileToPetShopListFragment()
                     findNavController().navigate(go)
                 }
                 OtherMenu.Logout.string -> {
@@ -83,7 +88,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         Firebase.auth.signOut()
         val go = ProfileFragmentDirections.actionGlobalLoginFragment()
         findNavController().navigate(go)
-        viewModel.setHasLogout()
+        scheduleViewModel.setHasLogout()
         Log.d(TAG, "onClick: LOGOUT SUCCESS")
     }
 

@@ -1,23 +1,34 @@
 package com.example.petcare
 
+
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.petcare.databinding.ActivityMainBinding
+import com.example.petcare.preferences.SchedulePreferences
+import com.example.petcare.ui.main.schedule.ScheduleVMFactory
 import com.example.petcare.ui.main.schedule.ScheduleViewModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
+val Context.scheduleDataStore: DataStore<Preferences> by preferencesDataStore("schedule")
+
 class MainActivity : AppCompatActivity() {
 
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val scheduleViewModel by viewModels<ScheduleViewModel>()
+    private val scheduleViewModel by viewModels<ScheduleViewModel>() {
+        ScheduleVMFactory(SchedulePreferences(scheduleDataStore))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen() // !required for splash screen

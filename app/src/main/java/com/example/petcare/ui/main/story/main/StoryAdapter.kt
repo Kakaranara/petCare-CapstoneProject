@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.petcare.BuildConfig
 import com.example.petcare.R
 import com.example.petcare.data.stori.Story
@@ -19,10 +20,10 @@ import com.example.petcare.databinding.StoryItemLayoutBinding
 import com.example.petcare.helper.capitalizeWords
 import com.example.petcare.ui.main.story.comment.CommentFragment
 import com.example.petcare.ui.main.story.detail.DetailFragment
+import com.example.petcare.ui.main.story.profile.ProfileUserFragment
 import com.example.petcare.utils.DateFormatter
 import com.example.petcare.utils.ShareLink
 import com.google.firebase.auth.FirebaseAuth
-import okhttp3.internal.notify
 
 class StoryAdapter(private val onItemLiked: (Story) -> Unit, private val onItemShared: (Story) -> Unit): ListAdapter<Story, StoryAdapter.StoryViewHolder>(DIFF_CALLBACK) {
 
@@ -32,26 +33,34 @@ class StoryAdapter(private val onItemLiked: (Story) -> Unit, private val onItemS
     }
 
     override fun onBindViewHolder(holder: StoryViewHolder, position: Int) {
-        val data = getItem(position)
-        if (data != null){
-            holder.bind(data)
-        }
+        val data = getItem(position) ?: return
+        holder.bind(data)
+
         val mAuth = FirebaseAuth.getInstance()
         val currentUser = mAuth.currentUser!!.uid
         val isLiked = data.like.contains(currentUser)
         val ivLike = holder.binding.favorite
+
         if (isLiked){
             ivLike.setImageDrawable(ContextCompat.getDrawable(ivLike.context, R.drawable.ic_baseline_favorite_24))
         }else{
             ivLike.setImageDrawable(ContextCompat.getDrawable(ivLike.context, R.drawable.ic_baseline_favorite_border_24))
         }
+
         ivLike.setOnClickListener {
             onItemLiked(data)
         }
+
         holder.itemView.setOnClickListener {
             val bundle = Bundle()
             bundle.putParcelable(DetailFragment.DATA, data)
             it.findNavController().navigate(R.id.action_action_story_to_detailFragment, bundle)
+        }
+
+        holder.binding.photoProfile.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString(ProfileUserFragment.ID, data.uid)
+            it.findNavController().navigate(R.id.action_action_story_to_profileUserFragment, bundle)
         }
 
         holder.binding.comment.setOnClickListener {
@@ -130,26 +139,22 @@ class StoryAdapter(private val onItemLiked: (Story) -> Unit, private val onItemS
                 .load(data.urlImg)
                 .centerCrop()
                 .into(binding.previewPhoto)
-            if (data.avatarUrl != null) {
-                Glide.with(itemView.context)
-                    .load(data.avatarUrl)
-                    .circleCrop()
-                    .into(binding.photoProfile)
-            }else{
-                binding.photoProfile.setImageResource(R.drawable.ic_launcher_foreground)
-            }
-
+            Glide.with(itemView.context)
+                .load(data.avatarUrl)
+                .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
+                .circleCrop()
+                .into(binding.photoProfile)
         }
     }
 
     companion object{
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Story>(){
             override fun areItemsTheSame(oldItem: Story, newItem: Story): Boolean {
-                return oldItem == newItem
+                return oldItem.postId == newItem.postId
             }
 
             override fun areContentsTheSame(oldItem: Story, newItem: Story): Boolean {
-                return oldItem.uid == newItem.uid
+                return oldItem == newItem
             }
 
         }

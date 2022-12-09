@@ -17,6 +17,9 @@ import com.example.petcare.R
 import com.example.petcare.databinding.FragmentLoginBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
+import com.example.petcare.preferences.SchedulePreferences
+import com.example.petcare.scheduleDataStore
+import com.example.petcare.ui.main.schedule.ScheduleVMFactory
 import com.example.petcare.ui.main.schedule.ScheduleViewModel
 import com.example.petcare.utils.AuthUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -38,7 +41,9 @@ class LoginFragment : Fragment(), View.OnClickListener {
     private val viewModel by viewModels<LoginViewModel>()
 
     //! if we have another signin option, please set scheduleViewModel.setHasLogin()
-    private val scheduleViewModel by activityViewModels<ScheduleViewModel>()
+    private val scheduleViewModel by activityViewModels<ScheduleViewModel>(){
+        ScheduleVMFactory(SchedulePreferences(requireActivity().scheduleDataStore))
+    }
 
     //? used for google one tap sign-in
     private var resultLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(
@@ -130,9 +135,9 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 is Async.Loading -> {
                     binding.loginProgress.visibility = View.VISIBLE
                 }
-                is Async.Success -> {
-                    showToast("Hello, ${it.data}", true)
-                    scheduleViewModel.setHasLogin()
+                is Async.Success -> { 
+                    val name = it.data.name ?: "No Name"
+                    showToast("Hello, $name", true) 
                     val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
                     findNavController().navigate(go)
                 }

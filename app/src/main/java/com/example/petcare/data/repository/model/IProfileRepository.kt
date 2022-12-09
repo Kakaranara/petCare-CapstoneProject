@@ -6,7 +6,7 @@ import com.example.petcare.helper.Async
 import com.google.firebase.auth.FirebaseUser
 
 interface IProfileRepository {
-    fun postPhotoProfile(name: String, imgUri: Uri):LiveData<Async<Uri>>
     fun updateProfile(name: String, uri: Uri?) : LiveData<Async<Unit>>
     fun getUser() : FirebaseUser?
+    fun uploadPhotoToStorage(name: String, uri: Uri): LiveData<Async<Uri>>
 }

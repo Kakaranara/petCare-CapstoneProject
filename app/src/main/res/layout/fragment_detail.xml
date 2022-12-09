@@ -6,29 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.story.detail.DetailFragment">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/photoUser"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:src="@drawable/ic_launcher_foreground"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:layout_width="0dp"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/postingantoolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Postingan"
-        android:textAlignment="center"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="@+id/photoUser"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/photoUser"
-        app:layout_constraintTop_toTopOf="@+id/photoUser" />
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:title="Postingan" />
 
     <ImageView
         android:id="@+id/photo_story"
@@ -37,7 +22,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/photoUser" />
+        app:layout_constraintTop_toBottomOf="@+id/postingantoolbar" />
 
     <ImageView
         android:id="@+id/favorite"

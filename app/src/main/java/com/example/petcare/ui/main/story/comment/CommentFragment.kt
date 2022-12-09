@@ -2,13 +2,16 @@ package com.example.petcare.ui.main.story.comment
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
 import com.example.petcare.data.stori.Comment
 import com.example.petcare.data.stori.Story
@@ -16,6 +19,7 @@ import com.example.petcare.databinding.FragmentCommentBinding
 import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
+import com.example.petcare.utils.GeneratePostId
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
 
@@ -36,19 +40,23 @@ class CommentFragment : Fragment() {
         val currentName = mAuth.currentUser!!.displayName!!
         val data = arguments?.getParcelable<Story>(DATA_POST)
 
+        setupToolbar()
+
         _binding?.postComment!!.text = buildString {
-            append("Komentar untuk postingan ")
-            if (currentName == data!!.name) append("kamu") else append(data.name)
+            append("Comment for ")
+            if (currentName == data!!.name) append("your ") else append("${data.name}'s ")
+            append("post")
         }
 
         val id = mAuth.currentUser?.uid
         val avatarUrl = mAuth.currentUser?.photoUrl.toString()
         val timeStamp = System.currentTimeMillis().toString()
+        val idComment = GeneratePostId.postIdRandom()
         _binding?.ivSend?.setOnClickListener {
             val commentText = _binding?.etComment?.text.toString()
             if (commentText.isNotEmpty()){
                 val comment = Comment(
-                    data!!.postId, id, avatarUrl, currentName, commentText, timeStamp
+                   idComment,data!!.postId, id, avatarUrl, currentName, commentText, timeStamp
                 )
                 addCommentAction(comment)
             }
@@ -56,9 +64,13 @@ class CommentFragment : Fragment() {
         setUpRv()
         getComment(data)
 
+    }
 
-
-
+    private fun setupToolbar() {
+        _binding?.commmentToolbar?.apply {
+            setupWithNavController(findNavController(), null)
+            title = context.getString(R.string.comment_text_toolbar)
+        }
     }
 
     private fun setUpRv() {
@@ -87,8 +99,9 @@ class CommentFragment : Fragment() {
     private fun handleSuccess(data: List<Comment>?) {
         if (data?.size == 0){
             _binding?.noData?.visibility = View.VISIBLE
-            _binding?.etComment?.hint = "Jadilah yang pertama comment"
+            _binding?.etComment?.hint = "Be the first person"
         }else {
+            _binding?.etComment?.hint = "Type your comment here"
             _binding?.noData?.visibility = View.GONE
             mAdapter = CommentAdapter()
             mAdapter.submitList(data)

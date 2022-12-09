@@ -1,52 +1,45 @@
 package com.example.petcare.ui.main.story.add
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Activity.RESULT_OK
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
-import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.ext.SdkExtensions.getExtensionVersion
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
-import com.example.petcare.data.BaseResult
 import com.example.petcare.data.stori.Story
 import com.example.petcare.databinding.FragmentAddStoryBinding
 import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showAlertDialog
 import com.example.petcare.helper.showToast
+import com.example.petcare.utils.GeneratePostId
 import com.example.petcare.utils.StoryUtil
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import kotlinx.coroutines.*
+import kotlinx.coroutines.launch
 import java.io.File
-import kotlin.math.abs
-import kotlin.random.Random
 
 
 class AddStoryFragment : Fragment() {
@@ -71,19 +64,47 @@ class AddStoryFragment : Fragment() {
         mAuth = FirebaseAuth.getInstance()
 
         controlDescription()
-
-        _binding?.tvCamera?.setOnClickListener { startCamera() }
-        _binding?.btnUpload?.setOnClickListener { upload() }
-        _binding?.tvPickPhoto?.setOnClickListener { startPickPhoto() }
-        _binding?.previewPhoto?.setOnClickListener {
+        setupToolbar()
+        binding.tvCamera.setOnClickListener { startCamera() }
+        binding.btnUpload.setOnClickListener { upload() }
+        binding.tvPickPhoto.setOnClickListener { startPickPhoto() }
+        binding.previewPhoto.setOnClickListener {
             startPickPhoto()
         }
 
 
     }
 
+    private fun setupToolbar() {
+        binding.addstorytoolbar.apply {
+            setupWithNavController(findNavController() , null )
+            title = getString(R.string.add_postingan)
+        }
+    }
+
+    private val intentGallery =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                imgUri = result.data?.data
+                Glide.with(requireActivity())
+                    .load(imgUri)
+                    .into(binding.previewPhoto)
+                if (imgUri != null){
+                    pickerVisible(true)
+                }else{
+                    pickerVisible(false)
+                }
+            }
+        }
+
     private fun startPickPhoto() {
-        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        } else {
+            Intent(Intent.ACTION_PICK).apply {
+                type = "image/*"
+            }.also { intentGallery.launch(Intent.createChooser(it, "Select the photo")) }
+        }
     }
 
     private fun upload() {
@@ -93,10 +114,11 @@ class AddStoryFragment : Fragment() {
                 when(result){
                     is Async.Error -> {
                         handleLoading(false)
-                        context?.showToast(result.error)
+                        Log.e(TAG, "onFailure: ${result.error}")
                     }
                     is Async.Loading -> {
                         handleLoading(true)
+                        binding.btnUpload.isEnabled = false
                     }
                     is Async.Success -> {
                         handleLoading(false)
@@ -116,15 +138,14 @@ class AddStoryFragment : Fragment() {
                 visibility = View.GONE
             }else{
                 visibility = View.VISIBLE
-
             }
         }
     }
 
     private fun handleSuccess(data: Uri) {
-        val postId = abs(Random.nextInt()).toString()
+        val postId = GeneratePostId.postIdRandom()
         val urlAvatar = if (mAuth.currentUser?.photoUrl != null) mAuth.currentUser?.photoUrl.toString() else null
-        val desc = _binding?.etDescription?.text.toString()
+        val desc = binding.etDescription.text.toString()
         val uid = mAuth.currentUser?.uid.toString()
         val name = mAuth.currentUser?.displayName
         val timeStamp = System.currentTimeMillis()
@@ -136,21 +157,20 @@ class AddStoryFragment : Fragment() {
                 when(result){
                     is Async.Success->{
                         handleLoading(false)
-                        findNavController().navigate(R.id.action_addStoryFragmnet_to_action_story)
-                        context?.showToast("upload success")
+                        findNavController().popBackStack()
+                        context?.showToast(getString(R.string.upload_success_text))
                     }
                     is Async.Loading -> {
                         handleLoading(true)
                         _binding?.btnUpload?.isEnabled = false
                     }
                     is Async.Error -> {
-                        context?.showToast(result.error)
+                        Log.e(TAG, "onFailure: ${result.error}")
                         handleLoading(false)
                     }
                 }
             }
         }
-
     }
 
 
@@ -174,12 +194,12 @@ class AddStoryFragment : Fragment() {
         _binding?.etDescription?.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 _binding!!.counterWord.text = buildString {
-                    append("0/100")
+                    append(getString(R.string.description_counter_text))
                 }
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (s?.length!! == 100){
-                    showToast("max character for description is 100")
+                    showToast(getString(R.string.description_max_char))
                 }
             }
             override fun afterTextChanged(s: Editable?) {
@@ -187,7 +207,7 @@ class AddStoryFragment : Fragment() {
                 val currentLength = currentText.length
                 _binding!!.counterWord.text = buildString {
                     append(currentLength)
-                    append("/100")
+                    append(getString(R.string.max_char))
                 }
             }
         })
@@ -243,7 +263,7 @@ class AddStoryFragment : Fragment() {
         if (requestCode == REQUEST_CODE_PERMISSIONS){
             if (!allPermissionGranted()){
                 // ? using extention function
-                context?.showAlertDialog("Not getting camera permission")
+                context?.showAlertDialog(getString(R.string.not_get_permission))
             }
         }
     }

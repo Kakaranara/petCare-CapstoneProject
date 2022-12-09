@@ -3,6 +3,7 @@ package com.example.petcare.data.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.petcare.data.User
 import com.example.petcare.data.repository.model.IAuthRepository
 import com.example.petcare.helper.Async
 import com.example.petcare.ui.user.auth.login.LoginFragment
@@ -11,9 +12,10 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 
-class AuthRepository(private val auth: FirebaseAuth = Firebase.auth) : IAuthRepository {
+class AuthRepository(private val auth: FirebaseAuth = Firebase.auth, private val rootRef: FirebaseFirestore = FirebaseFirestore.getInstance()) : IAuthRepository {
 
     override fun loginEmail(email: String, password: String): LiveData<Async<Unit>> {
         val liveData = MutableLiveData<Async<Unit>>()
@@ -59,12 +61,16 @@ class AuthRepository(private val auth: FirebaseAuth = Firebase.auth) : IAuthRepo
         return liveData
     }
 
-    override fun googleOneTapLogin(credential: AuthCredential): LiveData<Async<String>> {
-        val liveData = MutableLiveData<Async<String>>(Async.Loading)
+    override fun googleOneTapLogin(credential: AuthCredential): LiveData<Async<User>> {
+        val liveData = MutableLiveData<Async<User>>(Async.Loading)
         auth.signInWithCredential(credential)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    liveData.postValue(Async.Success(auth.currentUser?.displayName ?: "No name"))
+                    val currentUser = auth.currentUser!!
+                    val user = User(
+                        currentUser.uid, currentUser.displayName, currentUser.email, currentUser.photoUrl.toString(), System.currentTimeMillis()
+                    )
+                    liveData.postValue(Async.Success(user))
                     Log.d(LoginFragment.TAG, "firebaseAuthWithGoogle: Success")
                 } else {
                     liveData.postValue(Async.Error(task.exception?.message.toString()))
@@ -73,4 +79,6 @@ class AuthRepository(private val auth: FirebaseAuth = Firebase.auth) : IAuthRepo
             }
         return liveData
     }
+
+
 }

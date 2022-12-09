@@ -2,16 +2,18 @@ package com.example.petcare.ui.main.story.detail
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.petcare.BuildConfig
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
@@ -41,6 +43,7 @@ class DetailFragment : Fragment() {
 
         val data = arguments?.getParcelable<Story>(DATA)
         mAuth = FirebaseAuth.getInstance()
+        setupToolbar()
         getDetail(data!!.postId)
     }
 
@@ -108,14 +111,11 @@ class DetailFragment : Fragment() {
             }
 
         }
-        if (data.avatarUrl != null) {
-            Glide.with(requireContext())
-                .load(data.avatarUrl!!.toUri())
-                .circleCrop()
-                .into(_binding?.photoProfile!!)
-        }else{
-            _binding?.photoProfile?.setImageResource(R.drawable.ic_launcher_foreground)
-        }
+        Glide.with(requireContext())
+            .load(data.avatarUrl!!.toUri())
+            .circleCrop()
+            .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
+            .into(_binding?.photoProfile!!)
         Glide.with(requireContext())
             .load(data.urlImg)
             .centerCrop()
@@ -184,9 +184,9 @@ class DetailFragment : Fragment() {
                 try {
                     val intentShare = Intent(Intent.ACTION_SEND)
                     intentShare.type = "text/plan"
-                    intentShare.putExtra(Intent.EXTRA_SUBJECT, "Ada yang baru nihh ->")
+                    intentShare.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.extra_subject_share))
                     val body: String =
-                        "\n" + data.name!!.capitalizeWords() +"\n" + "Share post on PetCare App" + "\n" +  generateLink + "\n"
+                        "\n" + data.name!!.capitalizeWords() +"\n" + getString(R.string.extra_body_share) + "\n" +  generateLink + "\n"
                     intentShare.putExtra(Intent.EXTRA_TEXT, body)
                     startActivity(Intent.createChooser(intentShare, "Share with: "))
 
@@ -216,6 +216,13 @@ class DetailFragment : Fragment() {
         }
     }
 
+    private fun setupToolbar() {
+        _binding?.postingantoolbar?.apply {
+            setupWithNavController(findNavController(), null)
+            title = getString(R.string.detail_title)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -232,6 +239,4 @@ class DetailFragment : Fragment() {
     companion object{
         const val DATA = "data"
     }
-
-
 }

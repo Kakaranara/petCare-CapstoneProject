@@ -1,6 +1,7 @@
 package com.example.petcare.ui.main.story.main
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,16 +10,17 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.petcare.R
 import com.example.petcare.ViewModelFactory
 import com.example.petcare.data.stori.Story
 import com.example.petcare.databinding.FragmentStoryBinding
 import com.example.petcare.di.Injection
 import com.example.petcare.helper.Async
-import com.example.petcare.helper.showToast
+import com.example.petcare.ui.main.story.profile.ProfileUserFragment
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.launch
-import okhttp3.internal.notifyAll
 
 
 class StoryFragment : Fragment() {
@@ -27,8 +29,6 @@ class StoryFragment : Fragment() {
     private lateinit var storyList: ArrayList<Story>
     private lateinit var mAuth: FirebaseAuth
     private var isLiked: Boolean = false
-
-
     private lateinit var adapter: StoryAdapter
     private val viewModel by activityViewModels<StoryViewModel> {
         ViewModelFactory(Injection.provideStoryRepository())
@@ -36,18 +36,33 @@ class StoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         storyList = ArrayList()
-
         mAuth = FirebaseAuth.getInstance()
+
+        setupProfile()
         setRecyclerView()
         getStories()
         goToAdd()
     }
 
+    private fun setupProfile() {
+        val currentUser = mAuth.currentUser!!
+        binding.nameCurrentuser.text = currentUser.displayName
+        Glide.with(requireContext())
+            .load(currentUser.photoUrl)
+            .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
+            .circleCrop()
+            .into(binding.photoProfile)
+        binding.tvToProfile.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString(ProfileUserFragment.ID, currentUser.uid)
+            findNavController().navigate(R.id.action_action_story_to_profileUserFragment, bundle)
+        }
+    }
+
     private fun setRecyclerView() {
-        _binding?.rvItem?.layoutManager = LinearLayoutManager(requireContext())
-        _binding?.rvItem?.setHasFixedSize(true)
+        binding.rvItem.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvItem.setHasFixedSize(true)
     }
 
     private fun getStories() {
@@ -59,7 +74,7 @@ class StoryFragment : Fragment() {
                     }
                     is Async.Error -> {
                         handleLoading(false)
-                        context?.showToast(result.error)
+                        Log.e(TAG, "onFailure: ${result.error}")
                     }
                     is Async.Success -> {
                         handleLoading(false)
@@ -68,12 +83,11 @@ class StoryFragment : Fragment() {
                 }
             }
         }
-
     }
 
     private fun setStory(data: List<Story>?) {
         if (data?.size == 0){
-            _binding?.noData?.visibility = View.VISIBLE
+            binding.noData.visibility = View.VISIBLE
         }else {
             val currentUser = mAuth.currentUser!!.uid
             adapter = StoryAdapter(onItemLiked = {stories->
@@ -87,7 +101,7 @@ class StoryFragment : Fragment() {
                                 }
                                 is Async.Error -> {
                                     handleLoading(false)
-                                    context?.showToast(result.error)
+                                    Log.e(TAG, "onFailure: ${result.error}")
                                 }
                                 is Async.Success -> {
                                     handleLoading(false)
@@ -97,7 +111,6 @@ class StoryFragment : Fragment() {
                             }
                         }
                     }
-
                 }else{
                     lifecycleScope.launch {
                         viewModel.addStoryLike(stories.postId, currentUser).observe(viewLifecycleOwner){ result->
@@ -107,18 +120,17 @@ class StoryFragment : Fragment() {
                                 }
                                 is Async.Error -> {
                                     handleLoading(false)
-                                    context?.showToast(result.error)
+                                    Log.e(TAG, "onFailure: ${result.error}")
                                 }
                                 is Async.Success -> {
                                     handleLoading(false)
-                                    adapter.submitList(result.data.story)
                                     isLiked = false
+                                    adapter.submitList(result.data.story)
                                 }
                             }
                         }
                     }
                 }
-
             },
                 onItemShared = {storiesShared->
                     //? update share
@@ -131,26 +143,23 @@ class StoryFragment : Fragment() {
                                 }
                                 is Async.Error -> {
                                     handleLoading(false)
-                                    context?.showToast(result.error)
+                                    Log.e(TAG, "onFailure: ${result.error}")
                                 }
                                 is Async.Success -> {
                                     handleLoading(false)
-                                    getStories()
+                                    adapter.submitList(result.data.story)
                                 }
                             }
                         }
                     }
-
             })
             adapter.submitList(data)
-            _binding?.rvItem?.adapter = adapter
-
-
+            binding.rvItem.adapter = adapter
         }
     }
 
     private fun handleLoading(isLoading: Boolean) {
-        _binding?.pbStory?.apply {
+        binding.pbStory.apply {
             isIndeterminate = isLoading
             if (!isLoading){
                 progress = 0

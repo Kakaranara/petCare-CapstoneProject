@@ -47,6 +47,9 @@
         <action
             android:id="@+id/action_action_profile_to_petShopFragment"
             app:destination="@id/petShopFragment" />
+        <action
+            android:id="@+id/action_action_profile_to_petShopListFragment"
+            app:destination="@id/petShopListFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -67,6 +70,9 @@
         <action
             android:id="@+id/action_action_story_to_commentFragment"
             app:destination="@id/commentFragment" />
+        <action
+            android:id="@+id/action_action_story_to_profileUserFragment"
+            app:destination="@id/profileUserFragment" />
     </fragment>
     <fragment
         android:id="@+id/action_schedule"
@@ -160,6 +166,16 @@
             app:destination="@id/newsDetailFragment" />
     </fragment>
     <fragment
+        android:id="@+id/profileUserFragment"
+        android:name="com.example.petcare.ui.main.story.profile.ProfileUserFragment"
+        android:label="fragment_profile_user"
+        tools:layout="@layout/fragment_profile_user" >
+        <action
+            android:id="@+id/action_profileUserFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+
+    </fragment>
+    <fragment
         android:id="@+id/addScheduleFragment"
         android:name="com.example.petcare.ui.main.schedule.add.AddScheduleFragment"
         android:label="Add Schedule"
@@ -197,5 +213,15 @@
         <argument
             android:name="data"
             app:argType="com.example.petcare.data.remote.response.Schedule" />
+    </fragment>
+    <fragment
+        android:id="@+id/petShopListFragment"
+        android:name="com.example.petcare.ui.main.other.petshop.PetShopListFragment"
+        android:label="fragment_pet_shop_list"
+        tools:layout="@layout/fragment_pet_shop_list" >
+        <action
+            android:id="@+id/action_petShopListFragment_to_petShopFragment"
+            app:destination="@id/petShopFragment" >
+        </action>
     </fragment>
 </navigation>

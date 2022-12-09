@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="Category">
-        <item>Makan</item>
-        <item>Jalan</item>
+        <item>Eat</item>
+        <item>Walking</item>
+        <item>Take medicine</item>
+        <item>Go to pet doctor</item>
         <item>Another</item>
     </string-array>
     <string-array name="remind_before">

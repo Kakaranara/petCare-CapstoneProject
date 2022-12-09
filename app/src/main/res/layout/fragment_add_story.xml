@@ -6,31 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.story.add.AddStoryFragment">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        tools:viewBindingIgnore="true"
-        android:id="@+id/circleImageView2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/addstorytoolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/ic_launcher_foreground" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/add_post"
-        android:textAlignment="center"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/circleImageView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/circleImageView2"
-        app:layout_constraintTop_toTopOf="@+id/circleImageView2" />
+        tools:title="Share Your Story" />
 
     <ImageView
         android:id="@+id/preview_photo"
@@ -39,17 +22,16 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/circleImageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/addstorytoolbar" />
 
     <TextView
         android:id="@+id/tv_camera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:background="@drawable/bg_border"
         android:padding="12dp"
-        android:text="Camera"
-        android:textColor="?attr/colorOnSecondary"
+        android:text="@string/btn_camera_text"
+        android:textColor="?attr/colorPrimary"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@+id/tv_pickPhoto"
         app:layout_constraintHorizontal_bias="0.61"
@@ -60,10 +42,9 @@
         android:id="@+id/tv_pickPhoto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_border"
         android:padding="12dp"
-        android:text=" Select Photo"
-        android:textColor="?attr/colorOnSecondary"
+        android:text="@string/btn_gallery_text"
+        android:textColor="?attr/colorPrimary"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/preview_photo"
         app:layout_constraintEnd_toEndOf="@+id/preview_photo"
@@ -89,11 +70,11 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/circleImageView3"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/ic_baseline_short_text_24"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -105,7 +86,7 @@
                 android:layout_marginEnd="8dp"
                 android:backgroundTint="@android:color/transparent"
                 android:gravity="start|top"
-                android:hint="Type anything"
+                android:hint="@string/description_hint"
                 android:maxLength="100"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/circleImageView3"
@@ -118,7 +99,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="0/100"
+                android:text="@string/description_counter_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/et_description"
                 app:layout_constraintTop_toBottomOf="@+id/et_description" />
@@ -132,7 +113,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:text="Upload"
+        android:text="@string/btn_upload_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -145,7 +126,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/circleImageView2" />
+        app:layout_constraintTop_toBottomOf="@id/addstorytoolbar" />
 
 
 

@@ -1,12 +1,13 @@
 package com.example.petcare.ui.main.news
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.petcare.data.remote.Result
 import com.example.petcare.data.remote.response.NewsResponse
 import com.example.petcare.data.repository.NewsRepository
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import com.example.petcare.data.remote.Result
-import kotlinx.coroutines.flow.collect
 
 class NewsViewModel(
     private val repository: NewsRepository = NewsRepository(),

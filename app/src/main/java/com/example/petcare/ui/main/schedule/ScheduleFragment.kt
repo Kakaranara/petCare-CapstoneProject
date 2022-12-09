@@ -1,7 +1,12 @@
 package com.example.petcare.ui.main.schedule
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +22,8 @@ import com.example.petcare.helper.Async
 import com.example.petcare.helper.DateHelper
 import com.example.petcare.helper.safeNav
 import com.example.petcare.helper.showToast
+import com.example.petcare.preferences.SchedulePreferences
+import com.example.petcare.scheduleDataStore
 import com.example.petcare.utils.gone
 import com.example.petcare.utils.visible
 
@@ -24,17 +31,26 @@ import com.example.petcare.utils.visible
 class ScheduleFragment : Fragment(), View.OnClickListener {
     private var _binding: FragmentScheduleBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by activityViewModels<ScheduleViewModel>()
+    private val viewModel by activityViewModels<ScheduleViewModel>(){
+        ScheduleVMFactory(SchedulePreferences(requireActivity().scheduleDataStore))
+    }
+
+    private lateinit var todayAdapter : ScheduleChildAdapter
+    private lateinit var upcomingAdapter : ScheduleChildAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.fbAddSchedule.setOnClickListener(this)
         binding.button.setOnClickListener(this)
+        setupAdapter()
+        observeViewModel()
+    }
 
+    private fun setupAdapter() {
         val manager = LinearLayoutManager(requireActivity())
         val manager2 = LinearLayoutManager(requireActivity())
-        val todayAdapter = ScheduleChildAdapter()
-        val upcomingAdapter = ScheduleChildAdapter()
+        todayAdapter = ScheduleChildAdapter()
+        upcomingAdapter = ScheduleChildAdapter()
         val divider1 = DividerItemDecoration(requireActivity(), manager.orientation)
         val divider2 = DividerItemDecoration(requireActivity(), manager2.orientation)
 
@@ -71,6 +87,28 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
             rvUpcoming.layoutManager = manager2
             rvUpcoming.addItemDecoration(divider2)
         }
+    }
+
+    private fun observeViewModel(){
+        viewModel.isDialogAlreadyShow.observe(viewLifecycleOwner) { shown ->
+            if (!shown) {
+                val alertDialog = AlertDialog.Builder(context)
+                    .setTitle("Have you already turn on notification setting?")
+                    .setMessage("For better experience, please activate this in setting to notify your schedule.")
+                    .setNegativeButton("No, Thanks") { _, _ ->
+                        viewModel.setDialogHasShown()
+                    }
+                    .setNeutralButton("settings") { _, _ ->
+                        goToNotificationSettings(null, requireActivity())
+                    }
+                    .setPositiveButton("yes") { dialogInterface: DialogInterface, i: Int ->
+                        viewModel.setDialogHasShown()
+                    }
+
+                alertDialog.show()
+            }
+        }
+
 
         viewModel.overviewListener.observe(viewLifecycleOwner) {
             when (it) {
@@ -132,7 +170,6 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                 }
             }
         }
-
     }
 
     override fun onClick(view: View) {
@@ -146,6 +183,29 @@ class ScheduleFragment : Fragment(), View.OnClickListener {
                 findNavController().navigate(go)
             }
         }
+    }
+
+    private fun goToNotificationSettings(channel: String?, context: Context) {
+        val intent = Intent()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            if (channel != null) {
+                intent.action = Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel)
+            } else {
+                intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+            }
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName())
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (channel != null) {
+                intent.action = Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID, channel)
+            } else {
+                intent.action = Settings.ACTION_APP_NOTIFICATION_SETTINGS
+            }
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName())
+        }
+        context.startActivity(intent)
     }
 
     override fun onCreateView(

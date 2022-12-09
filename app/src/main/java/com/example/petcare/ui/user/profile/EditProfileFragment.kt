@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,41 +56,54 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view) {
             binding.btnEditImage -> {
-                Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                Intent(Intent.ACTION_PICK).apply {
                     type = "image/*"
                 }.also { intentGallery.launch(Intent.createChooser(it, "im here bro")) }
             }
             binding.btnConfirmEdit -> {
                 val name = binding.etEditName.text.toString()
-                viewModel.postPhotoProfile(name, uri!!).observe(viewLifecycleOwner){result->
-                    when(result){
-                        is Async.Loading -> {
-                            _binding?.btnConfirmEdit?.isEnabled = false
-                        }
-                        is Async.Error -> {
-                            _binding?.btnConfirmEdit?.isEnabled = false
-                        }
-                        is Async.Success -> {
-                            val url = result.data
-                            viewModel.updateProfileData(name, url).observe(viewLifecycleOwner){
-                                when(it){
-                                    is Async.Error -> {
-                                        binding.btnConfirmEdit.isEnabled = true
-                                        showToast("Failed. ${it.error}")
-                                    }
-                                    Async.Loading -> {
-                                        binding.btnConfirmEdit.isEnabled = false
-                                    }
-                                    is Async.Success -> {
-                                        showToast("Success")
-                                        findNavController().popBackStack()
-                                    }
-                                }
+                // ? to check is the uri is content provider or url of firebase storage
+                val arrayUri: Array<String> = uri!!.toString().toCharArray().map { it.toString() }.toTypedArray()
+                if (arrayUri[0] == "c"){
+                    viewModel.postPhotoToStorage(name, uri!!).observe(viewLifecycleOwner){result->
+                        when(result){
+                            is Async.Loading -> {
+                                Log.d(TAG, "Upload File to storage...")
+                                binding.btnConfirmEdit.isEnabled = false
+                            }
+                            is Async.Error -> {
+                                Log.e(TAG, "onFailure: ${result.error}")
+                                binding.btnConfirmEdit.isEnabled = true
+                            }
+                            is Async.Success -> {
+                                binding.btnConfirmEdit.isEnabled = false
+                                Log.d(TAG, "Success upload file to storage")
+                                updateProfileData(name, result.data)
                             }
                         }
                     }
+                }else{
+                    updateProfileData(name, uri!!)
                 }
 
+            }
+        }
+    }
+
+    private fun updateProfileData(name: String, url: Uri) {
+        viewModel.updateProfileData(name, url).observe(viewLifecycleOwner){
+            when(it){
+                is Async.Error -> {
+                    binding.btnConfirmEdit.isEnabled = true
+                    showToast("Failed. ${it.error}")
+                }
+                Async.Loading -> {
+                    binding.btnConfirmEdit.isEnabled = false
+                }
+                is Async.Success -> {
+                    showToast("Success")
+                    findNavController().popBackStack()
+                }
             }
         }
     }

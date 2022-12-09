@@ -5,16 +5,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.liveData
-import com.example.petcare.data.stori.*
+import com.example.petcare.data.stori.Comment
+import com.example.petcare.data.stori.CommentResponse
+import com.example.petcare.data.stori.Story
+import com.example.petcare.data.stori.StoryResponse
 import com.example.petcare.helper.Async
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.Query
-
+import com.google.firebase.firestore.*
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.tasks.await
 
@@ -24,7 +20,6 @@ class StoryRepository(
 ){
 
     suspend fun postImage(name: String, imageUri: Uri):LiveData<Async<Uri>> = liveData{
-
         emit(Async.Loading)
         try {
             val downloadUrl = mStorage.child(name).putFile(imageUri).await()
@@ -33,49 +28,45 @@ class StoryRepository(
         }catch (e:Exception){
             emit(Async.Error(e.message.toString()))
         }
-
     }
 
-    suspend fun addPost(story: Story):LiveData<Async<Boolean>> = liveData {
-        emit(Async.Loading)
+    suspend fun addPost(story: Story):LiveData<Async<Unit>> = liveData {
+        val liveData = MutableLiveData<Async<Unit>>(Async.Loading)
         try {
-            rootRef.collection("stories").document().set(story).await()
-            emit(Async.Success(true))
+            rootRef.collection("stories").document(story.postId).set(story).addOnSuccessListener {
+                liveData.value = Async.Success(Unit)
+                rootRef.collection("users").document(story.uid.toString()).update("listPost", FieldValue.arrayUnion(story.postId))
+            }.addOnFailureListener {
+                liveData.value = Async.Error(it.toString())
+            }
         }catch (e: Exception){
-            emit(Async.Error(e.message.toString()))
+            liveData.value = Async.Error(e.toString())
         }
+        emitSource(liveData)
     }
 
     suspend fun updatePostComment(postId: String, countComment: Int): LiveData<Async<StoryResponse>> = liveData{
         val liveData = MutableLiveData<Async<StoryResponse>>(Async.Loading)
         try {
             val storyResponse = StoryResponse()
-            rootRef.collection("stories").whereEqualTo("postId", postId).get().addOnCompleteListener { task->
-                if (task.isSuccessful){
-                    for (document in task.result){
-                        val update: MutableMap<String, Any> = HashMap()
-                        update["comment"] = countComment
-                        rootRef.collection("stories").document(document.id).set(update, SetOptions.merge()).addOnSuccessListener {
-                            rootRef.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING)
-                                .get()
-                                .addOnCompleteListener { stories->
-                                    if (stories.isSuccessful){
-                                        val data = stories.result
-                                        data?.let {
-                                            storyResponse.story = data.documents.mapNotNull { snapshot->
-                                                snapshot.toObject(Story::class.java)
-                                            }
-                                            liveData.postValue(Async.Success(storyResponse))
-                                        }
-                                    }else{
-                                        liveData.postValue(Async.Error(stories.exception?.message.toString()))
-                                    }
+            val update: MutableMap<String, Any> = HashMap()
+            update["comment"] = countComment
+            rootRef.collection("stories").document(postId).set(update, SetOptions.merge()).addOnSuccessListener {
+                rootRef.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING)
+                    .get()
+                    .addOnCompleteListener { stories->
+                        if (stories.isSuccessful){
+                            val data = stories.result
+                            data?.let {
+                                storyResponse.story = data.documents.mapNotNull { snapshot->
+                                    snapshot.toObject(Story::class.java)
                                 }
+                                liveData.postValue(Async.Success(storyResponse))
+                            }
+                        }else{
+                            liveData.postValue(Async.Error(stories.exception?.message.toString()))
                         }
                     }
-                }else{
-                    liveData.value = Async.Error(task.exception.toString())
-                }
             }
         }catch (e: Exception){
             liveData.value = Async.Error(e.message.toString())
@@ -85,24 +76,20 @@ class StoryRepository(
 
     fun getAllStory(): LiveData<Async<StoryResponse>> {
         val liveData = MutableLiveData<Async<StoryResponse>>(Async.Loading)
+        var registration: ListenerRegistration? = null
         try {
             val storyResponse = StoryResponse()
-            rootRef.collection("stories")
-                .orderBy("createdAt", Query.Direction.DESCENDING)
-                .get()
-                .addOnCompleteListener { task->
-                    if (task.isSuccessful){
-                        val result = task.result
-                        result?.let {
-                            storyResponse.story = result.documents.mapNotNull { snapshot->
-                                snapshot.toObject(Story::class.java)
-                            }
-                            liveData.postValue(Async.Success(storyResponse))
-                        }
-                    }else{
-                        liveData.value = Async.Error(task.exception.toString())
-                    }
+            val query = rootRef.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING)
+            registration = query.addSnapshotListener { snapshot, error ->
+                if (error != null){
+                    liveData.value = Async.Error(error.localizedMessage!!)
                 }
+                snapshot?.let {
+                    storyResponse.story = it.toObjects(Story::class.java)
+                    liveData.value = Async.Success(storyResponse)
+                }
+                registration?.remove()
+            }
 
         }catch (e: Exception){
             liveData.value = Async.Error(e.message.toString())
@@ -112,27 +99,46 @@ class StoryRepository(
         return liveData
     }
 
+    fun getStoryByUid(uid: String): LiveData<Async<StoryResponse>>{
+        val liveData = MutableLiveData<Async<StoryResponse>>(Async.Loading)
+        try {
+            val storyResponse = StoryResponse()
+            rootRef.collection("stories").whereEqualTo("uid", uid)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .get().addOnCompleteListener { task->
+                    if (task.isSuccessful){
+                        val result = task.result
+                        result?.let {
+                            storyResponse.story = result.documents.mapNotNull { snapshot->
+                                snapshot.toObject(Story::class.java)
+                            }
+                            liveData.value = Async.Success(storyResponse)
+                        }
+                    }else{
+                        liveData.value = Async.Error(task.exception.toString())
+                    }
+                }
+        }catch (e: Exception){
+            liveData.value = Async.Error(e.toString())
+        }
+        return liveData
+    }
+
     fun getDetailStory(postId: String): LiveData<Async<Story>>{
         val liveData = MutableLiveData<Async<Story>>(Async.Loading)
         try {
-            rootRef.collection("stories")
-                .whereEqualTo("postId", postId)
-                .get()
             var story: Story? = null
-            rootRef.collection("stories")
-                .whereEqualTo("postId", postId)
-                .get()
-                .addOnSuccessListener { snapshot->
-                    if (snapshot != null){
-                        val data = snapshot.toObjects(Story::class.java)[0]
-                        story = Story(
-                            data.postId, data.uid, data.name, data.avatarUrl, data.urlImg, data.description, data.createdAt, data.comment, data.share, data.like
-                        )
-                        liveData.value = Async.Success(story!!)
-                    }else{
-                        liveData.value = Async.Error("no data exists")
-                    }
+            val query = rootRef.collection("stories")
+                .document(postId)
+            query.addSnapshotListener { value, error ->
+                if (error != null){
+                    liveData.value = Async.Error(error.localizedMessage!!)
                 }
+                value?.let {
+                    story = it.toObject(Story::class.java)
+                    liveData.value = Async.Success(story!!)
+                }
+            }
         }catch (e: Exception){
             liveData.value = Async.Error(e.message.toString())
         }
@@ -143,34 +149,18 @@ class StoryRepository(
     suspend fun addPostLike(postId: String, uid: String):LiveData<Async<StoryResponse>> = liveData{
         val liveData = MutableLiveData<Async<StoryResponse>>(Async.Loading)
         try {
-            val storyResponse = StoryResponse()
-            rootRef.collection("stories")
-                .whereEqualTo("postId", postId)
-                .get()
-                .addOnCompleteListener { task->
-                    if (task.isSuccessful){
-                        for (document in task.result){
-                            rootRef.collection("stories").document(document.id).update("like", FieldValue.arrayUnion(uid)).addOnSuccessListener {
-                                rootRef.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING)
-                                    .get()
-                                    .addOnCompleteListener { stories->
-                                        if (stories.isSuccessful){
-                                            val data = stories.result
-                                            data?.let {
-                                                storyResponse.story = data.documents.mapNotNull { snapshot->
-                                                    snapshot.toObject(Story::class.java)
-                                                }
-                                                liveData.postValue(Async.Success(storyResponse))
-                                            }
-                                        }
-                                    }
-                            }
-                        }
-
-                    }else{
-                        liveData.value = Async.Error(task.exception!!.message.toString())
+            rootRef.collection("stories").document(postId).update("like", FieldValue.arrayUnion(uid))
+                .addOnSuccessListener {
+                val storyResponse = StoryResponse()
+                val query = rootRef.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING)
+                query.addSnapshotListener { snapshot, error ->
+                    if (error != null) liveData.value = Async.Error(error.localizedMessage!!)
+                    snapshot?.let {
+                        storyResponse.story = it.toObjects(Story::class.java)
+                        liveData.value = Async.Success(storyResponse)
                     }
                 }
+            }.await()
         }catch (e:Exception){
             liveData.value = Async.Error(e.message.toString())
 
@@ -182,35 +172,17 @@ class StoryRepository(
     suspend fun deletePostLike(postId: String, uid: String): LiveData<Async<StoryResponse>> = liveData{
         val liveData = MutableLiveData<Async<StoryResponse>>(Async.Loading)
         try {
-            val storyResponse = StoryResponse()
-            rootRef.collection("stories")
-                .whereEqualTo("postId", postId)
-                .get()
-                .addOnCompleteListener { task->
-                    if (task.isSuccessful){
-                        for (document in task.result){
-                            rootRef.collection("stories").document(document.id).update("like", FieldValue.arrayRemove(uid)).addOnSuccessListener {
-                                rootRef.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING)
-                                    .get()
-                                    .addOnCompleteListener { stories->
-                                        if (stories.isSuccessful){
-                                            val data = stories.result
-                                            data?.let {
-                                                storyResponse.story = data.documents.mapNotNull { snapshot->
-                                                    snapshot.toObject(Story::class.java)
-                                                }
-                                                liveData.postValue(Async.Success(storyResponse))
-                                            }
-                                        }else{
-                                            liveData.postValue(Async.Error(stories.exception?.message.toString()))
-                                        }
-                                    }
-                            }
-                        }
-                    }else{
-                        liveData.value = Async.Error(task.exception?.message.toString())
+            rootRef.collection("stories").document(postId).update("like", FieldValue.arrayRemove(uid)).addOnSuccessListener {
+                val storyResponse = StoryResponse()
+                val query = rootRef.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING)
+                query.addSnapshotListener { snapshot, error ->
+                    if (error != null) liveData.value = Async.Error(error.localizedMessage!!)
+                    snapshot?.let {
+                        storyResponse.story = it.toObjects(Story::class.java)
+                        liveData.value = Async.Success(storyResponse)
                     }
                 }
+            }.await()
         }catch (e: Exception){
             liveData.value = Async.Error(e.message.toString())
         }
@@ -222,36 +194,18 @@ class StoryRepository(
         val liveData = MutableLiveData<Async<StoryResponse>>(Async.Loading)
         try {
             val storyResponse = StoryResponse()
-            rootRef.collection("stories")
-                .whereEqualTo("postId", postId)
-                .get()
-                .addOnCompleteListener { task->
-                    if (task.isSuccessful){
-                        for (document in task.result){
-                            val update: MutableMap<String, Any> = HashMap()
-                            update["share"] = share
-                            rootRef.collection("stories").document(document.id).set(update, SetOptions.merge()).addOnSuccessListener {
-                                rootRef.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING)
-                                    .get()
-                                    .addOnCompleteListener { stories->
-                                        if (stories.isSuccessful){
-                                            val data = stories.result
-                                            data?.let {
-                                                storyResponse.story = data.documents.mapNotNull { snapshot->
-                                                    snapshot.toObject(Story::class.java)
-                                                }
-                                                liveData.postValue(Async.Success(storyResponse))
-                                            }
-                                        }else{
-                                            liveData.postValue(Async.Error(stories.exception?.message.toString()))
-                                        }
-                                    }
-                            }
-                        }
-                    }else{
-                        liveData.value = Async.Error(task.exception?.message.toString())
+            val update: MutableMap<String, Any> = HashMap()
+            update["share"] = share
+            rootRef.collection("stories").document(postId).set(update, SetOptions.merge()).addOnSuccessListener {
+                val query = rootRef.collection("stories").orderBy("createdAt", Query.Direction.DESCENDING)
+                query.addSnapshotListener { snapshot, error ->
+                    if (error != null) liveData.postValue(Async.Error(error.localizedMessage!!))
+                    snapshot?.let {
+                        storyResponse.story = it.toObjects(Story::class.java)
+                        liveData.postValue(Async.Success(storyResponse))
                     }
                 }
+            }.await()
 
         }catch (e: Exception){
             liveData.value = Async.Error(e.message.toString())
@@ -294,26 +248,17 @@ class StoryRepository(
         val liveData = MutableLiveData<Async<CommentResponse>>(Async.Loading)
         try {
             val commentResponse = CommentResponse()
-            rootRef.collection("comment")
-                .whereEqualTo("idPost", postId)
-                .get()
-                .addOnCompleteListener { task->
-                    if (task.isSuccessful){
-                        val result = task.result
-                        result.let {
-                            commentResponse.comments = result.documents.mapNotNull { snapshot->
-                                snapshot.toObject(Comment::class.java)
-                            }
-                            liveData.value = Async.Success(commentResponse)
-                        }
-                    }else{
-                        liveData.value = Async.Error(task.exception.toString())
-                    }
+            val query = rootRef.collection("comment").whereEqualTo("idPost", postId)
+            query.addSnapshotListener { value, error ->
+                if (error != null) liveData.value = Async.Error(error.localizedMessage!!)
+                value?.let {
+                    commentResponse.comments = it.toObjects(Comment::class.java)
+                    liveData.value = Async.Success(commentResponse)
                 }
+            }
         }catch (e: Exception){
             liveData.value = Async.Error(e.message.toString())
         }
-
         return liveData
     }
 
