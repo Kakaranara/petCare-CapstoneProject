@@ -173,6 +173,9 @@
         <action
             android:id="@+id/action_profileUserFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
+
+    </fragment>
+    <fragment
         android:id="@+id/addScheduleFragment"
         android:name="com.example.petcare.ui.main.schedule.add.AddScheduleFragment"
         android:label="Add Schedule"

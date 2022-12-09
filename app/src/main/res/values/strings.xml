@@ -18,7 +18,6 @@
     <string name="name">Name</string>
     <string name="other">Other</string>
     <string name="edit_profile">Edit Profile</string>
-    <string name="logout">Logout</string>
 
     <string name="add_postingan">Share Your Story</string>
     <string name="logout">Logout</string> 
@@ -43,7 +42,6 @@
     <string name="description_max_char">max character for description is 100</string>
     <string name="max_char">/100</string>
     <string name="not_get_permission">Not getting camera permission</string>
-    <string name="detail_title">Postingan</string>
     <string name="no_post_yet">No post yet</string>
     <string name="view_profile">View Profile</string>
     <string name="comment_text_toolbar">Comment</string>
