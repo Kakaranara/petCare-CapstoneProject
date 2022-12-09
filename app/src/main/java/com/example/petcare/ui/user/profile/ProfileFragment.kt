@@ -69,9 +69,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         binding.listView.setOnItemClickListener { _, _, position, _ ->
             //? Other Menu -> List that appear below profile image
             when (listMenuArray[position]) {
-                OtherMenu.OtherFeature.string -> {
-                    showToast("Other Feature")
-                }
                 OtherMenu.PetShop.string -> {
                     val go = ProfileFragmentDirections.actionActionProfileToPetShopListFragment()
                     findNavController().navigate(go)

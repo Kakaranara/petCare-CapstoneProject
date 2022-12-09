@@ -20,8 +20,8 @@
     <string name="edit_profile">Edit Profile</string>
 
     <string name="add_postingan">Share Your Story</string>
-    <string name="logout">Logout</string> 
-    <string name="add_post">Share Your Story</string> 
+    <string name="logout">Logout</string>
+    <string name="add_post">Share Your Story</string>
     <string name="add_story">Add Story</string>
     <string name="add_schedule">Add Schedule</string>
 
@@ -32,7 +32,7 @@
     <string name="tab_text_4">Tips</string>
     <string name="content_tab_text">This is Tab %1$d</string>
     <string name="latest_news">Latest News</string>
-    <string name="no_news_found">No data found, try another keyword</string> 
+    <string name="no_news_found">No data found, try another keyword</string>
     <string name="btn_upload_text">Upload</string>
     <string name="description_counter_text">0/100</string>
     <string name="description_hint">Type anything</string>
@@ -47,7 +47,7 @@
     <string name="comment_text_toolbar">Comment</string>
     <string name="extra_subject_share"><![CDATA[Ada yang baru nihh ->]]></string>
     <string name="extra_body_share">Share post on PetCare App</string>
-    <string name="detail_title">Postingan</string> 
+    <string name="detail_title">Postingan</string>
     <string name="no_activity">Cheers! \n You have no activity in 1 week</string>
     <string name="today_schedule">Today Schedule</string>
     <string name="upcoming">Upcoming</string>
@@ -80,5 +80,5 @@
     <string name="location_symbol">Location Symbol</string>
     <string name="pet_shop_name">Pet Shop Name</string>
     <string name="pet_shop_address">Pet Shop Address</string>
-    <string name="style_map_error">Style parsing failed</string> 
+    <string name="style_map_error">Style parsing failed</string>
 </resources>

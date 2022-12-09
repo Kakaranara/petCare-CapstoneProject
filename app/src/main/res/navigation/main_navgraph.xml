@@ -9,7 +9,11 @@
         android:id="@+id/action_home"
         android:name="com.example.petcare.ui.main.home.HomeFragment"
         android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_action_home_to_chatbotFragment"
+            app:destination="@id/chatbotFragment" />
+    </fragment>
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.example.petcare.ui.user.auth.login.LoginFragment"
@@ -224,4 +228,9 @@
             app:destination="@id/petShopFragment" >
         </action>
     </fragment>
+    <fragment
+        android:id="@+id/chatbotFragment"
+        android:name="com.example.petcare.ui.main.home.chatbot.ChatbotFragment"
+        android:label="fragment_chatbot"
+        tools:layout="@layout/fragment_chatbot" />
 </navigation>

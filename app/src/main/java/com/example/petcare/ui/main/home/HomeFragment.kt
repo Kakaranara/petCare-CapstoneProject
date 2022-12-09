@@ -25,6 +25,11 @@ class HomeFragment : Fragment(), View.OnClickListener {
             val go = HomeFragmentDirections.actionGlobalLoginFragment()
             findNavController().navigate(go)
         }
+
+        binding.chatbotButtonNavigation.chatbotButton.setOnClickListener {
+            val go = HomeFragmentDirections.actionActionHomeToChatbotFragment()
+            findNavController().navigate(go)
+        }
     }
 
     override fun onClick(view: View) {
