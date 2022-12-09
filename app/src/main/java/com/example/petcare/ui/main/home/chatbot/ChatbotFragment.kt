@@ -102,7 +102,7 @@ class ChatbotFragment : Fragment() {
             adapter.insertMessage(Message(message, SEND_ID, timeStamp))
             binding.rvMessages.scrollToPosition(adapter.itemCount - 1)
 
-            if(message == "RESET"){
+            if(message == "RESET" || message == "reset"){
                 adapter.resetAll()
                 customStart()
             }else{
