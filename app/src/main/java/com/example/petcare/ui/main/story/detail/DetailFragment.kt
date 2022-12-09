@@ -112,7 +112,7 @@ class DetailFragment : Fragment() {
 
         }
         Glide.with(requireContext())
-            .load(data.avatarUrl!!.toUri())
+            .load(data.avatarUrl?.toUri())
             .circleCrop()
             .apply(RequestOptions.placeholderOf(R.drawable.ic_launcher_foreground).error(R.drawable.ic_avatar_24))
             .into(_binding?.photoProfile!!)
