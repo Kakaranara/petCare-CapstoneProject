@@ -137,6 +137,7 @@ class LoginFragment : Fragment(), View.OnClickListener {
                 }
                 is Async.Success -> { 
                     val name = it.data.name ?: "No Name"
+                    scheduleViewModel.setHasLogin()
                     showToast("Hello, $name", true) 
                     val go = LoginFragmentDirections.actionLoginFragmentToActionHome()
                     findNavController().navigate(go)
