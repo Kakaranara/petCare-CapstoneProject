@@ -60,8 +60,13 @@ class ChatbotFragment : Fragment() {
                 "1. Please answer me according to directions, if you enter input that is not appropriate, then the consultation session will not run smoothly\n" +
                 "2. Please understand the limitations of animals that can be diagnosed because I am still in the development stage\n" +
                 "3. If you wish to repeat everything from the beginning, type \"RESET\"\n"+
-                "\n If you understand then let's start ^^. Can you tell me what kind of pet you want to consult?\n" +
-                "q0 : Lovebird Bird\n\n NOTE = just answer by id (example : q0)")
+                "\n If you understand then let's start ^^. Can you tell me what kind of pet you want to consult?\n\n" +
+                "a0 : Lovebird Bird\n\n " +
+                "b0 : Dogs\n\n " +
+                "c0 : Cats\n\n " +
+                "d0 : Hamsters\n\n " +
+                "e0 : Turtles\n\n " +
+                "NOTE = just answer by id (example : A0)")
     }
 
     private fun clickEvents() {
