@@ -77,7 +77,7 @@ object BotResponse {
             }
 
             message == "a1" -> {
-                "${questionListDogs[0].question} \n a1 : yes \n a2 : no"
+                "${questionList[0].question} \n a1 : yes \n a2 : no"
             }
 
             message == "a3" -> {
