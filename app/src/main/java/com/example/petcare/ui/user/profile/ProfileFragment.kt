@@ -6,10 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.petcare.R
 import com.example.petcare.constant.OtherMenu
 import com.example.petcare.databinding.FragmentProfileBinding
 import com.example.petcare.helper.showToast
@@ -50,10 +52,12 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
     private fun setUserInformation() {
         Firebase.auth.currentUser?.let { user: FirebaseUser ->
+            val emptyImage =
+                AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_avatar_24)
             binding.apply {
                 tvProfileEmail.text = user.email
                 tvProfileName.text = user.displayName
-                Glide.with(requireActivity()).load(user.photoUrl).into(circleImageView)
+                Glide.with(requireActivity()).load(user.photoUrl ?: emptyImage).into(circleImageView)
             }
         }
     }
