@@ -9,11 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
+import com.example.petcare.R
 import com.example.petcare.databinding.FragmentEditProfileBinding
 import com.example.petcare.helper.Async
 import com.example.petcare.helper.showToast
@@ -44,10 +46,12 @@ class EditProfileFragment : Fragment(), View.OnClickListener {
         binding.btnEditImage.setOnClickListener(this)
         binding.btnConfirmEdit.setOnClickListener(this)
 
+        val emptyImage =
+            AppCompatResources.getDrawable(requireActivity(), R.drawable.ic_avatar_24)
         viewModel.getUser()?.let { user ->
             uri = user.photoUrl
             Glide.with(requireActivity())
-                .load(uri)
+                .load(uri ?: emptyImage)
                 .into(binding.circleImageEdit)
             binding.etEditName.setText(user.displayName)
         }
