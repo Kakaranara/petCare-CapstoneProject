@@ -14,7 +14,13 @@ PetCare merupakan sebuah aplikasi android yang memungkinkan pengguna untuk berin
 ## Screenshot
 
 <img src="https://user-images.githubusercontent.com/74239131/208044349-92abc712-04cc-4abe-9135-d149ec0f8d27.png" width="200" height="100"/>
-![image](https://user-images.githubusercontent.com/74239131/208044349-92abc712-04cc-4abe-9135-d149ec0f8d27.png = 250 x 250)
-![image](https://user-images.githubusercontent.com/74239131/208044363-fcc8703d-5e06-4a00-89d9-dd7efd9fbc1e.png)
-![image](https://user-images.githubusercontent.com/74239131/208044372-17511f94-fbef-4ce3-be70-d06da40690bf.png)
-![image](https://user-images.githubusercontent.com/74239131/208044388-83ef7f4b-0dcc-4dd9-a182-51791e29ed95.png)
+<img src="https://user-images.githubusercontent.com/74239131/208046512-69f3750d-7cd1-49e6-a31a-c0239480f524.png" width="200" height="100"/>
+<img src="https://user-images.githubusercontent.com/74239131/208046579-4669e45b-b3fd-4344-b7c8-d12b22fd629d.png" width="200" height="100"/>
+<img src="https://user-images.githubusercontent.com/74239131/208046597-84c67d90-d291-4c7b-9ed6-d56a56ace491.png" width="200" height="100"/>
+
+
+
+![image](https://user-images.githubusercontent.com/74239131/208046512-69f3750d-7cd1-49e6-a31a-c0239480f524.png)
+![image](https://user-images.githubusercontent.com/74239131/208046579-4669e45b-b3fd-4344-b7c8-d12b22fd629d.png)
+![image](https://user-images.githubusercontent.com/74239131/208046597-84c67d90-d291-4c7b-9ed6-d56a56ace491.png)
+
