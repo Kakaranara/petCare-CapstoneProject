@@ -37,7 +37,7 @@ class ScheduleViewModel(
      * Check main activity.
      */
     val overviewListener: LiveData<Async<QuerySnapshot?>> =
-        Transformations.switchMap(isLoginListener) {
+        isLoginListener.switchMap {
             when (it) {
                 true -> {
                     repository.listenOverviewSchedule()
@@ -51,7 +51,7 @@ class ScheduleViewModel(
         }
 
     val allScheduleListener: LiveData<Async<QuerySnapshot?>> =
-        Transformations.switchMap(isLoginListener) {
+        isLoginListener.switchMap {
             when (it) {
                 true -> {
                     repository.listenAllData()
